@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Phase 5 Report — Verify, Document, Commit</title>
+<style>
+body { font-family: sans-serif; max-width: 960px; margin: 2em auto; padding: 0 1em; color: #222; }
+h1 { font-size: 1.5em; } h2 { font-size: 1.2em; border-bottom: 1px solid #ccc; padding-bottom: .2em; }
+table { border-collapse: collapse; margin: 1em 0; } th, td { border: 1px solid #bbb; padding: 4px 10px; text-align: left; }
+th { background: #f0f0f0; } code { background: #f5f5f5; padding: 1px 4px; }
+.pass { color: #0a0; font-weight: bold; } .warn { color: #a60; font-weight: bold; }
+pre { background: #f5f5f5; padding: 8px; overflow-x: auto; font-size: .85em; }
+.meta { color: #555; }
+</style>
+</head>
+<body>
+<h1>Phase 5 Report — Verify, Document, and Commit</h1>
+<p class="meta">Plan: <code>plans/2026-09-08-pdd-process-walkthrough-plan.md</code> PHASE-05 &nbsp;|&nbsp; Generated 2026-09-09 &nbsp;|&nbsp; Commit <code>3a44a96</code></p>
+
+<h2>Documentation (TASK-05-01)</h2>
+<p><code>reports/walkthrough/README.md</code>: file guide, the two regeneration commands (evidence builder, renderer), the four scoring axes with the pre-chosen weighting and its bias caution, and the honest-state notes — no model-backed provider on either lane; tinh packaging executed, authoring documented_only. Records the deviation: phase-01–04 report HTMLs are committed by phase convention though outside the plan's minimal file list.</p>
+
+<h2>Sole authorship (TASK-05-02)</h2>
+<p><code>pdd-walkthrough.html</code> deleted and regenerated with <code>scripts/render_walkthrough.py</code> → identical SHA-256 (<code>ebe8fd57…</code>). The renderer is the file's sole author; the build is deterministic.</p>
+
+<h2>Full verification (TASK-05-03)</h2>
+<table>
+<tr><th>Check</th><th>Result</th></tr>
+<tr><td><code>pytest -m "not corpus"</code></td><td class="pass">974 passed (960 baseline + 14 walkthrough), 2 xfailed, 0 failures — 295s</td></tr>
+<tr><td><code>ruff check .</code></td><td class="pass">All checks passed</td></tr>
+<tr><td><code>ruff format --check .</code></td><td class="pass">154 files already formatted</td></tr>
+<tr><td><code>uv lock --check</code></td><td class="pass">clean, no dependency change</td></tr>
+</table>
+
+<h2>Commit (TASK-05-04/05)</h2>
+<p><code>3a44a96 feat(walkthrough): interactive Inegol PDD process walkthrough and track comparison</code> — 36 files, +7242 lines, largest file 114 KB (limit 3 MB). Staged exactly the plan's files: <code>reports/walkthrough/</code>, both scripts, both test files, the plan doc and its research brainstorm. Left untouched: the two pre-existing unrelated entries (<code>M 08-28 plan</code>, <code>?? tinh test report</code>).</p>
+<p><span class="warn">Deviation:</span> phase-01's published <code>demo/review-packages</code> run folders and <code>data/corpus/</code> remain untracked — the plan's commit task does not list them, so they were deliberately excluded.</p>
+
+<h2>Exit criteria</h2>
+<table>
+<tr><th>Criterion</th><th>Result</th></tr>
+<tr><td>≥962 passed, 2 xfailed, zero failures</td><td class="pass">PASS (974 / 2 / 0)</td></tr>
+<tr><td>ruff check / format / lock clean</td><td class="pass">PASS</td></tr>
+<tr><td>post-commit tree shows only unrelated entries</td><td class="pass">PASS (+ untracked package/corpus dirs, noted above)</td></tr>
+<tr><td>walkthrough dir complete (README, template, page, bundle, raw)</td><td class="pass">PASS (+ phase-01–05 reports by convention)</td></tr>
+</table>
+</body>
+</html>
