@@ -1,0 +1,5 @@
+2026-09-08 12:20:07 [warning  ] export_gate_forced             hard_blocks=['[1.10↔4.4] Section 1.10 (1) and Section 4.4 (4) report different net tCO2e values. These MUST match.', '[4.1/4.2↔4.4] Net tCO2e calculation error: Baseline (4) - Project (4) = 0, but Section 4.4 reports 4.'] message='Exporting with --force override; document is watermarked DRAFT.' run_id=walkthrough-inegol-noop
+2026-09-08 12:20:09 [info     ] docx_exported                  path=C:\Users\tukum\Downloads\pdd-auto\data\runs\walkthrough-inegol-noop.docx run_id=walkthrough-inegol-noop
+2026-09-08 12:20:09 [info     ] docx_exported                  force=True path=C:\Users\tukum\Downloads\pdd-auto\data\runs\walkthrough-inegol-noop.docx
+2026-09-08 12:20:09 [info     ] export_complete                docx_path=C:\Users\tukum\Downloads\pdd-auto\data\runs\walkthrough-inegol-noop.docx pdf_path=None pdf_status=not_requested
+exit=0

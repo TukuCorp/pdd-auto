@@ -1,0 +1,835 @@
+[
+  {
+    "path": "00_PACKAGE_COVER.pdf",
+    "bytes": 5918,
+    "pages": 2
+  },
+  {
+    "path": "3908_PDD_in_place_Codex.docx",
+    "bytes": 37438799
+  },
+  {
+    "path": "3908_PDD_in_place_Codex.pdf",
+    "bytes": 9065146,
+    "pages": 560
+  },
+  {
+    "path": "calculation_evidence\\ER Calculation.v04_21.07.2025.pdf",
+    "bytes": 1961467,
+    "pages": 52
+  },
+  {
+    "path": "calculation_evidence\\Inegol IRR_R5_22.08.2025.pdf",
+    "bytes": 527258,
+    "pages": 56
+  },
+  {
+    "path": "calculation_evidence\\INEGOL_CPA_R3_21.07.2025.pdf",
+    "bytes": 706201,
+    "pages": 312
+  },
+  {
+    "path": "calculation_evidence\\lo_profile\\cache\\_nop_fdivf4b05cc8de6347ae6fc0bc687737c283-DB5DB785AB7FD8211DA0616436D3B5B3.bin",
+    "bytes": 6741
+  },
+  {
+    "path": "calculation_evidence\\lo_profile\\cache\\_nop_fsub_fsubcae63ff924034fa148b6b64425ec67-DB5DB785AB7FD8211DA0616436D3B5B3.bin",
+    "bytes": 13401
+  },
+  {
+    "path": "calculation_evidence\\lo_profile\\cache\\_nop_fsub_Sin_fsum_Tan_Cos_ScATane59ae302d99abf458bad42d1502bb-DB5DB785AB7FD8211DA0616436D3B5B3.bin",
+    "bytes": 109749
+  },
+  {
+    "path": "calculation_evidence\\lo_profile\\cache\\_nop_fsum_fsub_fsum_fmul_fdiv_Powerb32d41f39fc3d0b222b9c75a4c22ce-DB5DB785AB7FD8211DA0616436D3B5B3.bin",
+    "bytes": 77869
+  },
+  {
+    "path": "calculation_evidence\\lo_profile\\cache\\_nop_fsum_fsum_fsub_fsum_Var_OpNormsdist_Covar_OpPearson_Slope27fd69cdbcc3a8267a6ff779a2ec596f-DB5DB785AB7FD8211DA0616436D3B5B3.bin",
+    "bytes": 108553
+  },
+  {
+    "path": "calculation_evidence\\lo_profile\\cache\\_nop_fsum_fsum_fsum98ee81a85f7a311192787295ed8a41cb-DB5DB785AB7FD8211DA0616436D3B5B3.bin",
+    "bytes": 21997
+  },
+  {
+    "path": "calculation_evidence\\lo_profile\\cache\\_nop_fsum_fsum_Product_SumIfs_fsop765eb6d6c135fc25523327de207b361c-DB5DB785AB7FD8211DA0616436D3B5B3.bin",
+    "bytes": 28857
+  },
+  {
+    "path": "calculation_evidence\\lo_profile\\cache\\_nop_Sqrt_fmul_fsub_fsubf628cca0fe9b781b768256844c519e5-DB5DB785AB7FD8211DA0616436D3B5B3.bin",
+    "bytes": 23429
+  },
+  {
+    "path": "calculation_evidence\\lo_profile\\cache\\colibre_dark\\150\\svx\\res\\pageshadow35x35.png",
+    "bytes": 554
+  },
+  {
+    "path": "calculation_evidence\\lo_profile\\cache\\opencl_devices.log",
+    "bytes": 3065
+  },
+  {
+    "path": "calculation_evidence\\lo_profile\\cache\\opencl_profile.xml",
+    "bytes": 523
+  },
+  {
+    "path": "calculation_evidence\\lo_profile\\crash\\dump.ini",
+    "bytes": 479
+  },
+  {
+    "path": "calculation_evidence\\lo_profile\\user\\autotext\\mytexts.bau",
+    "bytes": 557
+  },
+  {
+    "path": "calculation_evidence\\lo_profile\\user\\basic\\dialog.xlc",
+    "bytes": 339
+  },
+  {
+    "path": "calculation_evidence\\lo_profile\\user\\basic\\script.xlc",
+    "bytes": 339
+  },
+  {
+    "path": "calculation_evidence\\lo_profile\\user\\basic\\Standard\\dialog.xlb",
+    "bytes": 288
+  },
+  {
+    "path": "calculation_evidence\\lo_profile\\user\\basic\\Standard\\Module1.xba",
+    "bytes": 1124
+  },
+  {
+    "path": "calculation_evidence\\lo_profile\\user\\basic\\Standard\\script.xlb",
+    "bytes": 349
+  },
+  {
+    "path": "calculation_evidence\\lo_profile\\user\\config\\autotbl.fmt",
+    "bytes": 35313
+  },
+  {
+    "path": "calculation_evidence\\lo_profile\\user\\database\\biblio\\biblio.dbf",
+    "bytes": 75798
+  },
+  {
+    "path": "calculation_evidence\\lo_profile\\user\\database\\biblio\\biblio.dbt",
+    "bytes": 46601
+  },
+  {
+    "path": "calculation_evidence\\lo_profile\\user\\database\\biblio.odb",
+    "bytes": 2892
+  },
+  {
+    "path": "calculation_evidence\\lo_profile\\user\\database\\evolocal.odb",
+    "bytes": 3759
+  },
+  {
+    "path": "calculation_evidence\\lo_profile\\user\\extensions\\buildid",
+    "bytes": 40
+  },
+  {
+    "path": "calculation_evidence\\lo_profile\\user\\extensions\\bundled\\extensions.pmap",
+    "bytes": 528
+  },
+  {
+    "path": "calculation_evidence\\lo_profile\\user\\extensions\\bundled\\lastsynchronized",
+    "bytes": 1
+  },
+  {
+    "path": "calculation_evidence\\lo_profile\\user\\extensions\\bundled\\registry\\com.sun.star.comp.deployment.bundle.PackageRegistryBackend\\backenddb.xml",
+    "bytes": 4406
+  },
+  {
+    "path": "calculation_evidence\\lo_profile\\user\\extensions\\bundled\\registry\\com.sun.star.comp.deployment.component.PackageRegistryBackend\\unorc",
+    "bytes": 264
+  },
+  {
+    "path": "calculation_evidence\\lo_profile\\user\\extensions\\bundled\\registry\\com.sun.star.comp.deployment.configuration.PackageRegistryBackend\\backenddb.xml",
+    "bytes": 4662
+  },
+  {
+    "path": "calculation_evidence\\lo_profile\\user\\extensions\\bundled\\registry\\com.sun.star.comp.deployment.configuration.PackageRegistryBackend\\configmgr.ini",
+    "bytes": 1280
+  },
+  {
+    "path": "calculation_evidence\\lo_profile\\user\\extensions\\bundled\\registry\\com.sun.star.comp.deployment.configuration.PackageRegistryBackend\\lu61086yaif.tmp\\dictionaries.xcu",
+    "bytes": 4809
+  },
+  {
+    "path": "calculation_evidence\\lo_profile\\user\\extensions\\bundled\\registry\\com.sun.star.comp.deployment.configuration.PackageRegistryBackend\\lu61086yaig.tmp\\OptionsDialog.xcu",
+    "bytes": 19378
+  },
+  {
+    "path": "calculation_evidence\\lo_profile\\user\\extensions\\bundled\\registry\\com.sun.star.comp.deployment.configuration.PackageRegistryBackend\\lu61086yaii.tmp\\dictionaries.xcu",
+    "bytes": 1997
+  },
+  {
+    "path": "calculation_evidence\\lo_profile\\user\\extensions\\bundled\\registry\\com.sun.star.comp.deployment.configuration.PackageRegistryBackend\\lu61086yaij.tmp\\dictionaries.xcu",
+    "bytes": 14952
+  },
+  {
+    "path": "calculation_evidence\\lo_profile\\user\\extensions\\bundled\\registry\\com.sun.star.comp.deployment.configuration.PackageRegistryBackend\\lu61086yain.tmp\\OptionsDialog.xcu",
+    "bytes": 9619
+  },
+  {
+    "path": "calculation_evidence\\lo_profile\\user\\extensions\\bundled\\registry\\com.sun.star.comp.deployment.configuration.PackageRegistryBackend\\lu61086yaio.tmp\\Filter.xcu",
+    "bytes": 3025
+  },
+  {
+    "path": "calculation_evidence\\lo_profile\\user\\extensions\\bundled\\registry\\com.sun.star.comp.deployment.configuration.PackageRegistryBackend\\lu61086yaiq.tmp\\Paths.xcu",
+    "bytes": 1330
+  },
+  {
+    "path": "calculation_evidence\\lo_profile\\user\\extensions\\bundled\\registry\\com.sun.star.comp.deployment.help.PackageRegistryBackend\\backenddb.xml",
+    "bytes": 487
+  },
+  {
+    "path": "calculation_evidence\\lo_profile\\user\\extensions\\bundled\\registry\\com.sun.star.comp.deployment.script.PackageRegistryBackend\\backenddb.xml",
+    "bytes": 240
+  },
+  {
+    "path": "calculation_evidence\\lo_profile\\user\\extensions\\shared\\lastsynchronized",
+    "bytes": 1
+  },
+  {
+    "path": "calculation_evidence\\lo_profile\\user\\extensions\\shared\\registry\\com.sun.star.comp.deployment.configuration.PackageRegistryBackend\\backenddb.xml",
+    "bytes": 135
+  },
+  {
+    "path": "calculation_evidence\\lo_profile\\user\\extensions\\shared\\registry\\com.sun.star.comp.deployment.help.PackageRegistryBackend\\backenddb.xml",
+    "bytes": 117
+  },
+  {
+    "path": "calculation_evidence\\lo_profile\\user\\extensions\\tmp\\registry\\com.sun.star.comp.deployment.configuration.PackageRegistryBackend\\backenddb.xml",
+    "bytes": 135
+  },
+  {
+    "path": "calculation_evidence\\lo_profile\\user\\extensions\\tmp\\registry\\com.sun.star.comp.deployment.help.PackageRegistryBackend\\backenddb.xml",
+    "bytes": 117
+  },
+  {
+    "path": "calculation_evidence\\lo_profile\\user\\gallery\\sg30.sdv",
+    "bytes": 2048
+  },
+  {
+    "path": "calculation_evidence\\lo_profile\\user\\gallery\\sg30.thm",
+    "bytes": 565
+  },
+  {
+    "path": "calculation_evidence\\lo_profile\\user\\pack\\autotext\\mytexts.pack",
+    "bytes": 404
+  },
+  {
+    "path": "calculation_evidence\\lo_profile\\user\\pack\\basic\\dialog.pack",
+    "bytes": 238
+  },
+  {
+    "path": "calculation_evidence\\lo_profile\\user\\pack\\basic\\script.pack",
+    "bytes": 238
+  },
+  {
+    "path": "calculation_evidence\\lo_profile\\user\\pack\\basic\\Standard\\dialog.pack",
+    "bytes": 220
+  },
+  {
+    "path": "calculation_evidence\\lo_profile\\user\\pack\\basic\\Standard\\Module1.pack",
+    "bytes": 644
+  },
+  {
+    "path": "calculation_evidence\\lo_profile\\user\\pack\\basic\\Standard\\script.pack",
+    "bytes": 241
+  },
+  {
+    "path": "calculation_evidence\\lo_profile\\user\\pack\\config\\autotbl.pack",
+    "bytes": 1780
+  },
+  {
+    "path": "calculation_evidence\\lo_profile\\user\\pack\\database\\biblio\\biblio.pack",
+    "bytes": 2147
+  },
+  {
+    "path": "calculation_evidence\\lo_profile\\user\\pack\\database\\biblio.pack",
+    "bytes": 2432
+  },
+  {
+    "path": "calculation_evidence\\lo_profile\\user\\pack\\database\\evolocal.pack",
+    "bytes": 1203
+  },
+  {
+    "path": "calculation_evidence\\lo_profile\\user\\pack\\ExtensionInfo.pack",
+    "bytes": 83
+  },
+  {
+    "path": "calculation_evidence\\lo_profile\\user\\pack\\registrymodifications.pack",
+    "bytes": 1667
+  },
+  {
+    "path": "calculation_evidence\\lo_profile\\user\\registrymodifications.xcu",
+    "bytes": 3836
+  },
+  {
+    "path": "calculation_evidence\\lo_profile\\user\\uno_packages\\cache\\registry\\com.sun.star.comp.deployment.configuration.PackageRegistryBackend\\backenddb.xml",
+    "bytes": 135
+  },
+  {
+    "path": "calculation_evidence\\lo_profile\\user\\uno_packages\\cache\\registry\\com.sun.star.comp.deployment.help.PackageRegistryBackend\\backenddb.xml",
+    "bytes": 117
+  },
+  {
+    "path": "in_place_run_manifest.json",
+    "bytes": 6802
+  },
+  {
+    "path": "source_page_images\\page-001.png",
+    "bytes": 171530
+  },
+  {
+    "path": "source_page_images\\page-002.png",
+    "bytes": 202377
+  },
+  {
+    "path": "source_page_images\\page-003.png",
+    "bytes": 114024
+  },
+  {
+    "path": "source_page_images\\page-004.png",
+    "bytes": 365112
+  },
+  {
+    "path": "source_page_images\\page-005.png",
+    "bytes": 268486
+  },
+  {
+    "path": "source_page_images\\page-006.png",
+    "bytes": 327794
+  },
+  {
+    "path": "source_page_images\\page-007.png",
+    "bytes": 319633
+  },
+  {
+    "path": "source_page_images\\page-008.png",
+    "bytes": 247584
+  },
+  {
+    "path": "source_page_images\\page-009.png",
+    "bytes": 178173
+  },
+  {
+    "path": "source_page_images\\page-010.png",
+    "bytes": 265917
+  },
+  {
+    "path": "source_page_images\\page-011.png",
+    "bytes": 300574
+  },
+  {
+    "path": "source_page_images\\page-012.png",
+    "bytes": 206589
+  },
+  {
+    "path": "source_page_images\\page-013.png",
+    "bytes": 407103
+  },
+  {
+    "path": "source_page_images\\page-014.png",
+    "bytes": 193161
+  },
+  {
+    "path": "source_page_images\\page-015.png",
+    "bytes": 263189
+  },
+  {
+    "path": "source_page_images\\page-016.png",
+    "bytes": 220823
+  },
+  {
+    "path": "source_page_images\\page-017.png",
+    "bytes": 192556
+  },
+  {
+    "path": "source_page_images\\page-018.png",
+    "bytes": 336689
+  },
+  {
+    "path": "source_page_images\\page-019.png",
+    "bytes": 270756
+  },
+  {
+    "path": "source_page_images\\page-020.png",
+    "bytes": 682578
+  },
+  {
+    "path": "source_page_images\\page-021.png",
+    "bytes": 196926
+  },
+  {
+    "path": "source_page_images\\page-022.png",
+    "bytes": 371782
+  },
+  {
+    "path": "source_page_images\\page-023.png",
+    "bytes": 1207815
+  },
+  {
+    "path": "source_page_images\\page-024.png",
+    "bytes": 252239
+  },
+  {
+    "path": "source_page_images\\page-025.png",
+    "bytes": 365344
+  },
+  {
+    "path": "source_page_images\\page-026.png",
+    "bytes": 349618
+  },
+  {
+    "path": "source_page_images\\page-027.png",
+    "bytes": 254079
+  },
+  {
+    "path": "source_page_images\\page-028.png",
+    "bytes": 303233
+  },
+  {
+    "path": "source_page_images\\page-029.png",
+    "bytes": 404494
+  },
+  {
+    "path": "source_page_images\\page-030.png",
+    "bytes": 400679
+  },
+  {
+    "path": "source_page_images\\page-031.png",
+    "bytes": 307704
+  },
+  {
+    "path": "source_page_images\\page-032.png",
+    "bytes": 264321
+  },
+  {
+    "path": "source_page_images\\page-033.png",
+    "bytes": 630032
+  },
+  {
+    "path": "source_page_images\\page-034.png",
+    "bytes": 340238
+  },
+  {
+    "path": "source_page_images\\page-035.png",
+    "bytes": 336792
+  },
+  {
+    "path": "source_page_images\\page-036.png",
+    "bytes": 318091
+  },
+  {
+    "path": "source_page_images\\page-037.png",
+    "bytes": 291929
+  },
+  {
+    "path": "source_page_images\\page-038.png",
+    "bytes": 392031
+  },
+  {
+    "path": "source_page_images\\page-039.png",
+    "bytes": 342502
+  },
+  {
+    "path": "source_page_images\\page-040.png",
+    "bytes": 278292
+  },
+  {
+    "path": "source_page_images\\page-041.png",
+    "bytes": 223061
+  },
+  {
+    "path": "source_page_images\\page-042.png",
+    "bytes": 237294
+  },
+  {
+    "path": "source_page_images\\page-043.png",
+    "bytes": 337853
+  },
+  {
+    "path": "source_page_images\\page-044.png",
+    "bytes": 242182
+  },
+  {
+    "path": "source_page_images\\page-045.png",
+    "bytes": 229951
+  },
+  {
+    "path": "source_page_images\\page-046.png",
+    "bytes": 239757
+  },
+  {
+    "path": "source_page_images\\page-047.png",
+    "bytes": 282838
+  },
+  {
+    "path": "source_page_images\\page-048.png",
+    "bytes": 230645
+  },
+  {
+    "path": "source_page_images\\page-049.png",
+    "bytes": 317848
+  },
+  {
+    "path": "source_page_images\\page-050.png",
+    "bytes": 219647
+  },
+  {
+    "path": "source_page_images\\page-051.png",
+    "bytes": 319086
+  },
+  {
+    "path": "source_page_images\\page-052.png",
+    "bytes": 262484
+  },
+  {
+    "path": "source_page_images\\page-053.png",
+    "bytes": 303122
+  },
+  {
+    "path": "source_page_images\\page-054.png",
+    "bytes": 291963
+  },
+  {
+    "path": "source_page_images\\page-055.png",
+    "bytes": 291737
+  },
+  {
+    "path": "source_page_images\\page-056.png",
+    "bytes": 323963
+  },
+  {
+    "path": "source_page_images\\page-057.png",
+    "bytes": 339014
+  },
+  {
+    "path": "source_page_images\\page-058.png",
+    "bytes": 265247
+  },
+  {
+    "path": "source_page_images\\page-059.png",
+    "bytes": 263997
+  },
+  {
+    "path": "source_page_images\\page-060.png",
+    "bytes": 264944
+  },
+  {
+    "path": "source_page_images\\page-061.png",
+    "bytes": 229154
+  },
+  {
+    "path": "source_page_images\\page-062.png",
+    "bytes": 254013
+  },
+  {
+    "path": "source_page_images\\page-063.png",
+    "bytes": 265751
+  },
+  {
+    "path": "source_page_images\\page-064.png",
+    "bytes": 292435
+  },
+  {
+    "path": "source_page_images\\page-065.png",
+    "bytes": 311461
+  },
+  {
+    "path": "source_page_images\\page-066.png",
+    "bytes": 278100
+  },
+  {
+    "path": "source_page_images\\page-067.png",
+    "bytes": 306906
+  },
+  {
+    "path": "source_page_images\\page-068.png",
+    "bytes": 277034
+  },
+  {
+    "path": "source_page_images\\page-069.png",
+    "bytes": 389468
+  },
+  {
+    "path": "source_page_images\\page-070.png",
+    "bytes": 280858
+  },
+  {
+    "path": "source_page_images\\page-071.png",
+    "bytes": 329829
+  },
+  {
+    "path": "source_page_images\\page-072.png",
+    "bytes": 340454
+  },
+  {
+    "path": "source_page_images\\page-073.png",
+    "bytes": 319497
+  },
+  {
+    "path": "source_page_images\\page-074.png",
+    "bytes": 314856
+  },
+  {
+    "path": "source_page_images\\page-075.png",
+    "bytes": 191271
+  },
+  {
+    "path": "source_page_images\\page-076.png",
+    "bytes": 277547
+  },
+  {
+    "path": "source_page_images\\page-077.png",
+    "bytes": 257767
+  },
+  {
+    "path": "source_page_images\\page-078.png",
+    "bytes": 264348
+  },
+  {
+    "path": "source_page_images\\page-079.png",
+    "bytes": 215898
+  },
+  {
+    "path": "source_page_images\\page-080.png",
+    "bytes": 230510
+  },
+  {
+    "path": "source_page_images\\page-081.png",
+    "bytes": 235846
+  },
+  {
+    "path": "source_page_images\\page-082.png",
+    "bytes": 185725
+  },
+  {
+    "path": "source_page_images\\page-083.png",
+    "bytes": 230855
+  },
+  {
+    "path": "source_page_images\\page-084.png",
+    "bytes": 231620
+  },
+  {
+    "path": "source_page_images\\page-085.png",
+    "bytes": 269273
+  },
+  {
+    "path": "source_page_images\\page-086.png",
+    "bytes": 279904
+  },
+  {
+    "path": "source_page_images\\page-087.png",
+    "bytes": 348384
+  },
+  {
+    "path": "source_page_images\\page-088.png",
+    "bytes": 284798
+  },
+  {
+    "path": "source_page_images\\page-089.png",
+    "bytes": 224368
+  },
+  {
+    "path": "source_page_images\\page-090.png",
+    "bytes": 134729
+  },
+  {
+    "path": "source_page_images\\page-091.png",
+    "bytes": 192512
+  },
+  {
+    "path": "source_page_images\\page-092.png",
+    "bytes": 229049
+  },
+  {
+    "path": "source_page_images\\page-093.png",
+    "bytes": 166245
+  },
+  {
+    "path": "source_page_images\\page-094.png",
+    "bytes": 186580
+  },
+  {
+    "path": "source_page_images\\page-095.png",
+    "bytes": 224768
+  },
+  {
+    "path": "source_page_images\\page-096.png",
+    "bytes": 214801
+  },
+  {
+    "path": "source_page_images\\page-097.png",
+    "bytes": 275510
+  },
+  {
+    "path": "source_page_images\\page-098.png",
+    "bytes": 278788
+  },
+  {
+    "path": "source_page_images\\page-099.png",
+    "bytes": 221066
+  },
+  {
+    "path": "source_page_images\\page-100.png",
+    "bytes": 211749
+  },
+  {
+    "path": "source_page_images\\page-101.png",
+    "bytes": 229370
+  },
+  {
+    "path": "source_page_images\\page-102.png",
+    "bytes": 268804
+  },
+  {
+    "path": "source_page_images\\page-103.png",
+    "bytes": 193767
+  },
+  {
+    "path": "source_page_images\\page-104.png",
+    "bytes": 169071
+  },
+  {
+    "path": "source_page_images\\page-105.png",
+    "bytes": 200778
+  },
+  {
+    "path": "source_page_images\\page-106.png",
+    "bytes": 339524
+  },
+  {
+    "path": "source_page_images\\page-107.png",
+    "bytes": 311762
+  },
+  {
+    "path": "source_page_images\\page-108.png",
+    "bytes": 254481
+  },
+  {
+    "path": "source_page_images\\page-109.png",
+    "bytes": 218848
+  },
+  {
+    "path": "source_page_images\\page-110.png",
+    "bytes": 243383
+  },
+  {
+    "path": "source_page_images\\page-111.png",
+    "bytes": 236267
+  },
+  {
+    "path": "source_page_images\\page-112.png",
+    "bytes": 224840
+  },
+  {
+    "path": "source_page_images\\page-113.png",
+    "bytes": 260809
+  },
+  {
+    "path": "source_page_images\\page-114.png",
+    "bytes": 241682
+  },
+  {
+    "path": "source_page_images\\page-115.png",
+    "bytes": 281068
+  },
+  {
+    "path": "source_page_images\\page-116.png",
+    "bytes": 228429
+  },
+  {
+    "path": "source_page_images\\page-117.png",
+    "bytes": 236742
+  },
+  {
+    "path": "source_page_images\\page-118.png",
+    "bytes": 206254
+  },
+  {
+    "path": "source_page_images\\page-119.png",
+    "bytes": 287167
+  },
+  {
+    "path": "source_page_images\\page-120.png",
+    "bytes": 254669
+  },
+  {
+    "path": "source_page_images\\page-121.png",
+    "bytes": 250303
+  },
+  {
+    "path": "source_page_images\\page-122.png",
+    "bytes": 247473
+  },
+  {
+    "path": "source_page_images\\page-123.png",
+    "bytes": 191453
+  },
+  {
+    "path": "source_page_images\\page-124.png",
+    "bytes": 231830
+  },
+  {
+    "path": "source_page_images\\page-125.png",
+    "bytes": 293112
+  },
+  {
+    "path": "source_page_images\\page-126.png",
+    "bytes": 359438
+  },
+  {
+    "path": "source_page_images\\page-127.png",
+    "bytes": 336029
+  },
+  {
+    "path": "source_page_images\\page-128.png",
+    "bytes": 355498
+  },
+  {
+    "path": "source_page_images\\page-129.png",
+    "bytes": 286390
+  },
+  {
+    "path": "source_page_images\\page-130.png",
+    "bytes": 338812
+  },
+  {
+    "path": "source_page_images\\page-131.png",
+    "bytes": 302693
+  },
+  {
+    "path": "source_page_images\\page-132.png",
+    "bytes": 84886
+  },
+  {
+    "path": "source_page_images\\page-133.png",
+    "bytes": 1274398
+  },
+  {
+    "path": "source_page_images\\page-134.png",
+    "bytes": 1245898
+  },
+  {
+    "path": "source_page_images\\page-135.png",
+    "bytes": 398235
+  },
+  {
+    "path": "source_page_images\\page-136.png",
+    "bytes": 230475
+  },
+  {
+    "path": "source_page_images\\page-137.png",
+    "bytes": 248475
+  },
+  {
+    "path": "source_page_images\\page-138.png",
+    "bytes": 76948
+  },
+  {
+    "path": "source_page_images\\page-139.png",
+    "bytes": 131981
+  }
+]

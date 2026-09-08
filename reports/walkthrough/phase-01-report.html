@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Phase 1 Report — Repository Lane on Inegol (VCS 3908)</title>
+<style>
+body { font-family: sans-serif; max-width: 960px; margin: 2em auto; padding: 0 1em; color: #222; }
+h1 { font-size: 1.5em; } h2 { font-size: 1.2em; border-bottom: 1px solid #ccc; padding-bottom: .2em; }
+table { border-collapse: collapse; margin: 1em 0; } th, td { border: 1px solid #bbb; padding: 4px 10px; text-align: left; }
+th { background: #f0f0f0; } code { background: #f5f5f5; padding: 1px 4px; }
+.pass { color: #0a0; font-weight: bold; } .warn { color: #a60; font-weight: bold; }
+pre { background: #f5f5f5; padding: 8px; overflow-x: auto; font-size: .85em; }
+.meta { color: #555; }
+</style>
+</head>
+<body>
+<h1>Phase 1 Report — Capture the Repository Lane on Inegol (VCS 3908)</h1>
+<p class="meta">Plan: <code>plans/2026-09-08-pdd-process-walkthrough-plan.md</code> PHASE-01 &nbsp;|&nbsp; Generated 2026-09-08 &nbsp;|&nbsp; Commit <code>6731685</code> &nbsp;|&nbsp; Providers: <code>noop</code> + <code>demo</code> only</p>
+
+<h2>Environment (TASK-01-02)</h2>
+<table>
+<tr><th>Item</th><th>Value</th></tr>
+<tr><td>Python</td><td>3.13.12 (MSC v.1944 64-bit)</td></tr>
+<tr><td>Platform</td><td>Windows-11-10.0.26200-SP0</td></tr>
+<tr><td>Test suite (<code>-m "not corpus"</code>)</td><td class="pass">960 passed, 7 deselected, 2 xfailed in 120.40s — matches baseline</td></tr>
+</table>
+
+<h2>Retrieval index (TASK-01-03)</h2>
+<table>
+<tr><th>Metric</th><th>Value</th></tr>
+<tr><td>DB</td><td><code>data/index/corpus.fts.db</code> (prebuilt, no demo-setup needed)</td></tr>
+<tr><td>Total rows / distinct texts</td><td>2545 / 2492 (dup rate 0.021)</td></tr>
+<tr><td>Documents</td><td>13</td></tr>
+<tr><td>Reachable rows / documents</td><td>891 / 13</td></tr>
+<tr><td>Missing documents</td><td>4 (Bergama monitoring report, DraftProjectDescription, EB111_repan07_ACM0022_v03.0, HEREKO v4.1)</td></tr>
+</table>
+<p><span class="warn">Finding F-1:</span> <code>index-report --json</code> wraps the JSON payload with structlog log lines on stdout (header + footer), so consumers must strip non-JSON lines before parsing.</p>
+
+<h2>Calculation (TASK-01-04)</h2>
+<table>
+<tr><th>Metric</th><th>Value</th></tr>
+<tr><td>Methodology</td><td>ACM0022</td></tr>
+<tr><td>Baseline / Project / Leakage</td><td>59,335.71 / 8,645.23 / 0.00 tCO2e/year</td></tr>
+<tr><td>Net reductions (year 1)</td><td>50,690.48 tCO2e/year</td></tr>
+<tr><td>Crediting-period total (7y)</td><td class="pass">893,441.43 tCO2e</td></tr>
+<tr><td>Components</td><td>10 (BE_CH4 32,320.71; BE_EC 27,015.01; PE_CH4 8,645.23; rest 0.00)</td></tr>
+<tr><td>Warning</td><td><code>calc_climate_zone_resolved: zone=boreal_temperate_wet derived=True</code></td></tr>
+</table>
+
+<h2>Draft / Review / Export (TASK-01-05..08)</h2>
+<table>
+<tr><th>Lane</th><th>Draft</th><th>Review state</th><th>Export</th><th>DOCX</th></tr>
+<tr><td><code>noop</code> (walkthrough-inegol-noop)</td><td>4.374s, rc 0, 36 sections</td><td>needs-domain-review</td><td>unforced BLOCKED (exit 0); <code>--force</code> ok, DRAFT watermark</td><td>234,032 B</td></tr>
+<tr><td><code>demo</code> (walkthrough-inegol-demo)</td><td>3.442s, rc 0, 36 sections</td><td>ready-for-human-edit</td><td>unforced ok (force=False)</td><td>232,762 B</td></tr>
+</table>
+<p>Noop block reason: <code>[1.10↔4.4]</code> net-value mismatch + <code>[4.1/4.2↔4.4]</code> calc error (placeholder arithmetic, expected).</p>
+<p><span class="warn">Finding F-2:</span> blocked <code>export</code> still exits 0 — automation must parse output text, not the exit code, to detect the block.</p>
+
+<h2>Confidence</h2>
+<table>
+<tr><th>Lane</th><th>Confidence</th><th>Criterion</th></tr>
+<tr><td>noop</td><td class="pass">36/36 UNSUPPORTED</td><td>all UNSUPPORTED</td></tr>
+<tr><td>demo</td><td class="pass">36/36 HIGH</td><td>&ge;30 HIGH</td></tr>
+</table>
+
+<h2>Published packages (TASK-01-09)</h2>
+<table>
+<tr><th>Lane</th><th>Package dir</th><th>manifest.json</th></tr>
+<tr><td>review (noop)</td><td><code>reports/review-packages/inegol-integrated-solid-waste-storage-and-disposal-facility/walkthrough-inegol-noop</code></td><td class="pass">yes</td></tr>
+<tr><td>demo</td><td><code>reports/demo-packages/inegol-integrated-solid-waste-storage-and-disposal-facility/walkthrough-inegol-demo</code></td><td class="pass">yes</td></tr>
+</table>
+<p><span class="warn">Finding F-3:</span> <code>publish_review_package / publish_demo_package</code> raise <code>PermissionError</code> when passed <code>Path("")</code> (resolves to <code>.</code>); unpublished slots were recorded with an absent-path sentinel instead. Latent bug also present in <code>publish_docx_run_for_review</code>.</p>
+
+<h2>Exit criteria</h2>
+<table>
+<tr><th>Criterion</th><th>Result</th></tr>
+<tr><td>calc total prints 893441.43</td><td class="pass">PASS</td></tr>
+<tr><td>noop run JSON exists, 36 sections</td><td class="pass">PASS</td></tr>
+<tr><td>demo run JSON exists, 36 sections</td><td class="pass">PASS</td></tr>
+<tr><td>both DOCX exist, &gt;20,000 bytes</td><td class="pass">PASS (234,032 / 232,762)</td></tr>
+<tr><td>packages.json names one dir per area, both have manifest.json</td><td class="pass">PASS</td></tr>
+<tr><td>noop all UNSUPPORTED; &ge;30 demo HIGH</td><td class="pass">PASS (36 / 36)</td></tr>
+</table>
+
+<h2>Raw captures</h2>
+<p>All evidence under <code>reports/walkthrough/raw/</code>: <code>environment.txt</code>, <code>index-report.json</code>, <code>calc-inegol.json/.txt</code>, <code>draft-noop.json</code>, <code>draft-demo.json</code>, <code>review-noop.txt</code>, <code>review-demo.txt</code>, <code>export-noop-unforced.txt</code>, <code>export-noop-forced.txt</code>, <code>export-demo.txt</code>, <code>packages.json</code>. No existing source file modified.</p>
+</body>
+</html>

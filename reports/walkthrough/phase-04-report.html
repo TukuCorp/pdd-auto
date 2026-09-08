@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Phase 4 Report — Interactive Walkthrough Page</title>
+<style>
+body { font-family: sans-serif; max-width: 960px; margin: 2em auto; padding: 0 1em; color: #222; }
+h1 { font-size: 1.5em; } h2 { font-size: 1.2em; border-bottom: 1px solid #ccc; padding-bottom: .2em; }
+table { border-collapse: collapse; margin: 1em 0; } th, td { border: 1px solid #bbb; padding: 4px 10px; text-align: left; }
+th { background: #f0f0f0; } code { background: #f5f5f5; padding: 1px 4px; }
+.pass { color: #0a0; font-weight: bold; } .warn { color: #a60; font-weight: bold; }
+pre { background: #f5f5f5; padding: 8px; overflow-x: auto; font-size: .85em; }
+.meta { color: #555; }
+</style>
+</head>
+<body>
+<h1>Phase 4 Report — Interactive Walkthrough Page (14 Screens)</h1>
+<p class="meta">Plan: <code>plans/2026-09-08-pdd-process-walkthrough-plan.md</code> PHASE-04 &nbsp;|&nbsp; Generated 2026-09-09 &nbsp;|&nbsp; Page <code>reports/walkthrough/pdd-walkthrough.html</code> (113,859 B)</p>
+
+<h2>Template (TASK-04-01..09)</h2>
+<p><code>reports/walkthrough/template.html</code> (34 KB): standalone document, inline style + script, zero external resources, one <code>__EVIDENCE_JSON__</code> token. All 14 screens driven by the bundle; per-screen order title → domain details → predict (lock/skip) → reveal (two lanes) → non-collapsible reality band → 4-axis judge → gated Next. Screen 04 renders the S1 equation chain with live calc values + year-one callout; screen 07 renders twin 36-cell confidence grids plus the four focus subsections (demo lane labelled synthetic throughout); screen 13 aggregates per S2 (unweighted + weighted means, span≥3 divergence list) into a Markdown brief with <code>execCommand</code> copy. State persists under <code>pdd-walkthrough-v1</code> with try/catch + read-only banner, plus JSON export/import. Lanes stack below 900 px.</p>
+<p><span class="warn">Finding F-9:</span> two template defects caught before render — a spaced <code>function kv rows</code> identifier and a duplicated <code>innerHTML</code> assignment from overlapping edits. Both fixed; page JS passes <code>node --check</code>.</p>
+
+<h2>Renderer + tests (TASK-04-10/11)</h2>
+<p><code>scripts/render_walkthrough.py</code>: <code>escape_for_script</code> (<code>&lt;/</code> → <code>&lt;\/</code>), <code>render</code> (exactly-once token enforcement), <code>main()</code>. <code>tests/test_walkthrough_render.py</code>: 6 tests (escape, token replace, missing/duplicate token errors, verbatim Türkiye/İnegöl). Combined walkthrough suite: <b>14/14 pass</b>. <code>ruff check</code> clean on both new files.</p>
+
+<h2>Browser verification (real Chromium, sessions brisk-sparrow-073)</h2>
+<table>
+<tr><th>Check</th><th>Result</th></tr>
+<tr><td>Screen 00 renders gated (Next disabled, reveal hidden)</td><td class="pass">PASS</td></tr>
+<tr><td>Lock prediction → reveal appears, Next enables</td><td class="pass">PASS</td></tr>
+<tr><td>Screen 04: equation chain, 893,441.43 total, 50,690.48→193,891.69 schedule, climate warning</td><td class="pass">PASS</td></tr>
+<tr><td>Screen 07: 72 grid cells, 36 noop UNSUPPORTED, 9 synthetic labels</td><td class="pass">PASS</td></tr>
+<tr><td>Screen 13: brief with means, bias caution, both follow-ups; copy click clean</td><td class="pass">PASS</td></tr>
+<tr><td>Full 00→13 pass through real Next/predict/judge clicks (9 gated steps)</td><td class="pass">PASS</td></tr>
+</table>
+
+<h2>Exit criteria</h2>
+<table>
+<tr><th>Criterion</th><th>Result</th></tr>
+<tr><td>renderer exits 0</td><td class="pass">PASS</td></tr>
+<tr><td>page &lt; 5 MB (113,859 B)</td><td class="pass">PASS</td></tr>
+<tr><td>0 external src/href references</td><td class="pass">PASS</td></tr>
+<tr><td>no token remnant, İnegöl verbatim</td><td class="pass">PASS</td></tr>
+<tr><td>render tests pass (6/6)</td><td class="pass">PASS</td></tr>
+<tr><td>screen 00 + screen 04 browser checks</td><td class="pass">PASS (above)</td></tr>
+<tr><td>deterministic re-render (identical SHA-256)</td><td class="pass">PASS <code>ebe8fd57…</code></td></tr>
+</table>
+</body>
+</html>

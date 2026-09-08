@@ -1,0 +1,7 @@
+{
+  "seconds": 224.213,
+  "returncode": 0,
+  "stdout": "{\n  \"docx\": \"C:\\\\t3908\\\\job\\\\3908_PDD_in_place_Codex.docx\",\n  \"pdf\": \"C:\\\\t3908\\\\job\\\\3908_PDD_in_place_Codex.pdf\",\n  \"source_pages\": 139,\n  \"calculation_pdfs\": [\n    \"C:\\\\t3908\\\\job\\\\calculation_evidence\\\\ER Calculation.v04_21.07.2025.pdf\",\n    \"C:\\\\t3908\\\\job\\\\calculation_evidence\\\\Inegol IRR_R5_22.08.2025.pdf\",\n    \"C:\\\\t3908\\\\job\\\\calculation_evidence\\\\INEGOL_CPA_R3_21.07.2025.pdf\"\n  ]\n}\n",
+  "stderr": "",
+  "python": "3.13.12 (main, Mar  3 2026, 15:00:12) [MSC v.1944 64 bit (AMD64)]"
+}

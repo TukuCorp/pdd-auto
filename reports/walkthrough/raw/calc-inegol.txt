@@ -1,0 +1,36 @@
+Methodology: ACM0022
+Baseline emissions: 59,335.71 tCO2e/year
+Project emissions: 8,645.23 tCO2e/year
+Leakage: 0.00 tCO2e/year
+Net emission reductions: 50,690.48 tCO2e/year
+Crediting period total: 893,441.43 tCO2e (7 years)
+
+Components (10):
+  - BE_CH4 (methane from SWDS): 32,320.71 tCO2e/year — ACM0022 Eq.1 + Tool 04 Eq.2
+  - BE_EC (displaced grid electricity): 27,015.01 tCO2e/year — ACM0022 Eq.13 + Tool 05 Eq.2
+  - PE_EC (grid electricity consumed): 0.00 tCO2e/year — Tool 05 Eq.1
+  - PE_FC (fossil fuel combustion): 0.00 tCO2e/year — Tool 03 Eq.1
+  - PE_CH4 (AD methane leakage): 8,645.23 tCO2e/year — Tool 14 Eq.4
+  - PE_COM_CO2 (fossil carbon in combusted waste): 0.00 tCO2e/year — ACM0022 Eq.22
+  - PE_COM_CH4_N2O (combustion CH4+N2O): 0.00 tCO2e/year — ACM0022 Eq.27
+  - PE_WW (run-off wastewater): 0.00 tCO2e/year — ACM0022 Eq.28
+  - LE_RDF (RDF end-use): 0.00 tCO2e/year — ACM0022 Eq.34
+  - LE_AD (digestate storage): 0.00 tCO2e/year — Tool 14 Eq.5
+
+Monitoring parameters: 4
+  - ACM0022-PARAM-01: Annual waste throughput (tonnes/year, Continuously)
+  - ACM0022-PARAM-02: Biogas methane concentration (% CH4, Monthly or per batch)
+  - ACM0022-PARAM-03: Recovered electricity (MWh/year, Continuously)
+  - ACM0022-PARAM-04: Grid emission factor (tCO2e/MWh, Annual update)
+
+Annual schedule (7 years):
+Year 1: 50,690.48 tCO2e
+Year 2: 80,229.38 tCO2e
+Year 3: 107,225.90 tCO2e
+Year 4: 131,898.87 tCO2e
+Year 5: 154,448.26 tCO2e
+Year 6: 175,056.85 tCO2e
+Year 7: 193,891.69 tCO2e
+
+Warnings (1):
+  - calc_climate_zone_resolved: zone=boreal_temperate_wet derived=True

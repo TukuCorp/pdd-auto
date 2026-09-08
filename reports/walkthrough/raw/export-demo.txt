@@ -1,0 +1,4 @@
+2026-09-08 12:20:39 [info     ] docx_exported                  path=C:\Users\tukum\Downloads\pdd-auto\data\runs\walkthrough-inegol-demo.docx run_id=walkthrough-inegol-demo
+2026-09-08 12:20:39 [info     ] docx_exported                  force=False path=C:\Users\tukum\Downloads\pdd-auto\data\runs\walkthrough-inegol-demo.docx
+2026-09-08 12:20:39 [info     ] export_complete                docx_path=C:\Users\tukum\Downloads\pdd-auto\data\runs\walkthrough-inegol-demo.docx pdf_path=None pdf_status=not_requested
+exit=0

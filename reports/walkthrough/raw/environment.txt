@@ -1,0 +1,11 @@
+=== python ===
+3.13.12 (main, Mar  3 2026, 15:00:12) [MSC v.1944 64 bit (AMD64)]
+Windows-11-10.0.26200-SP0
+=== pytest tail ===
+  C:\Users\tukum\Downloads\pdd-auto\.venv\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+===== 960 passed, 7 deselected, 2 xfailed, 1 warning in 120.40s (0:02:00) =====
+=== sha ===
+6731685195a0c3ec7d164d8b057e955e14c9e52d

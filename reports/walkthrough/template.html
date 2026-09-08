@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inegol PDD Walkthrough — Repository Pipeline vs Portable Workspace</title>
+<style>
+* { box-sizing: border-box; }
+body { font-family: sans-serif; max-width: 1020px; margin: 0 auto; padding: 0 1em 4em; color: #222; overflow-x: hidden; }
+h1 { font-size: 1.4em; } h2 { font-size: 1.2em; } h3 { font-size: 1.05em; }
+code { background: #f5f5f5; padding: 1px 4px; word-break: break-word; }
+pre, table { max-width: 100%; }
+pre { background: #f5f5f5; padding: 8px; overflow-x: auto; font-size: .82em; white-space: pre-wrap; }
+table { border-collapse: collapse; margin: 1em 0; display: block; overflow-x: auto; }
+th, td { border: 1px solid #bbb; padding: 4px 10px; text-align: left; vertical-align: top; }
+th { background: #f0f0f0; }
+.lanes { display: flex; gap: 1em; }
+.lane { flex: 1 1 0; min-width: 0; border: 1px solid #ccc; padding: .6em; }
+.lane h3 { margin-top: 0; }
+@media (max-width: 900px) { .lanes { flex-direction: column; } }
+.reality { background: #fff8e1; border: 1px solid #d4a017; padding: .6em; margin: 1em 0; }
+.reality h3 { margin: 0 0 .4em; }
+details.domain { background: #f0f6ff; border: 1px solid #9db8dd; padding: .4em .6em; margin: .6em 0; }
+details.domain summary { cursor: pointer; font-weight: bold; }
+.predict textarea, .judge textarea { width: 100%; min-height: 4em; }
+.judge table { display: table; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(88px, 1fr)); gap: 4px; margin: 1em 0; }
+.cell { border: 1px solid #999; padding: 4px; font-size: .75em; text-align: center; }
+.c-HIGH { background: #c8e6c9; } .c-MEDIUM { background: #fff9c4; }
+.c-LOW { background: #ffe0b2; } .c-UNSUPPORTED { background: #e0e0e0; }
+.stepbar { color: #555; margin: 1em 0; }
+button { margin: .3em .3em .3em 0; }
+.banner { background: #fce4ec; border: 1px solid #c62828; padding: .5em; margin: .5em 0; }
+.callout { background: #f3e5f5; border: 1px solid #7b1fa2; padding: .6em; margin: 1em 0; }
+#brief { width: 100%; min-height: 22em; font-family: monospace; font-size: .8em; }
+.hidden { display: none; }
+.axis-label { font-weight: bold; }
+footer { margin-top: 3em; color: #555; font-size: .85em; }
+</style>
+</head>
+<body>
+<h1>Inegol PDD Walkthrough — Repository Pipeline vs Portable Workspace</h1>
+<div id="storage-banner"></div>
+<div class="stepbar" id="stepbar"></div>
+<div id="screen"></div>
+<div id="nav"></div>
+<footer>
+<p>Evidence bundle <code id="bundle-meta"></code>. Regenerate with
+<code>PYTHONPATH= uv run --no-sync python scripts/build_walkthrough_evidence.py</code> then
+<code>PYTHONPATH= uv run --no-sync python scripts/render_walkthrough.py</code>.
+Both lanes ran without any model-backed provider. Prose quality is never compared.</p>
+</footer>
+<script type="application/json" id="evidence">__EVIDENCE_JSON__</script>
+<script>
+"use strict";
+var EV = JSON.parse(document.getElementById("evidence").textContent);
+var AXES = [
+  { key: "human_minutes", q: "Which track needs less skilled human time at this step?" },
+  { key: "cost", q: "Which track costs less in money or tokens at this step?" },
+  { key: "defensibility", q: "Which track's output at this step is easier to defend to a validation body?" },
+  { key: "failure_mode", q: "When this step goes wrong, which track fails more safely and more visibly?" }
+];
+var SCALE = [
+  { v: -2, label: "-2 = repository pipeline clearly better" },
+  { v: -1, label: "-1 = repository pipeline slightly better" },
+  { v: 0, label: "0 = no meaningful difference" },
+  { v: 1, label: "+1 = portable-workspace track slightly better" },
+  { v: 2, label: "+2 = portable-workspace track clearly better" }
+];
+var NEVER_AUTO = ["3.4", "3.5", "1.13", "4.1", "4.4"];
+
+function esc(s) {
+  return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+function fmt(n, d) {
+  if (n == null || isNaN(n)) return "n/a";
+  return Number(n).toLocaleString("en-US", { minimumFractionDigits: d == null ? 2 : d, maximumFractionDigits: d == null ? 2 : d });
+}
+function components() { return (EV.repo_lane.calc && EV.repo_lane.calc.components) || []; }
+function compVal(prefix) {
+  var c = components();
+  for (var i = 0; i < c.length; i++) if (c[i].name.indexOf(prefix) === 0) return c[i].value_tco2e;
+  return null;
+}
+function realityHtml(ids) {
+  var out = '<div class="reality"><h3>Reality check</h3><ul>';
+  ids.forEach(function (id) {
+    var r = null;
+    EV.reality_checks.forEach(function (c) { if (c.id === id) r = c; });
+    if (r) out += "<li><b>" + esc(r.claim) + "</b><br>" + esc(r.truth) + " <i>[" + esc(r.severity) + "]</i></li>";
+  });
+  return out + "</ul></div>";
+}
+function lanesHtml(leftTitle, leftHtml, rightTitle, rightHtml) {
+  return '<div class="lanes"><div class="lane"><h3>' + esc(leftTitle) + '</h3>' + leftHtml +
+    '</div><div class="lane"><h3>' + esc(rightTitle) + '</h3>' + rightHtml + "</div></div>";
+}
+function kvrows(o) {
+  var h = "<table>";
+  Object.keys(o).forEach(function (k) { h += "<tr><th>" + esc(k) + "</th><td>" + o[k] + "</td></tr>"; });
+  return h + "</table>";
+}
+
+/* ---------- per-screen reveal renderers (repo lane vs workspace lane) ---------- */
+var REVEAL = {
+  "00": function () {
+    var p = EV.project, e = EV.environment;
+    var left = kvrows({
+      "Project": esc(p.project_name) + " (VCS " + esc(p.vcs_id) + ")",
+      "Methodology": esc((p.methodology_ids || []).join(", ")),
+      "Capacity": esc(p.installed_capacity_mw) + " MW, " + esc(p.country),
+      "Pipeline state": "36 noop placeholders + 36 synthetic demo sections, calc 893,441.43 tCO2e / 7y",
+      "Environment": esc(e.python) + ", " + esc(e.platform) + ", " + esc(e.commit || "")
+    });
+    var t = EV.tinh_lane;
+    var right = kvrows({
+      "Evidence grade": esc(t.evidence_grade) + " — " + esc(t.evidence_grade_note),
+      "Packaging": "560-page merged PDF in " + esc(t.timing_seconds) + "s wall clock",
+      "Authoring": "documented_only — never executed on this machine",
+      "Tools": esc(t.tools.pdftoppm_version || "") + " + LibreOffice"
+    });
+    return lanesHtml("Repository pipeline (measured)", left, "Portable workspace (mixed)", right);
+  },
+  "01": function () {
+    var c = EV.repo_lane.corpus_index || {};
+    var rows = (c.rows_by_document || {});
+    var h = "<table><tr><th>Document</th><th>Rows</th></tr>";
+    Object.keys(rows).forEach(function (d) { h += "<tr><td>" + esc(d) + "</td><td>" + rows[d] + "</td></tr>"; });
+    var left = "<p>" + (c.total_rows || "?") + " headline rows, " + (c.reachable_rows || "?") +
+      " reachable, " + (c.documents || "?") + " documents (" + (c.reachable_documents || "?") + " reachable).</p>" + h +
+      "<p>Missing: " + esc((c.missing_documents || []).join("; ")) + "</p>";
+    var right = "<p>The workspace carries no FTS index. Its corpus is a folder of PDFs, DOCX workbooks and the " +
+      "Verra template read in place by the authoring task, inventoried per-file with SHA-256 (14 files for 3908).</p>" +
+      "<p>Retrieval precedent: none — grounding is by direct citation (PDF page / worksheet cell), not by search.</p>";
+    return lanesHtml("Repository: FTS index (measured)", left, "Workspace: file inventory (measured inputs)", right);
+  },
+  "02": function () {
+    var p = EV.project, inp = EV.repo_lane.intake || {};
+    var left = kvrows({
+      "Input file": esc(String(inp.input_file || "").split(/[/\\\\]/).pop()),
+      "Project": esc(p.project_name),
+      "City": esc(p.city) + ", " + esc(p.country),
+      "Evidence registry": esc(p.has_evidence_registry),
+      "Assumptions file": esc(p.has_assumptions_file)
+    });
+    var right = "<p>Stage 00_INPUT inventories and hashes supplied files without changing them, assigning one " +
+      "authority role each (project_input / example / methodology / tool / template).</p>" +
+      "<p>Project inputs may be YAML, JSON, PDF, Word, Excel, CSV, text, KML/KMZ or a mixed folder. " +
+      "No normalized-facts YAML is created.</p>";
+    return lanesHtml("Repository: ProjectInput YAML (measured)", left, "Workspace: 00_INPUT manifest (executed)", right);
+  },
+  "03": function () {
+    var s = EV.repo_lane.screening || {};
+    var left = kvrows({
+      "Methodology": esc(s.methodology_id), "Engine": esc(s.engine), "Family": esc(s.family_slug)
+    }) + "<p>Methodology rules from <code>rules/verra/wte_methodology_rules.yaml</code>; applicability rendered to the DOCX applicability table.</p>";
+    var right = "<p>Codex selects and reads methodology/tool documents from <code>library/methodologies/active/</code> " +
+      "matching the methodologies named in the project inputs. A methodology document establishes the rule; project " +
+      "evidence must separately establish the project satisfies it. (Documented, not executed.)</p>";
+    return lanesHtml("Repository: engine dispatch (measured)", left, "Workspace: library read by author (documented_only)", right);
+  },
+  "04": function () {
+    var calc = EV.repo_lane.calc || {};
+    var sched = calc.annual_schedule || [];
+    var h = "<p><code>ER_y = BE_y - PE_y - LE_y</code>, <code>BE_y = BE_CH4,y + BE_EC,y</code>, " +
+      "<code>PE_y = PE_EC + PE_FC + PE_CH4 + PE_COM_CO2 + PE_COM_CH4_N2O + PE_WW</code>, " +
+      "<code>LE_y = LE_RDF + LE_AD</code>.</p><table><tr><th>Quantity</th><th>tCO2e/year</th></tr>";
+    h += "<tr><td>Baseline (BE_CH4 " + fmt(compVal("BE_CH4")) + " + BE_EC " + fmt(compVal("BE_EC")) + ")</td><td>" + fmt(calc.baseline_emissions_tco2e) + "</td></tr>";
+    h += "<tr><td>Project (PE_CH4 " + fmt(compVal("PE_CH4")) + ", rest 0.00)</td><td>" + fmt(calc.project_emissions_tco2e) + "</td></tr>";
+    h += "<tr><td>Leakage</td><td>" + fmt(calc.leakage_tco2e) + "</td></tr>";
+    h += "<tr><td><b>Net ER (year 1)</b></td><td><b>" + fmt(calc.net_emission_reductions_tco2e) + "</b></td></tr>";
+    h += "<tr><td>Crediting total (" + (calc.crediting_period_years || 7) + "y)</td><td>" + fmt(calc.crediting_period_total_tco2e) + "</td></tr></table>";
+    h += "<table><tr><th>Year</th><th>Net ER (tCO2e)</th></tr>";
+    sched.forEach(function (y) { h += "<tr><td>" + y.year + "</td><td>" + fmt(y.net_tco2e) + "</td></tr>"; });
+    h += "</table><div class='callout'><b>Year-one warning:</b> the headline net figure is the <b>year-one</b> value " +
+      "under first-order decay (smallest year), not an average.</div>";
+    h += "<div class='callout'><b>Calc warning (verbatim):</b> <code>" + esc((calc.warnings || []).join("; ")) + "</code></div>";
+    var right = "<p>The workspace <b>does not recompute</b>. It transfers values already reported or formula-backed " +
+      "in the input workbooks (ER Calculation v04, CPA, IRR), stating workbook / worksheet / cell / formula status for " +
+      "every value, and leaves data gaps where values are ambiguous or broken. (Documented, not executed.)</p>";
+    return lanesHtml("Repository: ACM0022 engine (measured)", h, "Workspace: transfer-only (documented_only)", right);
+  },
+  "05": function () {
+    var secs = (EV.repo_lane.retrieval && EV.repo_lane.retrieval.sections) || {};
+    var h = "";
+    Object.keys(secs).forEach(function (id) {
+      var s = secs[id] || {};
+      h += "<h4>" + esc(id) + " — " + ((s.hits || []).length) + " hits</h4>";
+      if (s.reason && !(s.hits || []).length) h += "<p><i>" + esc(s.reason) + "</i></p>";
+      (s.hits || []).forEach(function (hit) {
+        h += "<p><code>" + esc(hit.document_name) + " / " + esc(hit.canonical_heading) + "</code> " +
+          (hit.from_fallback_family ? "<b>[fallback family]</b> " : "") + "<br>" + esc(hit.excerpt) + "</p>";
+      });
+    });
+    var right = "<p>No per-section retrieval exists on this track. The analogue is the author reading approved " +
+      "comparable-project PDDs from <code>inputs/pdd_examples/</code> for style and section organization only — " +
+      "an example must never supply a current-project fact. (Documented, not executed.)</p>";
+    return lanesHtml("Repository: BM25 hits per subsection (measured)", h, "Workspace: example PDDs, style-only (documented_only)", right);
+  },
+  "06": function () {
+    var pr = EV.repo_lane.prompt || {};
+    var h = "<p>Subsection " + esc(pr.sub_section_id) + ", mode <code>" + esc(pr.capture_mode) + "</code>, " +
+      fmt(pr.char_count, 0) + " chars, calc attached: " + esc(pr.calc_attached) + ", examples: " + (pr.example_count || 0) + ".</p>";
+    h += "<table><tr><th>Block</th><th>Chars</th></tr>";
+    (pr.components || []).forEach(function (c) { h += "<tr><td>" + esc(c.block) + "</td><td>" + c.chars + "</td></tr>"; });
+    h += "</table><pre>" + esc((pr.text || "").slice(0, 3000)) + (pr.elided ? "\n[... elided ...]" : "") + "</pre>";
+    var right = "<p>No prompt assembly exists on this track — the authoring task reads inputs, examples, methodology " +
+      "and template directly and writes finished prose with citations. There is no intermediate prompt artifact to show. " +
+      "(Documented, not executed.)</p>";
+    return lanesHtml("Repository: assembled prompt (measured)", h, "Workspace: no prompt artifact", right);
+  },
+  "07": function () {
+    function grid(lane) {
+      var secs = EV.repo_lane.drafting[lane].sections;
+      var h = '<div class="grid">';
+      secs.forEach(function (s) {
+        h += '<div class="cell c-' + esc(s.confidence) + '"><b>' + esc(s.sub_section_id) + "</b><br>" +
+          esc(s.confidence) + "<br>" + s.issue_count + " issues</div>";
+      });
+      return h + "</div>";
+    }
+    var h = "<h4>noop — 36 cells, all UNSUPPORTED (" + EV.repo_lane.drafting.noop.timing_seconds + "s)</h4>" + grid("noop") +
+      "<h4>demo — 36 cells, all HIGH (" + EV.repo_lane.drafting.demo.timing_seconds + "s, synthetic — not model output)</h4>" + grid("demo");
+    ["4.1", "3.5", "1.13", "1.1"].forEach(function (id) {
+      var n = EV.repo_lane.drafting.noop.focus[id] || {}, m = EV.repo_lane.drafting.demo.focus[id] || {};
+      h += "<h4>" + esc(id) + "</h4>" + lanesHtml("noop [" + esc(n.confidence || "") + "]",
+        "<pre>" + esc(n.text || "") + "</pre><p>issues: " + (n.issues || []).length + ", provenance: " + (n.provenance || []).length + "</p>",
+        "demo [" + esc(m.confidence || "") + "] — synthetic, not model output",
+        "<pre>" + esc(m.text || "") + "</pre>");
+    });
+    var right = "<p>The 36-slot authoring run was <b>not executed</b>. Its inputs (mixed project files + template v4.4), " +
+      "rules (36 finished slots, every claim cited, no new calculation) and release gates (hash every artifact, " +
+      "inspect every page) are documented from <code>PDD_CREATION_PROCESS.md</code>.</p>";
+    return h + "<hr>" + lanesHtml("Repository: 36 drafted subsections (measured)", "<p>Grid above.</p>", "Workspace: authoring (documented_only)", right);
+  },
+  "08": function () {
+    var j = EV.repo_lane.judge || {};
+    var left = "<p>Judge ran: <b>" + esc(j.judge_ran) + "</b>.</p><p>" + esc(j.reason || "") + "</p>" +
+      "<p>Redrafts triggered: 0. Nothing was scored, nothing was rewritten.</p>";
+    var right = "<p>No automated judge exists on this track. The render/review loop is human: render the Word/PDF, " +
+      "inspect every page before release, preserve broken formulas and conflicts as review items. (Documented, not executed.)</p>";
+    return lanesHtml("Repository: LLM judge (not run)", left, "Workspace: human render/review loop (documented_only)", right);
+  },
+  "09": function () {
+    var rn = EV.repo_lane.review.noop, rd = EV.repo_lane.review.demo;
+    function counts(r) {
+      var h = "<table><tr><th>State</th><th>Sections</th></tr>";
+      Object.keys(r.state_counts || {}).forEach(function (k) { h += "<tr><td>" + esc(k) + "</td><td>" + r.state_counts[k] + "</td></tr>"; });
+      return h + "</table>";
+    }
+    var left = "<h4>noop</h4>" + counts(rn) + "<h4>demo</h4>" + counts(rd) +
+      "<p>Five subsections can never auto-approve under WTE rules: <code>" + NEVER_AUTO.join(", ") + "</code> — the irreducible human workload.</p>" +
+      "<p>Assumption gating (ASSUMPTION-BLOCK/WARN) exists in <code>wte_review_rules.yaml</code> but Inegol has no assumptions file, so it is unexercised.</p>";
+    var right = "<p>Release gates before any package leaves the workspace: every input inventoried and hashed; source " +
+      "PDD and calculation evidence present; no new calculation introduced; DOCX rendered and every page inspected; " +
+      "source, template and artifact hashes in the run manifest. Output stays review-ready, never auto-approved. (Documented.)</p>";
+    return lanesHtml("Repository: rule-based review (measured)", left, "Workspace: release gates (documented_only)", right);
+  },
+  "10": function () {
+    function gate(g) {
+      var h = "<p>Blocked: <b>" + esc(g.blocked) + "</b> (unforced export " + (g.would_export_unforced ? "proceeds" : "refused") + ").</p>";
+      h += "<p>Hard blocks (" + (g.hard_blocks || []).length + "):</p><ul>";
+      (g.hard_blocks || []).forEach(function (b) { h += "<li><code>" + esc(b) + "</code></li>"; });
+      h += "</ul><p>Required inputs: " + g.required_inputs_count + ", advisories: " + g.advisory_count + ".</p>";
+      return h;
+    }
+    var left = "<h4>noop</h4>" + gate(EV.repo_lane.export_gate.noop) + "<h4>demo</h4>" + gate(EV.repo_lane.export_gate.demo) +
+      "<p>11 structured-table renderers registered; Inegol sections exercise proponent, applicability, ghg_boundary.</p>";
+    var right = "<p>Final deliverable is the PDF package (cover + source PDD page-for-page + read-only workbook PDFs); " +
+      "the DOCX is the faithful working copy. Template v4.4 against a v4.2 source PDD — migration needs validator review. (Measured outputs, documented authoring.)</p>";
+    return lanesHtml("Repository: export gate (measured)", left, "Workspace: PDF-first assembly", right);
+  },
+  "11": function () {
+    var pkg = EV.repo_lane.package || {};
+    var left = kvrows({
+      "review (noop)": esc((pkg.review || {}).path) + " manifest=" + esc((pkg.review || {}).manifest_exists),
+      "demo": esc((pkg.demo || {}).path) + " manifest=" + esc((pkg.demo || {}).manifest_exists)
+    });
+    var t = EV.tinh_lane, outs = (t.outputs || []).filter(function (o) { return (o.bytes || 0) > 100000; });
+    outs.sort(function (a, b) { return (b.bytes || 0) - (a.bytes || 0); });
+    var h = "<table><tr><th>Artifact</th><th>Bytes</th><th>Pages</th></tr>";
+    outs.slice(0, 8).forEach(function (o) {
+      h += "<tr><td>" + esc(o.path) + "</td><td>" + (o.bytes || 0).toLocaleString("en-US") + "</td><td>" + esc(o.pages || "—") + "</td></tr>";
+    });
+    var right = h + "</table><p>Only the 6.8 KB manifest entered git; large artifacts stay out (CON-005/006).</p>";
+    return lanesHtml("Repository: published packages (measured)", left, "Workspace: merged package (measured)", right);
+  },
+  "12": function () {
+    var h = "<table><tr><th>Methodology</th><th>Engine</th><th>Gating field</th><th>Corpus</th><th>Oracle</th><th>Review rules</th></tr>";
+    EV.breadth.forEach(function (b) {
+      h += "<tr><td>" + esc(b.methodology_id) + "</td><td><code>" + esc(b.engine_module) + "</code></td><td><code>" +
+        esc(b.gating_field) + "</code></td><td>" + esc(b.has_corpus_document) + "</td><td>" + esc(b.has_registered_oracle) +
+        "</td><td>" + esc(b.has_review_rules) + "</td></tr>";
+    });
+    var right = "<p>The workspace is methodology-agnostic by construction: any mixed-input folder plus the matching " +
+      "methodology documents in <code>library/methodologies/active/</code> follows the same packaging route. " +
+      "Breadth was not exercised for 3908 beyond ACM0022.</p>";
+    return lanesHtml("Repository: 3 more engines, no corpus/oracle (measured)", h + "</table>", "Workspace: same route, any methodology (by design)", right);
+  }
+};
+
+var SCREENS = [
+  { id: "00", title: "Orientation", purpose: "Meet the project, the two tracks, and the rules of this comparison.", domain: "A validation body first asks: what project, what methodology, what evidence grade. Everything else hangs off that.", checks: ["no-model-run", "tinh-authoring-not-executed"], judgeable: false, reveal: "00" },
+  { id: "01", title: "Corpus and retrieval index", purpose: "See what precedent the pipeline can actually reach.", domain: "Precedent grounds consistency arguments, but only reachable, cited precedent counts — headline row counts do not.", checks: ["retrieval-reachability", "methodology-not-retrievable"], judgeable: true, reveal: "01" },
+  { id: "02", title: "Project intake", purpose: "See how each track takes in the project facts.", domain: "Garbage in means a rejected PDD: intake must preserve units, dates, coordinates and authority roles exactly.", checks: ["no-assumption-register"], judgeable: true, reveal: "02" },
+  { id: "03", title: "Methodology screening", purpose: "See how each track selects and applies ACM0022.", domain: "Wrong methodology means zero credits. Applicability justification is the first thing a validator reads.", checks: ["methodology-not-retrievable"], judgeable: true, reveal: "03" },
+  { id: "04", title: "Quantification", purpose: "Follow the emission-reduction equation chain with real values.", domain: "Numbers are the PDD: baseline, project and leakage arithmetic must trace to methodology equations and tools.", checks: ["climate-zone-derived"], judgeable: true, reveal: "04" },
+  { id: "05", title: "Per-section retrieval", purpose: "See the precedent fetched for the four focus subsections.", domain: "Section-level precedent keeps each subsection's claims inside already-registered language.", checks: ["retrieval-reachability"], judgeable: true, reveal: "05" },
+  { id: "06", title: "Prompt assembly", purpose: "See exactly what the drafter is told for subsection 4.1.", domain: "The prompt is the specification: authority order, anti-hallucination markers and budgets live here.", checks: ["no-model-run"], judgeable: true, reveal: "06" },
+  { id: "07", title: "Drafting the 36 subsections", purpose: "Survey all 36 drafted subsections and read the four focus ones in full.", domain: "Coverage matters: every template slot must hold supported content or an explicit, gated gap.", checks: ["no-model-run", "structured-table-coverage"], judgeable: true, reveal: "07" },
+  { id: "08", title: "Judge and redraft", purpose: "See what second pair of eyes each track provides.", domain: "Unreviewed prose never survives validation. The question is what the review actually checks.", checks: ["oracle-xfail"], judgeable: true, reveal: "08" },
+  { id: "09", title: "Review and quality gates", purpose: "See the rule-based gates and the irreducible human workload.", domain: "Five subsections can never auto-approve. A track that hides that is less safe than one that lists it.", checks: ["no-assumption-register", "oracle-xfail"], judgeable: true, reveal: "09" },
+  { id: "10", title: "Export gate and document assembly", purpose: "See what refuses to export and what the DOCX contains.", domain: "The export gate is the last automatic line of defence before a client sees the document.", checks: ["structured-table-coverage"], judgeable: true, reveal: "10" },
+  { id: "11", title: "Packaging and delivery", purpose: "See the published packages on both tracks.", domain: "Delivery must be auditable: manifests, hashes and a clean split between internal review and client demo.", checks: ["tinh-authoring-not-executed"], judgeable: true, reveal: "11" },
+  { id: "12", title: "Breadth across other methodologies", purpose: "See how each track extends beyond ACM0022.", domain: "A one-methodology pipeline is a prototype. Validators and clients both ask what happens with the next project.", checks: ["oracle-xfail", "methodology-not-retrievable"], judgeable: true, reveal: "12" },
+  { id: "13", title: "Verdict and decision brief", purpose: "Aggregate your scores into a copyable decision brief.", domain: "A comparison without a written verdict evaporates. The brief records what you judged and what to try next.", checks: [], judgeable: false, reveal: null }
+];
+
+/* ---------- reader state ---------- */
+var LS_KEY = "pdd-walkthrough-v1";
+var S = { version: 1, updated_at: null, steps: {} };
+var storageOk = true;
+try {
+  var rawLs = localStorage.getItem(LS_KEY);
+  if (rawLs) S = JSON.parse(rawLs);
+} catch (e) { storageOk = false; }
+function save() {
+  S.updated_at = new Date().toISOString();
+  try { localStorage.setItem(LS_KEY, JSON.stringify(S)); }
+  catch (e) {
+    storageOk = false;
+    document.getElementById("storage-banner").innerHTML =
+      '<div class="banner">localStorage unavailable — running read-only. Use “Export my answers” for a durable copy.</div>';
+  }
+}
+if (!storageOk) save();
+function stepState(id) {
+  if (!S.steps[id]) S.steps[id] = { prediction: "", scores: {}, note: "", skipped: false };
+  return S.steps[id];
+}
+
+var current = 0;
+function scoredIds() { return SCREENS.filter(function (s) { return s.judgeable; }).map(function (s) { return s.id; }); }
+
+function render() {
+  var sc = SCREENS[current], st = stepState(sc.id);
+  document.getElementById("stepbar").textContent = "Step " + (current + 1) + " of " + SCREENS.length + " — " + sc.id + " " + sc.title;
+  var h = "<h2>" + esc(sc.id) + " — " + esc(sc.title) + "</h2><p>" + esc(sc.purpose) + "</p>";
+  h += '<details class="domain"><summary>Why a validation body cares</summary><p>' + esc(sc.domain) + "</p></details>";
+  if (sc.id === "13") { h += renderVerdict(); }
+  else {
+    var locked = st.prediction !== "" || st.skipped;
+    h += '<div class="predict"><h3>Predict</h3>' +
+      '<textarea id="pred" placeholder="What do you expect this step to show?">' + esc(st.prediction) + "</textarea><br>" +
+      '<button id="lock-btn">Lock in prediction</button> <a href="#" id="skip-pred">Skip</a></div>';
+    h += '<div id="reveal" class="' + (locked ? "" : "hidden") + '"><h3>Reveal</h3>' + REVEAL[sc.reveal]() + "</div>";
+    h += realityHtml(sc.checks);
+    if (sc.judgeable) {
+      h += '<div id="judge" class="' + (locked ? "" : "hidden") + '"><h3>Judge</h3>';
+      AXES.forEach(function (ax) {
+        h += '<p class="axis-label">' + esc(ax.key) + " — " + esc(ax.q) + "</p>";
+        SCALE.forEach(function (o) {
+          var checked = st.scores[ax.key] === o.v ? " checked" : "";
+          h += '<label><input type="radio" name="ax-' + ax.key + '" value="' + o.v + '"' + checked + "> " + esc(o.label) + "</label><br>";
+        });
+      });
+      h += '<textarea id="note" placeholder="Note (optional)">' + esc(st.note) + "</textarea><br>" +
+        '<button id="submit-judge">Submit scores</button> <a href="#" id="skip-judge">Skip scoring</a></div>';
+    }
+  }
+  document.getElementById("screen").innerHTML = h;
+  var nav = "";
+  if (current > 0) nav += '<button id="prev-btn">Previous step</button> ';
+  if (current < SCREENS.length - 1) nav += '<button id="next-btn">Next step</button> ';
+  nav += '<button id="export-btn">Export my answers</button> <button id="import-btn">Import answers</button> ' +
+    '<textarea id="import-box" class="hidden" placeholder="Paste exported JSON here"></textarea>';
+  document.getElementById("nav").innerHTML = nav;
+  wire(sc, st);
+  updateNext(sc, st);
+}
+
+function wire(sc, st) {
+  function $(id) { return document.getElementById(id); }
+  if ($("prev-btn")) $("prev-btn").onclick = function () { current--; render(); };
+  var next = $("next-btn");
+  if (next) next.onclick = function () { if (!next.disabled) { current++; render(); } };
+  if ($("lock-btn")) $("lock-btn").onclick = function () {
+    st.prediction = $("pred").value; st.skipped = false; save(); render();
+  };
+  if ($("skip-pred")) $("skip-pred").onclick = function (e) {
+    e.preventDefault(); st.prediction = ""; st.skipped = true; save(); render();
+  };
+  AXES.forEach(function (ax) {
+    var radios = document.querySelectorAll('input[name="ax-' + ax.key + '"]');
+    for (var i = 0; i < radios.length; i++) {
+      radios[i].onchange = function () {
+        st.scores[ax.key] = parseInt(this.value, 10); save(); updateNext(sc, st);
+      };
+    }
+  });
+  if ($("submit-judge")) $("submit-judge").onclick = function () {
+    st.note = $("note").value; st.judged = true; save(); render();
+  };
+  if ($("skip-judge")) $("skip-judge").onclick = function (e) {
+    e.preventDefault(); st.judged = true; st.skipped = true; save(); render();
+  };
+  if ($("export-btn")) $("export-btn").onclick = function () {
+    var blob = new Blob([JSON.stringify(S)], { type: "application/json" });
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob); a.download = "walkthrough-answers.json"; a.click();
+  };
+  if ($("import-btn")) $("import-btn").onclick = function () {
+    var box = $("import-box");
+    if (box.className.indexOf("hidden") >= 0) { box.className = ""; return; }
+    try { S = JSON.parse(box.value); save(); render(); }
+    catch (e) { alert("Invalid JSON: " + e.message); }
+  };
+  if ($("copy-btn")) $("copy-btn").onclick = function () {
+    var t = $("brief"); t.select();
+    document.execCommand("copy");
+  };
+}
+
+function updateNext(sc, st) {
+  var next = document.getElementById("next-btn");
+  if (!next) return;
+  if (sc.id === "13") { next.disabled = false; return; }
+  var predicted = st.prediction !== "" || st.skipped;
+  if (!sc.judgeable) { next.disabled = !predicted; return; }
+  var axesDone = AXES.every(function (ax) { return typeof st.scores[ax.key] === "number"; });
+  next.disabled = !(predicted && (axesDone || st.judged || st.skipped));
+}
+
+/* ---------- verdict ---------- */
+function aggregate() {
+  var per = {}, n = {};
+  AXES.forEach(function (ax) { per[ax.key] = 0; n[ax.key] = 0; });
+  var div = [];
+  scoredIds().forEach(function (id) {
+    var st = S.steps[id];
+    if (!st || st.skipped) return;
+    var vals = [];
+    AXES.forEach(function (ax) {
+      var v = (st.scores || {})[ax.key];
+      if (typeof v === "number") { per[ax.key] += v; n[ax.key]++; vals.push(v); }
+    });
+    if (vals.length === 4 && Math.max.apply(null, vals) - Math.min.apply(null, vals) >= 3) div.push(id);
+  });
+  var means = {};
+  AXES.forEach(function (ax) { means[ax.key] = n[ax.key] ? Math.round(per[ax.key] / n[ax.key] * 10) / 10 : null; });
+  var m = AXES.map(function (ax) { return means[ax.key]; }).filter(function (v) { return v !== null; });
+  var overall = m.length ? Math.round(m.reduce(function (a, b) { return a + b; }, 0) / m.length * 10) / 10 : null;
+  var w = null;
+  if (means.defensibility !== null && means.human_minutes !== null && means.failure_mode !== null && means.cost !== null) {
+    w = Math.round((means.defensibility * 0.4 + means.human_minutes * 0.3 + means.failure_mode * 0.2 + means.cost * 0.1) * 10) / 10;
+  }
+  return { means: means, n: n, overall: overall, weighted: w, divergent: div };
+}
+
+function renderVerdict() {
+  var ag = aggregate();
+  var date = new Date().toISOString().slice(0, 10);
+  var lines = [];
+  lines.push("# Decision brief — Inegol PDD walkthrough (" + date + ")");
+  lines.push("");
+  lines.push("Project: " + EV.project.project_name + " (VCS " + EV.project.vcs_id + ").");
+  lines.push("Repository lane evidence grade: measured (placeholders + synthetic prose, no model run).");
+  lines.push("Workspace lane evidence grade: " + EV.tinh_lane.evidence_grade + " (packaging measured, authoring documented_only).");
+  lines.push("");
+  lines.push("## Per-step scores");
+  lines.push("| step | human_minutes | cost | defensibility | failure_mode | note |");
+  lines.push("|---|---|---|---|---|---|");
+  scoredIds().forEach(function (id) {
+    var st = S.steps[id] || {};
+    function v(k) { return (st.scores && typeof st.scores[k] === "number") ? st.scores[k] : "—"; }
+    lines.push("| " + id + " | " + v("human_minutes") + " | " + v("cost") + " | " + v("defensibility") +
+      " | " + v("failure_mode") + " | " + ((st.note || (st.skipped ? "skipped" : "")).replace(/\|/g, "/")) + " |");
+  });
+  lines.push("");
+  lines.push("## Means (per axis, one decimal)");
+  AXES.forEach(function (ax) {
+    lines.push("- " + ax.key + ": " + (ag.means[ax.key] === null ? "unscored" : ag.means[ax.key]) + " (n=" + ag.n[ax.key] + ")");
+  });
+  lines.push("- overall (unweighted): " + (ag.overall === null ? "unscored" : ag.overall));
+  lines.push("- deliverable-weighted: " + (ag.weighted === null ? "unscored" : ag.weighted) +
+    " (defensibility 0.4, human_minutes 0.3, failure_mode 0.2, cost 0.1)");
+  lines.push("");
+  lines.push("Caution: the weighting was chosen before the evidence was seen and structurally favours the provenance-heavy track.");
+  lines.push("");
+  lines.push("## Steps where the tracks trade off (axis span >= 3)");
+  lines.push(ag.divergent.length ? ag.divergent.join(", ") : "none");
+  lines.push("");
+  lines.push("## Recommended follow-up experiments");
+  lines.push("1. Full 36-section run with the claude-code provider (subscription-billed, zero marginal cost in llm/budget.py) to close the no-model-run gap.");
+  lines.push("2. Cross-validate the ACM0022 calculator against the five reconciled registered projects (VCS 4818 x2, 5040, 4940, 4921).");
+  var brief = lines.join("\n");
+  var h = "<h3>Your scores</h3>";
+  h += "<p>Per-axis means: " + AXES.map(function (ax) {
+    return esc(ax.key) + "=" + (ag.means[ax.key] === null ? "—" : ag.means[ax.key]);
+  }).join(", ") + ". Overall: <b>" + (ag.overall === null ? "—" : ag.overall) + "</b>. Weighted: <b>" +
+    (ag.weighted === null ? "—" : ag.weighted) + "</b> <i>(caution: weighting pre-chosen, favours the provenance-heavy track)</i>.</p>";
+  h += "<p>Divergent steps: " + (ag.divergent.length ? esc(ag.divergent.join(", ")) : "none") + ".</p>";
+  h += "<h3>Decision brief</h3><textarea id='brief' readonly>" + esc(brief) + "</textarea><br>" +
+    "<button id='copy-btn'>Copy brief</button>";
+  return h;
+}
+
+document.getElementById("bundle-meta").textContent =
+  "schema " + EV.schema_version + ", generated " + EV.generated_at;
+render();
+</script>
+</body>
+</html>

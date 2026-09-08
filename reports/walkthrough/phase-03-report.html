@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Phase 3 Report — Evidence Bundle for the Inegol Walkthrough</title>
+<style>
+body { font-family: sans-serif; max-width: 960px; margin: 2em auto; padding: 0 1em; color: #222; }
+h1 { font-size: 1.5em; } h2 { font-size: 1.2em; border-bottom: 1px solid #ccc; padding-bottom: .2em; }
+table { border-collapse: collapse; margin: 1em 0; } th, td { border: 1px solid #bbb; padding: 4px 10px; text-align: left; }
+th { background: #f0f0f0; } code { background: #f5f5f5; padding: 1px 4px; }
+.pass { color: #0a0; font-weight: bold; } .warn { color: #a60; font-weight: bold; }
+pre { background: #f5f5f5; padding: 8px; overflow-x: auto; font-size: .85em; }
+.meta { color: #555; }
+</style>
+</head>
+<body>
+<h1>Phase 3 Report — Evidence Bundle for the Inegol Walkthrough (VCS 3908)</h1>
+<p class="meta">Plan: <code>plans/2026-09-08-pdd-process-walkthrough-plan.md</code> PHASE-03 &nbsp;|&nbsp; Generated 2026-09-08 &nbsp;|&nbsp; Bundle <code>reports/walkthrough/inegol-evidence.json</code> (103,087 B, schema 1.0)</p>
+
+<h2>Builder (TASK-03-01/02)</h2>
+<p><code>scripts/build_walkthrough_evidence.py</code> reads all 19 phase-01/02 raw captures plus the two run JSONs and two review-state files under <code>data/runs/</code>, calls the live retrieval / prompt / export-gate / calc-dispatch APIs, and writes exactly one file. Missing optional inputs become <code>null</code> + <code>missing_inputs</code> instead of raising. This run: <code>missing_inputs == []</code>.</p>
+<p><span class="warn">Finding F-6:</span> two raw parse traps confirmed and handled in code — <code>index-report --json</code> wraps JSON in structlog lines (F-1, now extracted by brace-matching, not line-filtering) and <code>calc-inegol.json</code> / <code>calc-inegol.txt</code> collide on filename stem (now disambiguated with an extension suffix).</p>
+<h2>Bundle shape (Gotchas schema)</h2>
+<table>
+<tr><th>Top-level key</th><th>Content</th></tr>
+<tr><td><code>project</code></td><td>Inegol, VCS 3908, ACM0022, wte, 8.484 MW, Türkiye — no evidence registry, no assumptions file</td></tr>
+<tr><td><code>environment</code></td><td>Python 3.13.12, Windows-11, 960 passed / 2 xfailed, commit <code>6731685</code></td></tr>
+<tr><td><code>repo_lane</code></td><td>corpus_index, intake, screening, calc, retrieval, prompt, drafting (noop+demo), judge, review, export_gate, package</td></tr>
+<tr><td><code>tinh_lane</code></td><td>evidence_grade <code>measured</code> (packaging measured, authoring documented_only), 4 stages, 14-file hash table, timing 224.2s</td></tr>
+<tr><td><code>reality_checks</code></td><td>8 records (4 material, 2 caution, 2 info)</td></tr>
+<tr><td><code>breadth</code></td><td>VM0051 / VM0044 / AMS-II.G — engines + gating fields wired, review rules present, zero corpus docs, zero oracle mentions</td></tr>
+</table>
+
+<h2>Drafting (TASK-03-05/06)</h2>
+<table>
+<tr><th>Lane</th><th>Sections</th><th>Review state</th><th>Focus 4.1</th></tr>
+<tr><td><code>noop</code> 4.374s</td><td>36 summaries, natural sort (4.10 after 4.2)</td><td>36× needs-domain-review</td><td>UNSUPPORTED, 519 chars, 1 issue, 5 provenance</td></tr>
+<tr><td><code>demo</code> 3.442s</td><td>36 summaries</td><td>36× ready-for-human-edit</td><td>HIGH, 248 chars, synthetic-labelled</td></tr>
+</table>
+<p>Focus subsections <code>4.1, 3.5, 1.13, 1.1</code> carry text capped at 4,000 chars plus full issues/provenance/fact_provenance/synthetic_uses; the other 32 carry counts only (bundle stays ~101 KB).</p>
+
+<h2>Retrieval + prompt (TASK-03-03/04)</h2>
+<table>
+<tr><th>Capture</th><th>Value</th></tr>
+<tr><td>Retrieval 4.1 (wte family)</td><td class="pass">5 hits</td><td>document_name, canonical_heading, score, matched_terms, fallback flag, 400-char excerpt each</td></tr>
+<tr><td>Prompt 4.1 (noop, live calc)</td><td class="pass">assembled_text, 10,653 chars</td><td>blocks: Corpus Evidence 8,257 · Calc injection 1,263 · Instructions 501 · Facts 289 · Budget 94</td></tr>
+</table>
+<p><span class="warn">Finding F-7:</span> prompt calc injection needs <code>raw_result</code> (Pydantic detail fields), which <code>PddCalcResult.from_dict</code> cannot restore — the builder recomputes live via <code>compute_for(project_input)</code> instead. RISK-03-02's suggested path would have produced the component-inventory fallback.</p>
+<p><span class="warn">Finding F-8:</span> the assembled prompt header reads <code>Section: Baseline Emissions (4.4.1)</code> — section id and sub-section id are concatenated verbatim. Same call shape as production <code>draft_section</code>, so the quirk is upstream, not a capture artifact.</p>
+
+<h2>Export gate (TASK-03-07)</h2>
+<table>
+<tr><th>Lane</th><th>Verdict</th><th>Detail</th></tr>
+<tr><td><code>noop</code></td><td class="warn">blocked</td><td>2 hard blocks (the [1.10↔4.4] / [4.1/4.2↔4.4] placeholder-arithmetic pair from phase-01), 5 advisories, 0 required inputs</td></tr>
+<tr><td><code>demo</code></td><td class="pass">would export unforced</td><td>0 hard blocks</td></tr>
+</table>
+<p>Gate recomputed live via <code>check_export_gate</code> on the run dicts — matches the captured phase-01 export outcomes.</p>
+
+<h2>Reality checks (TASK-03-09, 8 records)</h2>
+<table>
+<tr><th>ID</th><th>Severity</th><th>Truth (condensed)</th></tr>
+<tr><td>no-model-run</td><td class="warn">material</td><td>noop = placeholders, demo = synthetic; no model-backed 36-section run ever completed</td></tr>
+<tr><td>retrieval-reachability</td><td class="warn">material</td><td>2545 headline rows, only 891 reachable; ACM0022 methodology doc itself unretrievable</td></tr>
+<tr><td>methodology-not-retrievable</td><td class="warn">caution</td><td>4 docs missing incl. EB111 ACM0022 v03.0</td></tr>
+<tr><td>structured-table-coverage</td><td>info</td><td>all 11 renderers registered but only 3/36 sections carry structured_content — corrects the plan's stale "unwired" claim</td></tr>
+<tr><td>oracle-xfail</td><td class="warn">caution</td><td>2 xfail remain; 5-project cross-validation is follow-up</td></tr>
+<tr><td>climate-zone-derived</td><td class="warn">material</td><td>boreal_temperate_wet inferred from latitude, not supplied</td></tr>
+<tr><td>tinh-authoring-not-executed</td><td class="warn">material</td><td>packaging executed, 36-slot authoring documented_only</td></tr>
+<tr><td>no-assumption-register</td><td>info</td><td>assumption gating present but unexercised; 5 subsections never auto-approve</td></tr>
+</table>
+
+<h2>Tests (TASK-03-11)</h2>
+<p><code>tests/test_walkthrough_evidence.py</code>: 8 tests, all pass — natural sort (4.10 after 4.2), truncation flag, missing-subsection empty result, reality-check shape/counts, empty-dir tolerance, breadth's 3 engines with <code>technology.*</code> gates. Pure helpers only: no pipeline, no network, no <code>data/runs/</code>.</p>
+
+<h2>Exit criteria</h2>
+<table>
+<tr><th>Criterion</th><th>Result</th></tr>
+<tr><td>builder exits 0</td><td class="pass">PASS</td></tr>
+<tr><td><code>schema_version 1.0</code>, 36 + 36 sections</td><td class="pass">PASS</td></tr>
+<tr><td>valid JSON, &lt; 3 MB (103,087 B)</td><td class="pass">PASS</td></tr>
+<tr><td>evidence tests pass (8/8)</td><td class="pass">PASS</td></tr>
+<tr><td><code>ruff check</code> + <code>ruff format --check</code> clean</td><td class="pass">PASS</td></tr>
+<tr><td>crediting total 893441.43, ≥6 reality checks with material</td><td class="pass">PASS</td></tr>
+</table>
+</body>
+</html>

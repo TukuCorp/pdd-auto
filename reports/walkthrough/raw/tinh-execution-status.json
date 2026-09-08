@@ -1,0 +1,7 @@
+{
+  "input_manifest_00_INPUT": "executed",
+  "codex_authoring_stage": "documented_only",
+  "calculation_transfer": "documented_only",
+  "mechanical_packaging": "executed",
+  "note": "Authoring stage (36-slot prose, citations, attestations) was not executed; only the mechanical runner scripts/run_pdd_in_place.py was executed. No new calculation created."
+}

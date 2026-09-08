@@ -1,0 +1,133 @@
+{
+  "process": "mixed inputs -> active Codex task -> source-preserving Verra PDD package",
+  "nested_codex_exec": false,
+  "new_calculation_model": false,
+  "resolved_tools": {
+    "soffice": "<external>/soffice.exe",
+    "pdftoppm": "tools/poppler/Library/bin/pdftoppm.exe",
+    "python": "<external>/python.exe"
+  },
+  "template": {
+    "path": "library/templates/vcs/VCS-Project-Description-Template-v4.4-FINAL2.docx",
+    "sha256": "b07d46d63784226232bc65e68bb5847ea477c6da9a90be1787caa6af6d41b138"
+  },
+  "source_pdd": {
+    "path": "inputs/fresh_registry/verra_public_download_3908_20260824/project_3908/extracted/INEGOL_PDD_PRR_R3_clean.pdf",
+    "sha256": "74235e7dd25bdf729b26f5c9c691d7cad26ab472a1da481e670255a90bced05a",
+    "pages": 139
+  },
+  "project_inputs": [
+    {
+      "path": "inputs/fresh_registry/verra_public_download_3908_20260824/project_3908/extracted/3908_Approval Letter_2nd Exemption Request_23 June 2023.pdf",
+      "file_name": "3908_Approval Letter_2nd Exemption Request_23 June 2023.pdf",
+      "sha256": "c8c733b546a71c66f72c30669bd5e42d13d52541f2f5d0f2fb7f8118ee622186",
+      "bytes": 73413
+    },
+    {
+      "path": "inputs/fresh_registry/verra_public_download_3908_20260824/project_3908/extracted/3908_Exemption_approved.pdf",
+      "file_name": "3908_Exemption_approved.pdf",
+      "sha256": "4214fa92640d1601613d0919c2158c084add2df1b529229326b2b12a44c65f43",
+      "bytes": 188349
+    },
+    {
+      "path": "inputs/fresh_registry/verra_public_download_3908_20260824/project_3908/extracted/3908_Exemption_Verra Approval Letter.pdf",
+      "file_name": "3908_Exemption_Verra Approval Letter.pdf",
+      "sha256": "3a8009b4b58d67b7459ae7b3b7f833c891b2b300e063f6cf0a50295e40052eb6",
+      "bytes": 106205
+    },
+    {
+      "path": "inputs/fresh_registry/verra_public_download_3908_20260824/project_3908/extracted/BIOTREND vs MVC vs GAIA - VCS Registration Deed of Representation - INEGOL .pdf",
+      "file_name": "BIOTREND vs MVC vs GAIA - VCS Registration Deed of Representation - INEGOL .pdf",
+      "sha256": "f9d9ff2c37d36a0d12d6d79f231b263952f6e8f2ca6c24b7fa9f38239909c241",
+      "bytes": 15729833
+    },
+    {
+      "path": "inputs/fresh_registry/verra_public_download_3908_20260824/project_3908/extracted/Deed_Inegol.pdf",
+      "file_name": "Deed_Inegol.pdf",
+      "sha256": "57fe7d7a6b91eb2712f957c548e308cff6e23a1744a04cf8332ebbf28cd3e6c3",
+      "bytes": 1435915
+    },
+    {
+      "path": "inputs/fresh_registry/verra_public_download_3908_20260824/project_3908/extracted/ER Calculation.v04_21.07.2025.xlsx",
+      "file_name": "ER Calculation.v04_21.07.2025.xlsx",
+      "sha256": "31029631aef8531f92d4240a8c109655c8581a23ac1bf8fc19379bf995a5f9a4",
+      "bytes": 2682933
+    },
+    {
+      "path": "inputs/fresh_registry/verra_public_download_3908_20260824/project_3908/extracted/Inegol IRR_R5_22.08.2025.xlsx",
+      "file_name": "Inegol IRR_R5_22.08.2025.xlsx",
+      "sha256": "0529e87d30e87755edfb58e2c2e86dc37ccf18ae8c3c97f6040066266240cc86",
+      "bytes": 2559842
+    },
+    {
+      "path": "inputs/fresh_registry/verra_public_download_3908_20260824/project_3908/extracted/INEGOL_CPA_R3_21.07.2025.xlsx",
+      "file_name": "INEGOL_CPA_R3_21.07.2025.xlsx",
+      "sha256": "deb2f1a8ee1d7a17994e64c057f26553cf12b0745c671f97f51c38f90d185b59",
+      "bytes": 1607949
+    },
+    {
+      "path": "inputs/fresh_registry/verra_public_download_3908_20260824/project_3908/extracted/INEGOL_PDD_PRR_R3_clean.pdf",
+      "file_name": "INEGOL_PDD_PRR_R3_clean.pdf",
+      "sha256": "74235e7dd25bdf729b26f5c9c691d7cad26ab472a1da481e670255a90bced05a",
+      "bytes": 5878389
+    },
+    {
+      "path": "inputs/fresh_registry/verra_public_download_3908_20260824/project_3908/extracted/Project ID 3908_PRR_03SEPT2025.pdf",
+      "file_name": "Project ID 3908_PRR_03SEPT2025.pdf",
+      "sha256": "e3baf6ea1d063eb46d3b4cc9d7509ccbb01df19e1812de6c96ee52a5d20c81d9",
+      "bytes": 844743
+    },
+    {
+      "path": "inputs/fresh_registry/verra_public_download_3908_20260824/project_3908/extracted/Validation-Representation-v4.2.pdf",
+      "file_name": "Validation-Representation-v4.2.pdf",
+      "sha256": "22646f53ea528112371d441a59a86a88b5ed19951385b016c8a5d40a77bbcfa5",
+      "bytes": 127168
+    },
+    {
+      "path": "inputs/fresh_registry/verra_public_download_3908_20260824/project_3908/extracted/VCS ValR_3908_20250902_CL.pdf",
+      "file_name": "VCS ValR_3908_20250902_CL.pdf",
+      "sha256": "c280199ed574622d3c20e32615ba35810d9857195b1a07f3aee64792f4a4e8ef",
+      "bytes": 1600594
+    },
+    {
+      "path": "inputs/fresh_registry/verra_public_download_3908_20260824/project_3908/extracted/VCS_ExemptionRequest_3908_23122024 .pdf",
+      "file_name": "VCS_ExemptionRequest_3908_23122024 .pdf",
+      "sha256": "6ea416c89ae5762e3538dd01d550fa362f7a0bb6ce69db493e1199463ef07615",
+      "bytes": 803774
+    },
+    {
+      "path": "inputs/fresh_registry/verra_public_download_3908_20260824/project_3908/extracted/VCS_PROJ_DESC_PCP_3908_20MAR2023.pdf",
+      "file_name": "VCS_PROJ_DESC_PCP_3908_20MAR2023.pdf",
+      "sha256": "375d20254d77fdc06396fe149b21c0cc58a5ea7c3f9e656b21885eb073c4b104",
+      "bytes": 4678686
+    }
+  ],
+  "calculation_evidence": [
+    {
+      "workbook": "inputs/fresh_registry/verra_public_download_3908_20260824/project_3908/extracted/ER Calculation.v04_21.07.2025.xlsx",
+      "pdf": "<external>/ER Calculation.v04_21.07.2025.pdf",
+      "pdf_pages": 52,
+      "workbook_sha256": "31029631aef8531f92d4240a8c109655c8581a23ac1bf8fc19379bf995a5f9a4",
+      "pdf_sha256": "5333ec98714cbb94a6052941a2b3cd5a0ace9af6b3060db11cff64663cf58ed3"
+    },
+    {
+      "workbook": "inputs/fresh_registry/verra_public_download_3908_20260824/project_3908/extracted/Inegol IRR_R5_22.08.2025.xlsx",
+      "pdf": "<external>/Inegol IRR_R5_22.08.2025.pdf",
+      "pdf_pages": 56,
+      "workbook_sha256": "0529e87d30e87755edfb58e2c2e86dc37ccf18ae8c3c97f6040066266240cc86",
+      "pdf_sha256": "a95c0824c74053f412a123c6d383daf2b991edc9cce259b64dcef837d14457c6"
+    },
+    {
+      "workbook": "inputs/fresh_registry/verra_public_download_3908_20260824/project_3908/extracted/INEGOL_CPA_R3_21.07.2025.xlsx",
+      "pdf": "<external>/INEGOL_CPA_R3_21.07.2025.pdf",
+      "pdf_pages": 312,
+      "workbook_sha256": "deb2f1a8ee1d7a17994e64c057f26553cf12b0745c671f97f51c38f90d185b59",
+      "pdf_sha256": "898c15e5a746c8de26d156ce744de2b3c2e71593870a4c718ef7ce5c37e7970f"
+    }
+  ],
+  "outputs": {
+    "docx": "<external>/3908_PDD_in_place_Codex.docx",
+    "pdf": "<external>/3908_PDD_in_place_Codex.pdf"
+  },
+  "version_note": "Source PDD identifies VCS Version 4.2; v4.4 migration requires validator review."
+}

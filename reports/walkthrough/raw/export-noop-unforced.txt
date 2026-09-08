@@ -1,0 +1,4 @@
+2026-09-08 12:19:59 [error    ] export_gate_blocked            hard_blocks=['[1.10↔4.4] Section 1.10 (1) and Section 4.4 (4) report different net tCO2e values. These MUST match.', '[4.1/4.2↔4.4] Net tCO2e calculation error: Baseline (4) - Project (4) = 0, but Section 4.4 reports 4.'] run_id=walkthrough-inegol-noop
+2026-09-08 12:19:59 [error    ] export_blocked                 error="Export blocked for walkthrough-inegol-noop. Hard blocks: ['[1.10↔4.4] Section 1.10 (1) and Section 4.4 (4) report different net tCO2e values. These MUST match.', '[4.1/4.2↔4.4] Net tCO2e calculation error: Baseline (4) - Project (4) = 0, but Section 4.4 reports 4.']" run_id=walkthrough-inegol-noop
+Export blocked: Export blocked for walkthrough-inegol-noop. Hard blocks: ['[1.10↔4.4] Section 1.10 (1) and Section 4.4 (4) report different net tCO2e values. These MUST match.', '[4.1/4.2↔4.4] Net tCO2e calculation error: Baseline (4) - Project (4) = 0, but Section 4.4 reports 4.']
+exit=0

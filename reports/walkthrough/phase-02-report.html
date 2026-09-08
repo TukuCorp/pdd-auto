@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Phase 2 Report — Portable-Workspace Lane for Project 3908</title>
+<style>
+body { font-family: sans-serif; max-width: 960px; margin: 2em auto; padding: 0 1em; color: #222; }
+h1 { font-size: 1.5em; } h2 { font-size: 1.2em; border-bottom: 1px solid #ccc; padding-bottom: .2em; }
+table { border-collapse: collapse; margin: 1em 0; } th, td { border: 1px solid #bbb; padding: 4px 10px; text-align: left; }
+th { background: #f0f0f0; } code { background: #f5f5f5; padding: 1px 4px; }
+.pass { color: #0a0; font-weight: bold; } .warn { color: #a60; font-weight: bold; }
+pre { background: #f5f5f5; padding: 8px; overflow-x: auto; font-size: .85em; }
+.meta { color: #555; }
+</style>
+</head>
+<body>
+<h1>Phase 2 Report — Portable-Workspace Lane for Project 3908</h1>
+<p class="meta">Plan: <code>plans/2026-09-08-pdd-process-walkthrough-plan.md</code> PHASE-02 &nbsp;|&nbsp; Generated 2026-09-08 &nbsp;|&nbsp; Staging <code>C:/t3908/job</code>, runner isolated venv <code>C:/t3908/venv</code> (Python 3.13.12)</p>
+
+<h2>Inputs (TASK-02-01..02)</h2>
+<p>Workspace <code>data/runs/tinh-20260827/ws/PDD_Portable_Workspace_20260827/</code> present. <code>extracted/</code> holds 14 files, all SHA-256 hashed to <code>tinh-3908-hashes.json</code>:</p>
+<table>
+<tr><th>File</th><th>Bytes</th></tr>
+<tr><td>INEGOL_PDD_PRR_R3_clean.pdf (source PDD)</td><td>5,878,389</td></tr>
+<tr><td>ER Calculation.v04_21.07.2025.xlsx</td><td>2,682,933</td></tr>
+<tr><td>INEGOL_CPA_R3_21.07.2025.xlsx</td><td>1,607,949</td></tr>
+<tr><td>Inegol IRR_R5_22.08.2025.xlsx</td><td>2,559,842</td></tr>
+<tr><td>VCS_PROJ_DESC_PCP_3908_20MAR2023.pdf</td><td>4,678,686</td></tr>
+<tr><td>BIOTREND vs MVC vs GAIA deed (15.7 MB) + 8 approval/deed/validation/exemption PDFs</td><td>see hashes file</td></tr>
+</table>
+
+<h2>Tools (TASK-02-03..04)</h2>
+<table>
+<tr><th>Tool</th><th>Value</th></tr>
+<tr><td>Poppler</td><td class="pass">26.07.0, portable extract at <code>tools/poppler/Library/bin/pdftoppm.exe</code> (no PATH change; 42 MB zip removed after extract)</td></tr>
+<tr><td>LibreOffice</td><td><code>C:/Program Files/LibreOffice/program/soffice.exe</code> (verified present)</td></tr>
+<tr><td>Python for runner</td><td>Isolated <code>C:/t3908/venv</code> (pypdf, python-docx, reportlab, openpyxl) — project <code>.venv</code> and <code>uv.lock</code> untouched per CON-004</td></tr>
+<tr><td>Staging</td><td><code>C:/t3908/job</code> (short path per ASM-006)</td></tr>
+</table>
+<p><span class="warn">Finding F-4:</span> <code>run_pdd_in_place.py resolve_path()</code> joins relative <code>--input-dir</code> onto the workspace ROOT, so repo-relative paths double up (<code>.../ws/.../ws/.../inputs</code>). Absolute paths required. Workspace bug, worked around, not fixed (out of scope).</p>
+<p><span class="warn">Finding F-5:</span> first launch attempt failed on <code>ModuleNotFoundError: reportlab</code> — the portable requirements were never installed on this machine. Resolved via the isolated venv above.</p>
+
+<h2>Packaging run (TASK-02-05)</h2>
+<table>
+<tr><th>Metric</th><th>Value</th></tr>
+<tr><td>Return code</td><td class="pass">0 in 224.2s (~3m44s wall clock)</td></tr>
+<tr><td>Source pages rendered (pdftoppm 150dpi)</td><td>139 PNGs</td></tr>
+<tr><td>Workbook conversions (LibreOffice)</td><td>3/3 PDFs</td></tr>
+</table>
+
+<h2>Outputs (TASK-02-06, 207 files total)</h2>
+<table>
+<tr><th>Artifact</th><th>Size</th><th>Pages</th></tr>
+<tr><td><code>3908_PDD_in_place_Codex.pdf</code> (merged: cover + source PDD + 3 workbook PDFs)</td><td>9,065,146 B</td><td class="pass">560</td></tr>
+<tr><td><code>3908_PDD_in_place_Codex.docx</code> (source pages embedded as images)</td><td>37,438,799 B</td><td>—</td></tr>
+<tr><td><code>ER Calculation</code> PDF</td><td>1,961,467 B</td><td>52</td></tr>
+<tr><td><code>Inegol IRR</code> PDF</td><td>527,258 B</td><td>56</td></tr>
+<tr><td><code>INEGOL_CPA</code> PDF</td><td>706,201 B</td><td>312</td></tr>
+<tr><td><code>00_PACKAGE_COVER.pdf</code></td><td>5,918 B</td><td>2</td></tr>
+<tr><td><code>in_place_run_manifest.json</code> (copied to <code>raw/tinh-run-manifest.json</code>)</td><td>6,802 B</td><td>—</td></tr>
+</table>
+<p>Only the 6.8 KB manifest was copied into <code>reports/</code> — no large artifacts enter git (CON-005/CON-006).</p>
+
+<h2>Execution status (TASK-02-09)</h2>
+<table>
+<tr><th>Stage</th><th>Status</th></tr>
+<tr><td>00_INPUT manifest</td><td class="pass">executed</td></tr>
+<tr><td>Mechanical packaging (render + convert + merge)</td><td class="pass">executed</td></tr>
+<tr><td>Codex authoring (36-slot prose, citations, attestations)</td><td><span class="warn">documented_only</span> — from <code>PDD_CREATION_PROCESS.md</code> excerpt (108 lines)</td></tr>
+<tr><td>Calculation transfer</td><td><span class="warn">documented_only</span> — workspace never recomputes; attests no new calculation</td></tr>
+</table>
+
+<h2>Exit criteria</h2>
+<table>
+<tr><th>Criterion</th><th>Result</th></tr>
+<tr><td><code>pdftoppm -v</code> succeeds, version recorded</td><td class="pass">PASS (26.07.0)</td></tr>
+<tr><td><code>tinh-run.json</code> returncode 0</td><td class="pass">PASS (224.2s)</td></tr>
+<tr><td>merged PDF &ge;500 pages + &ge;3 workbook PDFs</td><td class="pass">PASS (560 + 3)</td></tr>
+<tr><td>hashes contain <code>INEGOL_PDD_PRR_R3_clean.pdf</code></td><td class="pass">PASS</td></tr>
+<tr><td>authoring stage <code>documented_only</code></td><td class="pass">PASS</td></tr>
+<tr><td><code>git status data/runs</code> clean</td><td class="pass">PASS</td></tr>
+</table>
+
+<h2>Raw captures</h2>
+<p>Under <code>reports/walkthrough/raw/</code>: <code>tinh-3908-hashes.json</code>, <code>tinh-tools.txt</code>, <code>tinh-run.json</code>, <code>tinh-outputs.json</code>, <code>tinh-run-manifest.json</code>, <code>tinh-process-excerpt.md</code>, <code>tinh-execution-status.json</code>. Nothing inside <code>data/runs/tinh-20260827/</code> modified except <code>tools/poppler/</code> (git-ignored tree).</p>
+</body>
+</html>

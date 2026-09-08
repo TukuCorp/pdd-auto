@@ -1,0 +1,169 @@
+{
+  "methodology_id": "ACM0022",
+  "baseline_emissions_tco2e": 59335.712037092424,
+  "project_emissions_tco2e": 8645.233802010625,
+  "leakage_tco2e": 0.0,
+  "net_emission_reductions_tco2e": 50690.4782350818,
+  "crediting_period_total_tco2e": 893441.4295952718,
+  "crediting_period_years": 7,
+  "components": [
+    {
+      "name": "BE_CH4 (methane from SWDS)",
+      "value_tco2e": 32320.706622092424,
+      "unit": "tCO2e/year",
+      "formula": "ACM0022 Eq.1 + Tool 04 Eq.2",
+      "notes": "FOD model, year 1, 100% of throughput diverted from SWDS"
+    },
+    {
+      "name": "BE_EC (displaced grid electricity)",
+      "value_tco2e": 27015.005415000003,
+      "unit": "tCO2e/year",
+      "formula": "ACM0022 Eq.13 + Tool 05 Eq.2",
+      "notes": "EF=0.541 tCO2/MWh (VCS-3908 registered PDD, combined margin EFgrid,CM,y = 0.5 x EFgrid,BM,y (0.3541) + 0.5 x EFgrid,OM,y (0.7279), per CDM Tool 07)"
+    },
+    {
+      "name": "PE_EC (grid electricity consumed)",
+      "value_tco2e": 0.0,
+      "unit": "tCO2e/year",
+      "formula": "Tool 05 Eq.1",
+      "notes": ""
+    },
+    {
+      "name": "PE_FC (fossil fuel combustion)",
+      "value_tco2e": 0.0,
+      "unit": "tCO2e/year",
+      "formula": "Tool 03 Eq.1",
+      "notes": ""
+    },
+    {
+      "name": "PE_CH4 (AD methane leakage)",
+      "value_tco2e": 8645.233802010625,
+      "unit": "tCO2e/year",
+      "formula": "Tool 14 Eq.4",
+      "notes": "leakage fraction=0.05"
+    },
+    {
+      "name": "PE_COM_CO2 (fossil carbon in combusted waste)",
+      "value_tco2e": 0.0,
+      "unit": "tCO2e/year",
+      "formula": "ACM0022 Eq.22",
+      "notes": "0 stream(s), EFF_COM=1.0"
+    },
+    {
+      "name": "PE_COM_CH4_N2O (combustion CH4+N2O)",
+      "value_tco2e": 0.0,
+      "unit": "tCO2e/year",
+      "formula": "ACM0022 Eq.27",
+      "notes": "total combusted 0 t"
+    },
+    {
+      "name": "PE_WW (run-off wastewater)",
+      "value_tco2e": 0.0,
+      "unit": "tCO2e/year",
+      "formula": "ACM0022 Eq.28",
+      "notes": ""
+    },
+    {
+      "name": "LE_RDF (RDF end-use)",
+      "value_tco2e": 0.0,
+      "unit": "tCO2e/year",
+      "formula": "ACM0022 Eq.34",
+      "notes": "undocumented"
+    },
+    {
+      "name": "LE_AD (digestate storage)",
+      "value_tco2e": 0.0,
+      "unit": "tCO2e/year",
+      "formula": "Tool 14 Eq.5",
+      "notes": ""
+    }
+  ],
+  "warnings": [
+    "calc_climate_zone_resolved: zone=boreal_temperate_wet derived=True"
+  ],
+  "monitoring_params": [
+    {
+      "id": "ACM0022-PARAM-01",
+      "name": "Annual waste throughput",
+      "unit": "tonnes/year",
+      "frequency": "Continuously",
+      "source": "Project records / weighbridge",
+      "section_ref": "5.2"
+    },
+    {
+      "id": "ACM0022-PARAM-02",
+      "name": "Biogas methane concentration",
+      "unit": "% CH4",
+      "frequency": "Monthly or per batch",
+      "source": "Gas composition analysis",
+      "section_ref": "5.2"
+    },
+    {
+      "id": "ACM0022-PARAM-03",
+      "name": "Recovered electricity",
+      "unit": "MWh/year",
+      "frequency": "Continuously",
+      "source": "Electricity metering",
+      "section_ref": "5.2"
+    },
+    {
+      "id": "ACM0022-PARAM-04",
+      "name": "Grid emission factor",
+      "unit": "tCO2e/MWh",
+      "frequency": "Annual update",
+      "source": "ACM0022 default or national grid authority",
+      "section_ref": "4.1"
+    }
+  ],
+  "annual_schedule": [
+    {
+      "year": 1,
+      "baseline_tco2e": 59335.712037092424,
+      "project_tco2e": 8645.233802010625,
+      "leakage_tco2e": 0.0,
+      "net_tco2e": 50690.4782350818
+    },
+    {
+      "year": 2,
+      "baseline_tco2e": 88874.613749025,
+      "project_tco2e": 8645.233802010625,
+      "leakage_tco2e": 0.0,
+      "net_tco2e": 80229.37994701437
+    },
+    {
+      "year": 3,
+      "baseline_tco2e": 115871.13720222183,
+      "project_tco2e": 8645.233802010625,
+      "leakage_tco2e": 0.0,
+      "net_tco2e": 107225.9034002112
+    },
+    {
+      "year": 4,
+      "baseline_tco2e": 140544.10188000454,
+      "project_tco2e": 8645.233802010625,
+      "leakage_tco2e": 0.0,
+      "net_tco2e": 131898.86807799392
+    },
+    {
+      "year": 5,
+      "baseline_tco2e": 163093.49373212561,
+      "project_tco2e": 8645.233802010625,
+      "leakage_tco2e": 0.0,
+      "net_tco2e": 154448.259930115
+    },
+    {
+      "year": 6,
+      "baseline_tco2e": 183702.08615468,
+      "project_tco2e": 8645.233802010625,
+      "leakage_tco2e": 0.0,
+      "net_tco2e": 175056.85235266938
+    },
+    {
+      "year": 7,
+      "baseline_tco2e": 202536.9214541968,
+      "project_tco2e": 8645.233802010625,
+      "leakage_tco2e": 0.0,
+      "net_tco2e": 193891.68765218617
+    }
+  ]
+}

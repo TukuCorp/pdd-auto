@@ -1,0 +1,2162 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-08T10:43:51Z",
+  "project": {
+    "project_name": "INEGOL INTEGRATED SOLID WASTE STORAGE AND DISPOSAL FACILITY",
+    "vcs_id": "3908",
+    "methodology_ids": [
+      "ACM0022"
+    ],
+    "family_slug": "wte",
+    "installed_capacity_mw": 8.484,
+    "country": "Türkiye",
+    "city": "İnegöl District",
+    "has_evidence_registry": false,
+    "has_assumptions_file": false
+  },
+  "environment": {
+    "python": "3.13.12 (main, Mar  3 2026, 15:00:12) [MSC v.1944 64 bit (AMD64)]",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "pytest_tail": "=== sha ===",
+    "commit": "6731685195a0c3ec7d164d8b057e955e14c9e52d"
+  },
+  "repo_lane": {
+    "corpus_index": {
+      "db_path": "data\\index\\corpus.fts.db",
+      "total_rows": 2545,
+      "distinct_texts": 2492,
+      "duplication_rate": 0.021,
+      "documents": 13,
+      "rows_by_document": {
+        "VCS_Bergama_Project-Description.norm": 313,
+        "VCS_DRAFT_Yanjiang_Project-Description.norm": 179,
+        "VCS_Guangzhou_Project-Description.norm": 192,
+        "VCS_Guanxi_Zhuang_Project_Description.norm": 163,
+        "VCS_Inegol_Project-Description.norm": 230,
+        "VCS_Linfen_Project-Description.norm": 177,
+        "VCS_Lizuhou_Project-Description.norm": 203,
+        "VCS_Mahindra_Project-Description.norm": 138,
+        "VCS_Shunping_Project-Description.norm": 253,
+        "VCS_Soc_Son_Project-Description.norm": 187,
+        "VCS_Tamil_Nadu_Project-Description.norm": 134,
+        "VCS_Yingoku_Project-Description.norm": 115,
+        "VCS_Ã_demis_Project-Description.norm": 261
+      },
+      "mean_text_chars": 1103.1,
+      "median_text_chars": 1066,
+      "rows_at_500_chars": 2,
+      "reachable_rows": 891,
+      "reachable_documents": 13,
+      "missing_documents": [
+        "Bergama_VCS-Joint-Project-Description-Monitoring-Report-v4.2.norm",
+        "DraftProjectDescription.norm",
+        "EB111_repan07_ACM0022_v03.0.norm",
+        "VCS-Project-Description-HEREKO-v4.1_2022-10-24.norm"
+      ]
+    },
+    "intake": {
+      "input_file": "C:\\Users\\tukum\\Downloads\\pdd-auto\\configs\\demo\\inegol_project_input.yaml",
+      "project_name": "INEGOL INTEGRATED SOLID WASTE STORAGE AND DISPOSAL FACILITY",
+      "methodology_ids": [
+        "ACM0022"
+      ]
+    },
+    "screening": {
+      "methodology_id": "ACM0022",
+      "engine": "acm0022",
+      "family_slug": "wte"
+    },
+    "calc": {
+      "methodology_id": "ACM0022",
+      "baseline_emissions_tco2e": 59335.712037092424,
+      "project_emissions_tco2e": 8645.233802010625,
+      "leakage_tco2e": 0.0,
+      "net_emission_reductions_tco2e": 50690.4782350818,
+      "crediting_period_total_tco2e": 893441.4295952718,
+      "crediting_period_years": 7,
+      "components": [
+        {
+          "name": "BE_CH4 (methane from SWDS)",
+          "value_tco2e": 32320.706622092424,
+          "unit": "tCO2e/year",
+          "formula": "ACM0022 Eq.1 + Tool 04 Eq.2",
+          "notes": "FOD model, year 1, 100% of throughput diverted from SWDS"
+        },
+        {
+          "name": "BE_EC (displaced grid electricity)",
+          "value_tco2e": 27015.005415000003,
+          "unit": "tCO2e/year",
+          "formula": "ACM0022 Eq.13 + Tool 05 Eq.2",
+          "notes": "EF=0.541 tCO2/MWh (VCS-3908 registered PDD, combined margin EFgrid,CM,y = 0.5 x EFgrid,BM,y (0.3541) + 0.5 x EFgrid,OM,y (0.7279), per CDM Tool 07)"
+        },
+        {
+          "name": "PE_EC (grid electricity consumed)",
+          "value_tco2e": 0.0,
+          "unit": "tCO2e/year",
+          "formula": "Tool 05 Eq.1",
+          "notes": ""
+        },
+        {
+          "name": "PE_FC (fossil fuel combustion)",
+          "value_tco2e": 0.0,
+          "unit": "tCO2e/year",
+          "formula": "Tool 03 Eq.1",
+          "notes": ""
+        },
+        {
+          "name": "PE_CH4 (AD methane leakage)",
+          "value_tco2e": 8645.233802010625,
+          "unit": "tCO2e/year",
+          "formula": "Tool 14 Eq.4",
+          "notes": "leakage fraction=0.05"
+        },
+        {
+          "name": "PE_COM_CO2 (fossil carbon in combusted waste)",
+          "value_tco2e": 0.0,
+          "unit": "tCO2e/year",
+          "formula": "ACM0022 Eq.22",
+          "notes": "0 stream(s), EFF_COM=1.0"
+        },
+        {
+          "name": "PE_COM_CH4_N2O (combustion CH4+N2O)",
+          "value_tco2e": 0.0,
+          "unit": "tCO2e/year",
+          "formula": "ACM0022 Eq.27",
+          "notes": "total combusted 0 t"
+        },
+        {
+          "name": "PE_WW (run-off wastewater)",
+          "value_tco2e": 0.0,
+          "unit": "tCO2e/year",
+          "formula": "ACM0022 Eq.28",
+          "notes": ""
+        },
+        {
+          "name": "LE_RDF (RDF end-use)",
+          "value_tco2e": 0.0,
+          "unit": "tCO2e/year",
+          "formula": "ACM0022 Eq.34",
+          "notes": "undocumented"
+        },
+        {
+          "name": "LE_AD (digestate storage)",
+          "value_tco2e": 0.0,
+          "unit": "tCO2e/year",
+          "formula": "Tool 14 Eq.5",
+          "notes": ""
+        }
+      ],
+      "warnings": [
+        "calc_climate_zone_resolved: zone=boreal_temperate_wet derived=True"
+      ],
+      "monitoring_params": [
+        {
+          "id": "ACM0022-PARAM-01",
+          "name": "Annual waste throughput",
+          "unit": "tonnes/year",
+          "frequency": "Continuously",
+          "source": "Project records / weighbridge",
+          "section_ref": "5.2"
+        },
+        {
+          "id": "ACM0022-PARAM-02",
+          "name": "Biogas methane concentration",
+          "unit": "% CH4",
+          "frequency": "Monthly or per batch",
+          "source": "Gas composition analysis",
+          "section_ref": "5.2"
+        },
+        {
+          "id": "ACM0022-PARAM-03",
+          "name": "Recovered electricity",
+          "unit": "MWh/year",
+          "frequency": "Continuously",
+          "source": "Electricity metering",
+          "section_ref": "5.2"
+        },
+        {
+          "id": "ACM0022-PARAM-04",
+          "name": "Grid emission factor",
+          "unit": "tCO2e/MWh",
+          "frequency": "Annual update",
+          "source": "ACM0022 default or national grid authority",
+          "section_ref": "4.1"
+        }
+      ],
+      "annual_schedule": [
+        {
+          "year": 1,
+          "baseline_tco2e": 59335.712037092424,
+          "project_tco2e": 8645.233802010625,
+          "leakage_tco2e": 0.0,
+          "net_tco2e": 50690.4782350818
+        },
+        {
+          "year": 2,
+          "baseline_tco2e": 88874.613749025,
+          "project_tco2e": 8645.233802010625,
+          "leakage_tco2e": 0.0,
+          "net_tco2e": 80229.37994701437
+        },
+        {
+          "year": 3,
+          "baseline_tco2e": 115871.13720222183,
+          "project_tco2e": 8645.233802010625,
+          "leakage_tco2e": 0.0,
+          "net_tco2e": 107225.9034002112
+        },
+        {
+          "year": 4,
+          "baseline_tco2e": 140544.10188000454,
+          "project_tco2e": 8645.233802010625,
+          "leakage_tco2e": 0.0,
+          "net_tco2e": 131898.86807799392
+        },
+        {
+          "year": 5,
+          "baseline_tco2e": 163093.49373212561,
+          "project_tco2e": 8645.233802010625,
+          "leakage_tco2e": 0.0,
+          "net_tco2e": 154448.259930115
+        },
+        {
+          "year": 6,
+          "baseline_tco2e": 183702.08615468,
+          "project_tco2e": 8645.233802010625,
+          "leakage_tco2e": 0.0,
+          "net_tco2e": 175056.85235266938
+        },
+        {
+          "year": 7,
+          "baseline_tco2e": 202536.9214541968,
+          "project_tco2e": 8645.233802010625,
+          "leakage_tco2e": 0.0,
+          "net_tco2e": 193891.68765218617
+        }
+      ]
+    },
+    "retrieval": {
+      "family_slug": "wte",
+      "sections": {
+        "4.1": {
+          "hits": [
+            {
+              "document_name": "VCS_Bergama_Project-Description.norm",
+              "canonical_heading": "Baseline Emissions",
+              "score": 0.0,
+              "matched_terms": [],
+              "from_fallback_family": false,
+              "excerpt": "For the methodology ACM0022: Alternative waste treatment processes --- Version 03.0, \nbaseline emissions are determined as follows:  \n𝐵𝐸𝑦 = ∑(𝐵𝐸𝐶𝐻4,𝑡,𝑦 + 𝐵𝐸𝑊𝑊,𝑡,𝑦 + 𝐵𝐸𝐸𝑁,𝑡,𝑦 + 𝐵𝐸𝑁𝐺,𝑡,𝑦) × (1\n𝑡\n− 𝑅𝐴𝑇𝐸𝑐𝑜𝑚𝑝𝑙𝑖𝑎𝑛𝑐𝑒,𝑡) \nEquation (1) \nWhere: \n𝐵𝐸𝑦 = Baseline emissions in year  y (t CO2e) \n𝐵𝐸𝐶𝐻4,𝑡,𝑦 = Baseline emissions of methane from the SWDS in year y (t CO2e) \n𝐵𝐸𝑊𝑊,𝑡,𝑦 = Baseline methane emissions from"
+            },
+            {
+              "document_name": "VCS_DRAFT_Yanjiang_Project-Description.norm",
+              "canonical_heading": "Baseline Emissions",
+              "score": 0.0,
+              "matched_terms": [],
+              "from_fallback_family": false,
+              "excerpt": "AccordingtothemethodologyACM0022(version03.0),baseline\nemissionsaredeterminedaccordingtoequation(1)andcomprisethe\nfollowingsources:\n(a) MethaneemissionsfromtheSWDSintheabsenceoftheproject\nactivity;\n(b) Methaneemissionsfromthetreatmentoforganicwastewaterinthe\nabsenceoftheprojectactivity;\n(c) Energygeneratedorelectricityconsumedbythegridintheabsence\noftheprojectactivity;\n(d) Naturalgasusedfromthenat"
+            },
+            {
+              "document_name": "VCS_Guangzhou_Project-Description.norm",
+              "canonical_heading": "Baseline Emissions",
+              "score": 0.0,
+              "matched_terms": [],
+              "from_fallback_family": false,
+              "excerpt": "According to the methodology ACM0022 (version 03.0), baseline emissions are determined \naccording to equation (1) and comprise the following sources:  \n(a) Methane emissions from the SWDS in the absence of the project activity;  \n(b) Methane emissions from the treatment of organic wastewater in the  absence of the project \nactivity; \n(c) Energy generated or electricity consumed by the grid in the "
+            },
+            {
+              "document_name": "VCS_Guanxi_Zhuang_Project_Description.norm",
+              "canonical_heading": "Baseline Emissions",
+              "score": 0.0,
+              "matched_terms": [],
+              "from_fallback_family": false,
+              "excerpt": "According to the methodology ACM0022 (version 03.0), baseline emissions are d etermined \naccording to equation (1) and comprise the following sources:  \n(a) Methane emissions from the SWDS in the absence of the project activity;  \n(b) Methane emissions from the treatment of organic wastewater in the  absence of the project \nactivity; \n(c) Energy generated or electricity consumed by the grid in the"
+            },
+            {
+              "document_name": "VCS_Inegol_Project-Description.norm",
+              "canonical_heading": "Baseline Emissions",
+              "score": 0.0,
+              "matched_terms": [],
+              "from_fallback_family": false,
+              "excerpt": "Baseline emissions are determined as follows: \n𝐵𝐸௬ ൌ෍ ൫𝐵𝐸஼ுସ,௧,௬ ൅𝐵 𝐸ௐௐ,௧,௬ ൅𝐵 𝐸ாே,௧,௬ ൅𝐵 𝐸ேீ,௧,௬൯ ൈሺ 1\n௧\nെ𝑅 𝐴 𝑇 𝐸௖௢௠௣௟௜௔௡௖௘,௧ሻ \nEquation (1) \nWhere: \n𝐵𝐸௬ = Baseline emissions in year y (t CO2e) \n𝐵𝐸஼ுସ,௧,௬ = Baseline emissions of methane from the SWDS \nin year y (t CO2e) \n𝐵𝐸ௐௐ,௧,௬ = Baseline methane emissions from anaerobic \ntreatment of the wastewater in open anaerobic \nl a g o o n s  o r  o f  s"
+            }
+          ],
+          "reason": null
+        },
+        "3.5": {
+          "hits": [
+            {
+              "document_name": "VCS_Bergama_Project-Description.norm",
+              "canonical_heading": "Additionality",
+              "score": 0.0,
+              "matched_terms": [],
+              "from_fallback_family": false,
+              "excerpt": "Additionality of project activity is considered for each methodology. Project activities that are \nassociated with ACM0001: Flaring or use of landfill gas --- Version 19.0  are stays within the \n Joint Project Description & Monitoring Report: VCS Version 4. 2 \n69 \nTOOL32 Positive List and additionality is investigated for project activities that are associated \nwith ACM0022: Alternative waste trea"
+            },
+            {
+              "document_name": "VCS_DRAFT_Yanjiang_Project-Description.norm",
+              "canonical_heading": "Additionality",
+              "score": 0.0,
+              "matched_terms": [],
+              "from_fallback_family": false,
+              "excerpt": "TheobjectiveofStep3istocomparetheeconomicorfinancial\nattractivenessofthealternativescenariosremainingafterStep2by\nconductinganinvestmentanalysis.Theanalysisshouldincludeall\nalternativescenariosremainingafterStep2,includingscenarioswhere\ntheprojectparticipantsdonotundertakeaninvestment(M1+P1).\nThelatestapprovedversionoftheGuidelinesontheassessmentof\ninvestmentanalysis,availableontheUNFCCCwebsite,sh"
+            },
+            {
+              "document_name": "VCS_Guangzhou_Project-Description.norm",
+              "canonical_heading": "Additionality",
+              "score": 0.0,
+              "matched_terms": [],
+              "from_fallback_family": false,
+              "excerpt": "According to the methodology ACM0022 (Version 03.0),  using “TOOL02: Combined tool to \nidentify the baseline scenario and demonstrate additionality” (version 07.0) to identify the \nbaseline scenario and demonstrate additionality. Based on the above section 3.4, the step 3  \nand step 4 are listed as following. \nStep 3: Investment Analysis  \nAccording to “Combined tool to identify the baseline scena"
+            },
+            {
+              "document_name": "VCS_Guanxi_Zhuang_Project_Description.norm",
+              "canonical_heading": "Additionality",
+              "score": 0.0,
+              "matched_terms": [],
+              "from_fallback_family": false,
+              "excerpt": "According to the relevant applicable laws and regulations at the time of submission of registration, \ni.e. Renewable Energy  Law of the People’s Republic of China which came into effect on 01 -Jan-\n2006, Agenda for China’s 14th Five -Year Plan (2021 -2025), there are no new national and/or \nsectoral policies that could affect the baseline scenario during the crediting period. Theref ore, \nthe proj"
+            },
+            {
+              "document_name": "VCS_Inegol_Project-Description.norm",
+              "canonical_heading": "Additionality",
+              "score": 0.0,
+              "matched_terms": [],
+              "from_fallback_family": false,
+              "excerpt": "In the case of the proposed project activity, the Methodology of ACM0022: Alternative waste \ntreatment processes, version 3.0 43 is applied to the proposed project activity. Additionality for \nthe project activity is demonstrated using Tool 02 Combined tool to identify the baseline scenario \nand demonstrate addition ality (Version 07.0)44.  \nAccording to TOOL02, the project partic ipants shall fol"
+            }
+          ],
+          "reason": null
+        },
+        "1.13": {
+          "hits": [
+            {
+              "document_name": "VCS_Bergama_Project-Description.norm",
+              "canonical_heading": "Conditions Prior to Project Initiation",
+              "score": 0.0,
+              "matched_terms": [],
+              "from_fallback_family": false,
+              "excerpt": "Within the borders of İzmir Province, Bergama District, Kaşıkçı Neighborhood, Bergama \nMunicipality took the decision of \"Environmental Impacts are Insignificant\" with the decision \nnumber 162/2002/02 and dated 28 -February-2002 and started to be operated by Bergama \nMunicipality as \"Bergama Regular Solid Waste Disposal Facility\" in 2011. The facility continued \nto be operated by the Izmir Metropo"
+            },
+            {
+              "document_name": "VCS_DRAFT_Yanjiang_Project-Description.norm",
+              "canonical_heading": "Conditions Prior to Project Initiation",
+              "score": 0.0,
+              "matched_terms": [],
+              "from_fallback_family": false,
+              "excerpt": "Thescenarioexistingpriortothestartoftheimplementationoftheprojectactivityis:\n1)TheMSWincineratedandutilizedbytheProjectwasdisposedofatthelocalsolid\nwastesanitarylandfill,withnolandfillgascapturingsystemandthelandfillgaswas\nreleaseddirectlyintotheatmosphere.And,\n2)Inthebaselinescenario,CSPGappliedcoal-firedpowerplantstoburnfossilfuels\nforpowergeneration.Theelectricitygeneratedbythisprojectwillbecon"
+            },
+            {
+              "document_name": "VCS_Guangzhou_Project-Description.norm",
+              "canonical_heading": "Conditions Prior to Project Initiation",
+              "score": 0.0,
+              "matched_terms": [],
+              "from_fallback_family": false,
+              "excerpt": "The scenario existing prior to the start of the implementation of the project activity is:   \n1) The fresh waste would be treated in a landfill site with a partial capture of the landfill gas \n(LFG) and flaring of the captured LFG . In addition;  \n2) The quantity of electricity produced using biogas would have been produced by power plants \nconnected to the grid (CSPG).  \nThe baseline scenario is "
+            },
+            {
+              "document_name": "VCS_Guanxi_Zhuang_Project_Description.norm",
+              "canonical_heading": "Conditions Prior to Project Initiation",
+              "score": 0.0,
+              "matched_terms": [],
+              "from_fallback_family": false,
+              "excerpt": "The conditions existing prior to project initiation  is the same as the baseline scenario of the \nproject, please refer to Section 3.4(Baseline Scenario)."
+            },
+            {
+              "document_name": "VCS_Inegol_Project-Description.norm",
+              "canonical_heading": "Conditions Prior to Project Initiation",
+              "score": 0.0,
+              "matched_terms": [],
+              "from_fallback_family": false,
+              "excerpt": "Project Description: VCS Version 4.2 \n24 \nPrior to the proposed project activity, The fresh waste would be disposed of in an SWDS with a \npartial capture of the LFG and fl aring of the captured LFG .  \nPlease refer to Section 3.4 for further details on baseline scenario."
+            }
+          ],
+          "reason": null
+        },
+        "1.1": {
+          "hits": [
+            {
+              "document_name": "VCS_Bergama_Project-Description.norm",
+              "canonical_heading": "Summary Description of the Project",
+              "score": 0.0,
+              "matched_terms": [],
+              "from_fallback_family": false,
+              "excerpt": "Bergama integrated solid waste management facility and electricity generation facility  is a waste \nhandling and disposal project where Municipal Solid Wastes (MSW) from several districts of Izmir \nprovince is disposed to Bergama Integrated Solid Waste Management Facility , mechanically \nseparated and utilized for power generation. Upon the acceptance of mixed MSW, waste streams \nare separated bas"
+            },
+            {
+              "document_name": "VCS_DRAFT_Yanjiang_Project-Description.norm",
+              "canonical_heading": "Summary Description of the Project",
+              "score": 0.0,
+              "matched_terms": [],
+              "from_fallback_family": false,
+              "excerpt": "YangjiangMSWincinerationandpowergenerationproject(hereafterreferredtoas\ntheproject)islocatedinShenGangdong,JiangchengDistrict,YangjiangCity,\nGuangdongProvince,China.TheProjectisinvested,constructedandoperatedby\nYangjiangSUSEnvironmentalProtectionCo.,Ltd.(hereafterreferredtoasthe\nprojectowner).\nWithtwo600t/dMSWcombustionproductionlines,theprojectwilltreat1,200tonsof\nMSWperday.Thecombustionsystemisc"
+            },
+            {
+              "document_name": "VCS_Guangzhou_Project-Description.norm",
+              "canonical_heading": "Summary Description of the Project",
+              "score": 0.0,
+              "matched_terms": [],
+              "from_fallback_family": false,
+              "excerpt": "Guangzhou Eastern Solid Resource Recycling Center MSW Integrated Treatment Plant Project \n(hereinafter referred to as the project) is located at the  Solid Resource Recycling Center, \nFushan Village, Jiulong Town, Luogang District, Guangzhou City, Guangdong Province, P.R China. \nThe project is owned and implemented by Guangz hou LEO-KING Environmental Technology Co., \nLtd.. \nThe purpose of the pro"
+            },
+            {
+              "document_name": "VCS_Guanxi_Zhuang_Project_Description.norm",
+              "canonical_heading": "Summary Description of the Project",
+              "score": 0.0,
+              "matched_terms": [],
+              "from_fallback_family": false,
+              "excerpt": "Guangxi Guigang Food Waste Recycling Project (hereinafter referred to as the project) is located \nat Northwest of Guigang City's Circular Economy and Environmental Protection Industry \nDemonstration Base , Guigang City, Guangxi Zhuang Autonomous Region , P.R China. The project \nis owned and implemented by Guangxi Guigang Beikong Environmental technology Co., Ltd. \nThe purpose of the project is to "
+            },
+            {
+              "document_name": "VCS_Inegol_Project-Description.norm",
+              "canonical_heading": "Summary Description of the Project",
+              "score": 0.0,
+              "matched_terms": [],
+              "from_fallback_family": false,
+              "excerpt": "The project, operated by Do ğu  S t a r  E l e k t r i k  Ü r e t i m  A.Ş., is the \" İnegöl Integrated Solid Waste \nStorage and Disposal Facility\" situated in The Republic of Türkiye, Bursa Province, İnegöl District, \nYeniyörük Mahallesi, Körkuyu. It encompasses various components, namely the Mechanical \nseparation facility, Refuse drive fuel (RDF) preparation facility, Biomethanization facility "
+            }
+          ],
+          "reason": null
+        }
+      }
+    },
+    "prompt": {
+      "sub_section_id": "4.1",
+      "capture_mode": "assembled_text",
+      "calc_attached": true,
+      "example_count": 5,
+      "char_count": 10653,
+      "elided": false,
+      "components": [
+        {
+          "block": "preamble",
+          "chars": 27
+        },
+        {
+          "block": "Section: Baseline Emissions (4.4.1)",
+          "chars": 198
+        },
+        {
+          "block": "Corpus Evidence (FTS5/BM25 retrieval)",
+          "chars": 8257
+        },
+        {
+          "block": "ACM0022 Calculation Engine Results",
+          "chars": 1263
+        },
+        {
+          "block": "Project-Specific Facts",
+          "chars": 289
+        },
+        {
+          "block": "Length Budget",
+          "chars": 94
+        },
+        {
+          "block": "Instructions",
+          "chars": 501
+        }
+      ],
+      "text": "# PDD Section Draft Request\n## Section: Baseline Emissions (4.4.1)\nContent class: QUANTITATIVE\nReview sensitivity: HIGH\nGuidance: HIGH_REVIEW. All numbers must be from official sources. Retrieve example calculations from corpus.\n\n## Corpus Evidence (FTS5/BM25 retrieval)\n\n### Evidence 1 [VCS_Bergama_Project-Description.norm] (BM25 score: 0.000)\n**Heading:** Baseline Emissions\n**Content class:** QUANTITATIVE\n\nFor the methodology ACM0022: Alternative waste treatment processes --- Version 03.0, \nbaseline emissions are determined as follows:  \n𝐵𝐸𝑦 = ∑(𝐵𝐸𝐶𝐻4,𝑡,𝑦 + 𝐵𝐸𝑊𝑊,𝑡,𝑦 + 𝐵𝐸𝐸𝑁,𝑡,𝑦 + 𝐵𝐸𝑁𝐺,𝑡,𝑦) × (1\n𝑡\n− 𝑅𝐴𝑇𝐸𝑐𝑜𝑚𝑝𝑙𝑖𝑎𝑛𝑐𝑒,𝑡) \nEquation (1) \nWhere: \n𝐵𝐸𝑦 = Baseline emissions in year  y (t CO2e) \n𝐵𝐸𝐶𝐻4,𝑡,𝑦 = Baseline emissions of methane from the SWDS in year y (t CO2e) \n𝐵𝐸𝑊𝑊,𝑡,𝑦 = Baseline methane emissions from anaerobic treatment of the \nwastewater in open anaerobic lagoons or of sludge in sludge pits \nin the absence of the project activity in year  y (t CO2e)  \n𝐵𝐸𝐸𝑁,𝑡,𝑦 = Baseline emissions associated with energy generation in year  y \n(t CO2) \n𝐵𝐸𝑁𝐺,𝑡,𝑦 = Baseline emissions associated with natural gas use in year  y \n(t CO2) \n𝑅𝐴𝑇𝐸𝑐𝑜𝑚𝑝𝑙𝑖𝑎𝑛𝑐𝑒,𝑡 = Discount factor to account for the rate of compliance of a \nregulatory requirement that mandates the use of alternative \nwaste treatment process t \n𝑡 = Type of alternative waste treatment process  \n \nBEWW,t,y and BENG,t,y are assumed to be zero, since the project activity does not include wastewater \ntreatment or biogas sent to the gas network.  \nThere is currently no regulation on requirement that mandates the use of alternative waste \ntreatment option in Turkey, thus RATEcompliance equals 0. \nBaseline emissions of methane from the SWDS (BE CH4,t,y): \nAs per Tool 04, the amount of methane generated from disposal of waste at the SWDS is \ncalculated based on a first order decay (FOD) model. The model differentiates between the \ndifferent types of w\n\n### Evidence 2 [VCS_DRAFT_Yanjiang_Project-Description.norm] (BM25 score: 0.000)\n**Heading:** Baseline Emissions\n**Content class:** QUANTITATIVE\n\nAccordingtothemethodologyACM0022(version03.0),baseline\nemissionsaredeterminedaccordingtoequation(1)andcomprisethe\nfollowingsources:\n(a) MethaneemissionsfromtheSWDSintheabsenceoftheproject\nactivity;\n(b) Methaneemissionsfromthetreatmentoforganicwastewaterinthe\nabsenceoftheprojectactivity;\n(c) Energygeneratedorelectricityconsumedbythegridintheabsence\noftheprojectactivity;\n(d) Naturalgasusedfromthenaturalgasnetworkintheabsenceofthe\nprojectactivity.\nBEy= ∑t(BECH4,t,y+BEWW,y+BEEN,t,y+BENG,t,y) × (1 − RATEcompliance,t,y) (1)\nWhere，\nBEy =Baselineemissionsinyeary(tCO2e)\nBECH4,t,y =BaselineemissionsofmethanefromtheSWDSinyeary\n(tCO2e)\nBEWW,y =Baselinemethaneemissionsfromanaerobictreatment\nofthewastewaterinopenanaerobiclagoonsorof\nsludgeinsludgepitsintheabsenceoftheproject\nactivityinyeary(tCO2e)\nBEEN,t,y =Baselineemissionsassociatedwithenergygeneration\ninyeary(tCO2)\nBENG,t,y =Baselineemissionsassociatedwithnaturalgasusein\n61\nForsimplification,thetypeofalternativewastetreatmentoptiontis\nhithertoomitted.Fortheproposedprojectactivitythebaseline\nemissionscomprisesof:\nA.MethaneemissionsfromtheSWDSintheabsenceoftheproject\nactivity;[BECH4,t,y]\nB.Energygeneratedorelectricityconsumedbythegridintheabsence\noftheprojectactivity;[BEEN,t,y]\nTheothertwosourcesstatedabove(BEWW,t,yandBENG,t,y)arenot\napplicable.Asthereisnolocalornationalenvironmentalregulationor\nlawthatmandatesthetreatmentofMSWthroughincinerationinChina\natpresent,thecompliancerateisdeterminedzeroforexantecalculation.\nTheregulatorysituatio\n\n### Evidence 3 [VCS_Guangzhou_Project-Description.norm] (BM25 score: 0.000)\n**Heading:** Baseline Emissions\n**Content class:** QUANTITATIVE\n\nAccording to the methodology ACM0022 (version 03.0), baseline emissions are determined \naccording to equation (1) and comprise the following sources:  \n(a) Methane emissions from the SWDS in the absence of the project activity;  \n(b) Methane emissions from the treatment of organic wastewater in the  absence of the project \nactivity; \n(c) Energy generated or electricity consumed by the grid in the absence of the  project activity; \n(d) Natural gas used from the natural gas network in the absence of the  project activity. \n𝐵𝐵𝐸𝐸𝑦𝑦 = ∑ (𝑡𝑡 𝐵𝐵𝐸𝐸𝐶𝐶𝐶𝐶4,𝑡𝑡,𝑦𝑦 + 𝐵𝐵𝐸𝐸𝑊𝑊𝑊𝑊,𝑦𝑦 + 𝐵𝐵𝐸𝐸𝐸𝐸𝐸𝐸,𝑡𝑡,𝑦𝑦 + 𝐵𝐵𝐸𝐸𝐸𝐸𝑁𝑁,𝑡𝑡,𝑦𝑦) × (1 − 𝑅𝑅𝑅𝑅𝑅𝑅𝐸𝐸𝑐𝑐𝑐𝑐𝑐𝑐𝑐𝑐𝑐𝑐𝑐𝑐𝑐𝑐𝑐𝑐𝑐𝑐𝑐𝑐,𝑡𝑡,𝑦𝑦)                 (1) \nWith, \nWhere,  \nBEy = Baseline emissions in year y (t CO 2e) \nBECH4,t,y = Baseline emissions of methane from the SWDS in year y (t CO 2e) \nBEWW,y = Baseline methane emissions from anaerobic treatment of  the wastewater \nin open anaerobic lagoons or of sludge in sludge pits in the absence of the \nproject activity in year y (t CO 2e) \nBEEN,t,y = Baseline emissions associated with energy generation in  year y (t CO2) \nBENG,t,y = Baseline emissions associated with natural gas use in  year y (t CO2) \nRATEcompliance,t,y  = Rate of compliance of a requirement that mandates the use of alternative \nwaste treatment option t in year y  \nT = Type of alternative waste treatment option  \nFor simplification, the type of alternative waste treatment option t is hitherto omitted.  \nThe project is using methane from fresh waste by anaer\n\n### Evidence 4 [VCS_Guanxi_Zhuang_Project_Description.norm] (BM25 score: 0.000)\n**Heading:** Baseline Emissions\n**Content class:** QUANTITATIVE\n\nAccording to the methodology ACM0022 (version 03.0), baseline emissions are d etermined \naccording to equation (1) and comprise the following sources:  \n(a) Methane emissions from the SWDS in the absence of the project activity;  \n(b) Methane emissions from the treatment of organic wastewater in the  absence of the project \nactivity; \n(c) Energy generated or electricity consumed by the grid in the absence of the  project activity; \n(d) Natural gas used from the natural gas network in the absence of the  project activity. \n𝐵𝐵𝐸𝐸𝑦𝑦 = ∑ (𝑡𝑡 𝐵𝐵𝐸𝐸𝐶𝐶𝐶𝐶4,𝑡𝑡,𝑦𝑦 + 𝐵𝐵𝐸𝐸𝑊𝑊𝑊𝑊,𝑦𝑦 + 𝐵𝐵𝐸𝐸𝐸𝐸𝐸𝐸,𝑡𝑡,𝑦𝑦 + 𝐵𝐵𝐸𝐸𝐸𝐸𝐺𝐺,𝑡𝑡,𝑦𝑦) × (1 − 𝑅𝑅𝑅𝑅𝑅𝑅𝐸𝐸𝑐𝑐𝑐𝑐𝑐𝑐𝑐𝑐𝑐𝑐𝑐𝑐𝑐𝑐𝑐𝑐𝑐𝑐𝑐𝑐,𝑡𝑡,𝑦𝑦)                 (1) \nWith, \nWhere,  \nBEy = Baseline emissions in year y (t CO 2e) \nBECH4,t,y = Baseline emissions of methane from the SWDS in year y (t CO 2e) \nBEWW,y = Baseline methane emissions from anaerobic treatment of  the wastewater \nin open anaerobic lagoons or of sludge in sludge pits in the absence of the \nproject activity in year y (t CO 2e) \nBEEN,t,y = Baseline emissions associated with energy generation in  year y (t CO2) \nBENG,t,y = Baseline emissions associated with natural gas use in  year y (t CO2) \nRATEcompliance,t,y  = Rate of compliance of a requirement that mandates the use of alternative \n Project Description: V CS Version 4.2 \n46 \nwaste treatment option t in year y  \nT = Type of alternative waste treatment option  \nFor simplification, the type of alternative waste treatment option t is hitherto omitted.  \nThe proje\n\n### Evidence 5 [VCS_Inegol_Project-Description.norm] (BM25 score: 0.000)\n**Heading:** Baseline Emissions\n**Content class:** QUANTITATIVE\n\nBaseline emissions are determined as follows: \n𝐵𝐸௬ ൌ෍ ൫𝐵𝐸஼ுସ,௧,௬ ൅𝐵 𝐸ௐௐ,௧,௬ ൅𝐵 𝐸ாே,௧,௬ ൅𝐵 𝐸ேீ,௧,௬൯ ൈሺ 1\n௧\nെ𝑅 𝐴 𝑇 𝐸௖௢௠௣௟௜௔௡௖௘,௧ሻ \nEquation (1) \nWhere: \n𝐵𝐸௬ = Baseline emissions in year y (t CO2e) \n𝐵𝐸஼ுସ,௧,௬ = Baseline emissions of methane from the SWDS \nin year y (t CO2e) \n𝐵𝐸ௐௐ,௧,௬ = Baseline methane emissions from anaerobic \ntreatment of the wastewater in open anaerobic \nl a g o o n s  o r  o f  s l u d g e  i n  s l u d g e  p i t s  i n  t h e  \nabsence of the project activity in year y (t CO\n2e)  \n𝐵𝐸ாே,௧,௬ = Baseline emissions associated with energy \ngeneration in year y (t CO2) \n \n Project Description: VCS Version 4.2 \n76 \n𝐵𝐸ேீ,௧,௬ = Baseline emissions associated with natural gas \nuse in year y (t CO 2) \n𝑅𝐴𝑇𝐸௖௢௠௣௟௜௔௡௖௘,௧ = \nDiscount factor to account for the rate of \ncompliance of a regulatory requirement that \nmandates the use of alternative waste treatment \nprocess t  \n𝑡 = Type of alternative waste treatment process  \n \nBE\nWW,t,y and BENG,t,y are zero, since the project activity does not include wastewater treatment or \nbiogas sent to the gas network. \nThere is currently no regulation on requiremen t that mandates the use of alternative waste \ntreatment option in Turkey, thus RATEcompliance equals 0.  \nUnder the project activity, baseline emissions of methane from the SWDS and baseline emissions \nassociated with the energy generation are applicable. RDF facility on-site is only a physical fuel \npreparation unit, and output product is sent to off-site for power generatio\n\n## ACM0022 Calculation Engine Results\n\nThe following values were computed by the ACM0022 pure-Python calculation engine.\nUse these as the authoritative quantification values. Cite with `[CALC: component_name]`.\n\n- **Baseline emissions**: 59,335.71 tCO2e/year [CALC: baseline_total]\n  - BE_CH4 (methane from SWDS): 32,320.71 tCO2e/year [CALC: BE_CH4]\n  - BE_EC (displaced grid electricity): 27,015.01 tCO2e/year [CALC: BE_EC]\n- **Project emissions**: 8,645.23 tCO2e/year [CALC: project_total]\n  - PE_EC (grid consumption): 0.00 tCO2e/year [CALC: PE_EC]\n  - PE_FC (fossil fuel): 0.00 tCO2e/year [CALC: PE_FC]\n  - PE_CH4 (AD leakage): 8,645.23 tCO2e/year [CALC: PE_CH4]\n  - PE_FLARE (flare): 0.00 tCO2e/year [CALC: PE_FLARE]\n- **Leakage**: 0.00 tCO2e/year [CALC: leakage_total]\n  - LE_RDF (RDF combustion): 0.00 tCO2e/year [CALC: LE_RDF]\n  - LE_AD (digestate): 0.00 tCO2e/year [CALC: LE_AD]\n- **Net emission reductions**: 50,690.48 tCO2e/year [CALC: net_ER]\n- **Crediting period total**: 354,833.35 tCO2e (7 years) [CALC: crediting_total]\n\n### Key Intermediates\n- Organic waste to AD: 118,336.7 tonnes/year\n- Annual biogas: 15,383,767 Nm3/year\n- Annual methane: 8,614,909 Nm3/year (6,175.2 tonnes)\n- Electricity generated: 49,935.3 MWh/year\n- Methodology: ACM0022 v3.0\n\n## Project-Specific Facts\n- Project: INEGOL INTEGRATED SOLID WASTE STORAGE AND DISPOSAL FACILITY\n- Location: İnegöl District, Türkiye\n- Methodology: ACM0022\n- Technology: combined_wte_ad\n- Capacity: 8.484 MW\n- Annual waste: 262,970 tonnes/year\n- Net tCO2e/yr: TBD\n- Crediting period: 7 years\n\n## Length Budget\nAim for 60-90% of 20000 characters, never pad to reach it, and never exceed it.\n\n## Instructions\n1. Write only supported content — cite CORPUS or METHODOLOGY sources.\n2. Do NOT invent numbers, statistics, or case studies not in the corpus.\n3. HIGH/CRITICAL sections require at least one cited corpus example.\n4. Unsupported claims must be marked [REVIEW REQUIRED: ...].\n5. If a synthetic assumption materially affects the section, label it explicitly in prose or a note.\n6. Keep body text readable and move detailed provenance burden to notes/appendices.\n7. Format output as Markdown.\n"
+    },
+    "drafting": {
+      "noop": {
+        "provider": "noop",
+        "timing_seconds": 4.374,
+        "draft_returncode": 0,
+        "sections": [
+          {
+            "sub_section_id": "1.1",
+            "heading": "",
+            "confidence": "UNSUPPORTED",
+            "char_count": 599,
+            "issue_count": 1,
+            "provenance_count": 5,
+            "review_state": "needs-domain-review",
+            "has_structured_content": false
+          },
+          {
+            "sub_section_id": "1.2",
+            "heading": "",
+            "confidence": "UNSUPPORTED",
+            "char_count": 584,
+            "issue_count": 1,
+            "provenance_count": 5,
+            "review_state": "needs-domain-review",
+            "has_structured_content": false
+          },
+          {
+            "sub_section_id": "1.3",
+            "heading": "",
+            "confidence": "UNSUPPORTED",
+            "char_count": 524,
+            "issue_count": 1,
+            "provenance_count": 5,
+            "review_state": "needs-domain-review",
+            "has_structured_content": false
+          },
+          {
+            "sub_section_id": "1.4",
+            "heading": "",
+            "confidence": "UNSUPPORTED",
+            "char_count": 499,
+            "issue_count": 1,
+            "provenance_count": 5,
+            "review_state": "needs-domain-review",
+            "has_structured_content": false
+          },
+          {
+            "sub_section_id": "1.5",
+            "heading": "",
+            "confidence": "UNSUPPORTED",
+            "char_count": 506,
+            "issue_count": 1,
+            "provenance_count": 5,
+            "review_state": "needs-domain-review",
+            "has_structured_content": true
+          },
+          {
+            "sub_section_id": "1.6",
+            "heading": "",
+            "confidence": "UNSUPPORTED",
+            "char_count": 619,
+            "issue_count": 1,
+            "provenance_count": 5,
+            "review_state": "needs-domain-review",
+            "has_structured_content": false
+          },
+          {
+            "sub_section_id": "1.7",
+            "heading": "",
+            "confidence": "UNSUPPORTED",
+            "char_count": 474,
+            "issue_count": 1,
+            "provenance_count": 5,
+            "review_state": "needs-domain-review",
+            "has_structured_content": false
+          },
+          {
+            "sub_section_id": "1.8",
+            "heading": "",
+            "confidence": "UNSUPPORTED",
+            "char_count": 519,
+            "issue_count": 1,
+            "provenance_count": 5,
+            "review_state": "needs-domain-review",
+            "has_structured_content": false
+          },
+          {
+            "sub_section_id": "1.9",
+            "heading": "",
+            "confidence": "UNSUPPORTED",
+            "char_count": 549,
+            "issue_count": 1,
+            "provenance_count": 5,
+            "review_state": "needs-domain-review",
+            "has_structured_content": false
+          },
+          {
+            "sub_section_id": "1.10",
+            "heading": "",
+            "confidence": "UNSUPPORTED",
+            "char_count": 745,
+            "issue_count": 1,
+            "provenance_count": 5,
+            "review_state": "needs-domain-review",
+            "has_structured_content": false
+          },
+          {
+            "sub_section_id": "1.11",
+            "heading": "",
+            "confidence": "UNSUPPORTED",
+            "char_count": 605,
+            "issue_count": 1,
+            "provenance_count": 5,
+            "review_state": "needs-domain-review",
+            "has_structured_content": false
+          },
+          {
+            "sub_section_id": "1.12",
+            "heading": "",
+            "confidence": "UNSUPPORTED",
+            "char_count": 510,
+            "issue_count": 1,
+            "provenance_count": 5,
+            "review_state": "needs-domain-review",
+            "has_structured_content": false
+          },
+          {
+            "sub_section_id": "1.13",
+            "heading": "",
+            "confidence": "UNSUPPORTED",
+            "char_count": 620,
+            "issue_count": 1,
+            "provenance_count": 5,
+            "review_state": "needs-domain-review",
+            "has_structured_content": false
+          },
+          {
+            "sub_section_id": "1.14",
+            "heading": "",
+            "confidence": "UNSUPPORTED",
+            "char_count": 740,
+            "issue_count": 1,
+            "provenance_count": 5,
+            "review_state": "needs-domain-review",
+            "has_structured_content": false
+          },
+          {
+            "sub_section_id": "1.15",
+            "heading": "",
+            "confidence": "UNSUPPORTED",
+            "char_count": 609,
+            "issue_count": 1,
+            "provenance_count": 5,
+            "review_state": "needs-domain-review",
+            "has_structured_content": false
+          },
+          {
+            "sub_section_id": "1.16",
+            "heading": "",
+            "confidence": "UNSUPPORTED",
+            "char_count": 453,
+            "issue_count": 1,
+            "provenance_count": 4,
+            "review_state": "needs-domain-review",
+            "has_structured_content": false
+          },
+          {
+            "sub_section_id": "1.17",
+            "heading": "",
+            "confidence": "UNSUPPORTED",
+            "char_count": 615,
+            "issue_count": 1,
+            "provenance_count": 5,
+            "review_state": "needs-domain-review",
+            "has_structured_content": false
+          },
+          {
+            "sub_section_id": "1.18",
+            "heading": "",
+            "confidence": "UNSUPPORTED",
+            "char_count": 660,
+            "issue_count": 1,
+            "provenance_count": 5,
+            "review_state": "needs-domain-review",
+            "has_structured_content": false
+          },
+          {
+            "sub_section_id": "2.1",
+            "heading": "",
+            "confidence": "UNSUPPORTED",
+            "char_count": 484,
+            "issue_count": 1,
+            "provenance_count": 5,
+            "review_state": "needs-domain-review",
+            "has_structured_content": false
+          },
+          {
+            "sub_section_id": "2.2",
+            "heading": "",
+            "confidence": "UNSUPPORTED",
+            "char_count": 579,
+            "issue_count": 1,
+            "provenance_count": 5,
+            "review_state": "needs-domain-review",
+            "has_structured_content": false
+          },
+          {
+            "sub_section_id": "2.3",
+            "heading": "",
+            "confidence": "UNSUPPORTED",
+            "char_count": 529,
+            "issue_count": 1,
+            "provenance_count": 5,
+            "review_state": "needs-domain-review",
+            "has_structured_content": false
+          },
+          {
+            "sub_section_id": "2.4",
+            "heading": "",
+            "confidence": "UNSUPPORTED",
+            "char_count": 504,
+            "issue_count": 1,
+            "provenance_count": 5,
+            "review_state": "needs-domain-review",
+            "has_structured_content": false
+          },
+          {
+            "sub_section_id": "2.5",
+            "heading": "",
+            "confidence": "UNSUPPORTED",
+            "char_count": 554,
+            "issue_count": 1,
+            "provenance_count": 5,
+            "review_state": "needs-domain-review",
+            "has_structured_content": false
+          },
+          {
+            "sub_section_id": "3.1",
+            "heading": "",
+            "confidence": "UNSUPPORTED",
+            "char_count": 599,
+            "issue_count": 1,
+            "provenance_count": 5,
+            "review_state": "needs-domain-review",
+            "has_structured_content": false
+          },
+          {
+            "sub_section_id": "3.2",
+            "heading": "",
+            "confidence": "UNSUPPORTED",
+            "char_count": 561,
+            "issue_count": 1,
+            "provenance_count": 5,
+            "review_state": "needs-domain-review",
+            "has_structured_content": true
+          },
+          {
+            "sub_section_id": "3.3",
+            "heading": "",
+            "confidence": "UNSUPPORTED",
+            "char_count": 509,
+            "issue_count": 1,
+            "provenance_count": 5,
+            "review_state": "needs-domain-review",
+            "has_structured_content": true
+          },
+          {
+            "sub_section_id": "3.4",
+            "heading": "",
+            "confidence": "UNSUPPORTED",
+            "char_count": 514,
+            "issue_count": 1,
+            "provenance_count": 5,
+            "review_state": "needs-domain-review",
+            "has_structured_content": false
+          },
+          {
+            "sub_section_id": "3.5",
+            "heading": "",
+            "confidence": "UNSUPPORTED",
+            "char_count": 494,
+            "issue_count": 1,
+            "provenance_count": 5,
+            "review_state": "needs-domain-review",
+            "has_structured_content": false
+          },
+          {
+            "sub_section_id": "3.6",
+            "heading": "",
+            "confidence": "UNSUPPORTED",
+            "char_count": 531,
+            "issue_count": 1,
+            "provenance_count": 5,
+            "review_state": "needs-domain-review",
+            "has_structured_content": false
+          },
+          {
+            "sub_section_id": "4.1",
+            "heading": "",
+            "confidence": "UNSUPPORTED",
+            "char_count": 519,
+            "issue_count": 1,
+            "provenance_count": 5,
+            "review_state": "needs-domain-review",
+            "has_structured_content": false
+          },
+          {
+            "sub_section_id": "4.2",
+            "heading": "",
+            "confidence": "UNSUPPORTED",
+            "char_count": 514,
+            "issue_count": 1,
+            "provenance_count": 5,
+            "review_state": "needs-domain-review",
+            "has_structured_content": false
+          },
+          {
+            "sub_section_id": "4.3",
+            "heading": "",
+            "confidence": "UNSUPPORTED",
+            "char_count": 464,
+            "issue_count": 1,
+            "provenance_count": 5,
+            "review_state": "needs-domain-review",
+            "has_structured_content": false
+          },
+          {
+            "sub_section_id": "4.4",
+            "heading": "",
+            "confidence": "UNSUPPORTED",
+            "char_count": 629,
+            "issue_count": 1,
+            "provenance_count": 5,
+            "review_state": "needs-domain-review",
+            "has_structured_content": false
+          },
+          {
+            "sub_section_id": "5.1",
+            "heading": "",
+            "confidence": "UNSUPPORTED",
+            "char_count": 644,
+            "issue_count": 1,
+            "provenance_count": 5,
+            "review_state": "needs-domain-review",
+            "has_structured_content": false
+          },
+          {
+            "sub_section_id": "5.2",
+            "heading": "",
+            "confidence": "UNSUPPORTED",
+            "char_count": 567,
+            "issue_count": 1,
+            "provenance_count": 5,
+            "review_state": "needs-domain-review",
+            "has_structured_content": false
+          },
+          {
+            "sub_section_id": "5.3",
+            "heading": "",
+            "confidence": "UNSUPPORTED",
+            "char_count": 503,
+            "issue_count": 1,
+            "provenance_count": 5,
+            "review_state": "needs-domain-review",
+            "has_structured_content": false
+          }
+        ],
+        "focus": {
+          "1.1": {
+            "text": "[PLACEHOLDER — 1.1.1]\nThis section requires human authoring or project-specific evidence.\nRelevant provenance: [CORPUS: VCS_Bergama_Project-Description.norm, Summary Description of the Project], [CORPUS: VCS_DRAFT_Yanjiang_Project-Description.norm, Summary Description of the Project], [CORPUS: VCS_Guangzhou_Project-Description.norm, Summary Description of the Project], [CORPUS: VCS_Guanxi_Zhuang_Project_Description.norm, Summary Description of the Project], [CORPUS: VCS_Inegol_Project-Description.norm, Summary Description of the Project]\nReview sensitivity: see schemas/pdd_section_schema.yaml",
+            "truncated": false,
+            "char_count": 599,
+            "confidence": "UNSUPPORTED",
+            "issues": [
+              "REVIEW REQUIRED: 1.1.1 — human input or project-specific evidence needed before finalizing"
+            ],
+            "provenance": [
+              "[CORPUS: VCS_Bergama_Project-Description.norm, Summary Description of the Project]",
+              "[CORPUS: VCS_DRAFT_Yanjiang_Project-Description.norm, Summary Description of the Project]",
+              "[CORPUS: VCS_Guangzhou_Project-Description.norm, Summary Description of the Project]",
+              "[CORPUS: VCS_Guanxi_Zhuang_Project_Description.norm, Summary Description of the Project]",
+              "[CORPUS: VCS_Inegol_Project-Description.norm, Summary Description of the Project]"
+            ],
+            "fact_provenance": [],
+            "synthetic_uses": []
+          },
+          "1.13": {
+            "text": "[PLACEHOLDER — 1.1.13]\nThis section requires human authoring or project-specific evidence.\nRelevant provenance: [CORPUS: VCS_Bergama_Project-Description.norm, Conditions Prior to Project Initiation], [CORPUS: VCS_DRAFT_Yanjiang_Project-Description.norm, Conditions Prior to Project Initiation], [CORPUS: VCS_Guangzhou_Project-Description.norm, Conditions Prior to Project Initiation], [CORPUS: VCS_Guanxi_Zhuang_Project_Description.norm, Conditions Prior to Project Initiation], [CORPUS: VCS_Inegol_Project-Description.norm, Conditions Prior to Project Initiation]\nReview sensitivity: see schemas/pdd_section_schema.yaml",
+            "truncated": false,
+            "char_count": 620,
+            "confidence": "UNSUPPORTED",
+            "issues": [
+              "REVIEW REQUIRED: 1.1.13 — human input or project-specific evidence needed before finalizing"
+            ],
+            "provenance": [
+              "[CORPUS: VCS_Bergama_Project-Description.norm, Conditions Prior to Project Initiation]",
+              "[CORPUS: VCS_DRAFT_Yanjiang_Project-Description.norm, Conditions Prior to Project Initiation]",
+              "[CORPUS: VCS_Guangzhou_Project-Description.norm, Conditions Prior to Project Initiation]",
+              "[CORPUS: VCS_Guanxi_Zhuang_Project_Description.norm, Conditions Prior to Project Initiation]",
+              "[CORPUS: VCS_Inegol_Project-Description.norm, Conditions Prior to Project Initiation]"
+            ],
+            "fact_provenance": [],
+            "synthetic_uses": []
+          },
+          "3.5": {
+            "text": "[PLACEHOLDER — 3.3.5]\nThis section requires human authoring or project-specific evidence.\nRelevant provenance: [CORPUS: VCS_Bergama_Project-Description.norm, Additionality], [CORPUS: VCS_DRAFT_Yanjiang_Project-Description.norm, Additionality], [CORPUS: VCS_Guangzhou_Project-Description.norm, Additionality], [CORPUS: VCS_Guanxi_Zhuang_Project_Description.norm, Additionality], [CORPUS: VCS_Inegol_Project-Description.norm, Additionality]\nReview sensitivity: see schemas/pdd_section_schema.yaml",
+            "truncated": false,
+            "char_count": 494,
+            "confidence": "UNSUPPORTED",
+            "issues": [
+              "REVIEW REQUIRED: 3.3.5 — human input or project-specific evidence needed before finalizing"
+            ],
+            "provenance": [
+              "[CORPUS: VCS_Bergama_Project-Description.norm, Additionality]",
+              "[CORPUS: VCS_DRAFT_Yanjiang_Project-Description.norm, Additionality]",
+              "[CORPUS: VCS_Guangzhou_Project-Description.norm, Additionality]",
+              "[CORPUS: VCS_Guanxi_Zhuang_Project_Description.norm, Additionality]",
+              "[CORPUS: VCS_Inegol_Project-Description.norm, Additionality]"
+            ],
+            "fact_provenance": [],
+            "synthetic_uses": []
+          },
+          "4.1": {
+            "text": "[PLACEHOLDER — 4.4.1]\nThis section requires human authoring or project-specific evidence.\nRelevant provenance: [CORPUS: VCS_Bergama_Project-Description.norm, Baseline Emissions], [CORPUS: VCS_DRAFT_Yanjiang_Project-Description.norm, Baseline Emissions], [CORPUS: VCS_Guangzhou_Project-Description.norm, Baseline Emissions], [CORPUS: VCS_Guanxi_Zhuang_Project_Description.norm, Baseline Emissions], [CORPUS: VCS_Inegol_Project-Description.norm, Baseline Emissions]\nReview sensitivity: see schemas/pdd_section_schema.yaml",
+            "truncated": false,
+            "char_count": 519,
+            "confidence": "UNSUPPORTED",
+            "issues": [
+              "REVIEW REQUIRED: 4.4.1 — human input or project-specific evidence needed before finalizing"
+            ],
+            "provenance": [
+              "[CORPUS: VCS_Bergama_Project-Description.norm, Baseline Emissions]",
+              "[CORPUS: VCS_DRAFT_Yanjiang_Project-Description.norm, Baseline Emissions]",
+              "[CORPUS: VCS_Guangzhou_Project-Description.norm, Baseline Emissions]",
+              "[CORPUS: VCS_Guanxi_Zhuang_Project_Description.norm, Baseline Emissions]",
+              "[CORPUS: VCS_Inegol_Project-Description.norm, Baseline Emissions]"
+            ],
+            "fact_provenance": [],
+            "synthetic_uses": []
+          }
+        }
+      },
+      "demo": {
+        "provider": "demo",
+        "timing_seconds": 3.442,
+        "draft_returncode": 0,
+        "sections": [
+          {
+            "sub_section_id": "1.1",
+            "heading": "",
+            "confidence": "HIGH",
+            "char_count": 254,
+            "issue_count": 0,
+            "provenance_count": 5,
+            "review_state": "ready-for-human-edit",
+            "has_structured_content": false
+          },
+          {
+            "sub_section_id": "1.2",
+            "heading": "",
+            "confidence": "HIGH",
+            "char_count": 262,
+            "issue_count": 0,
+            "provenance_count": 5,
+            "review_state": "ready-for-human-edit",
+            "has_structured_content": false
+          },
+          {
+            "sub_section_id": "1.3",
+            "heading": "",
+            "confidence": "HIGH",
+            "char_count": 262,
+            "issue_count": 0,
+            "provenance_count": 5,
+            "review_state": "ready-for-human-edit",
+            "has_structured_content": false
+          },
+          {
+            "sub_section_id": "1.4",
+            "heading": "",
+            "confidence": "HIGH",
+            "char_count": 262,
+            "issue_count": 0,
+            "provenance_count": 5,
+            "review_state": "ready-for-human-edit",
+            "has_structured_content": false
+          },
+          {
+            "sub_section_id": "1.5",
+            "heading": "",
+            "confidence": "HIGH",
+            "char_count": 262,
+            "issue_count": 0,
+            "provenance_count": 5,
+            "review_state": "ready-for-human-edit",
+            "has_structured_content": true
+          },
+          {
+            "sub_section_id": "1.6",
+            "heading": "",
+            "confidence": "HIGH",
+            "char_count": 262,
+            "issue_count": 0,
+            "provenance_count": 5,
+            "review_state": "ready-for-human-edit",
+            "has_structured_content": false
+          },
+          {
+            "sub_section_id": "1.7",
+            "heading": "",
+            "confidence": "HIGH",
+            "char_count": 262,
+            "issue_count": 0,
+            "provenance_count": 5,
+            "review_state": "ready-for-human-edit",
+            "has_structured_content": false
+          },
+          {
+            "sub_section_id": "1.8",
+            "heading": "",
+            "confidence": "HIGH",
+            "char_count": 262,
+            "issue_count": 0,
+            "provenance_count": 5,
+            "review_state": "ready-for-human-edit",
+            "has_structured_content": false
+          },
+          {
+            "sub_section_id": "1.9",
+            "heading": "",
+            "confidence": "HIGH",
+            "char_count": 262,
+            "issue_count": 0,
+            "provenance_count": 5,
+            "review_state": "ready-for-human-edit",
+            "has_structured_content": false
+          },
+          {
+            "sub_section_id": "1.10",
+            "heading": "",
+            "confidence": "HIGH",
+            "char_count": 264,
+            "issue_count": 0,
+            "provenance_count": 5,
+            "review_state": "ready-for-human-edit",
+            "has_structured_content": false
+          },
+          {
+            "sub_section_id": "1.11",
+            "heading": "",
+            "confidence": "HIGH",
+            "char_count": 263,
+            "issue_count": 0,
+            "provenance_count": 5,
+            "review_state": "ready-for-human-edit",
+            "has_structured_content": false
+          },
+          {
+            "sub_section_id": "1.12",
+            "heading": "",
+            "confidence": "HIGH",
+            "char_count": 263,
+            "issue_count": 0,
+            "provenance_count": 5,
+            "review_state": "ready-for-human-edit",
+            "has_structured_content": false
+          },
+          {
+            "sub_section_id": "1.13",
+            "heading": "",
+            "confidence": "HIGH",
+            "char_count": 263,
+            "issue_count": 0,
+            "provenance_count": 5,
+            "review_state": "ready-for-human-edit",
+            "has_structured_content": false
+          },
+          {
+            "sub_section_id": "1.14",
+            "heading": "",
+            "confidence": "HIGH",
+            "char_count": 263,
+            "issue_count": 0,
+            "provenance_count": 5,
+            "review_state": "ready-for-human-edit",
+            "has_structured_content": false
+          },
+          {
+            "sub_section_id": "1.15",
+            "heading": "",
+            "confidence": "HIGH",
+            "char_count": 263,
+            "issue_count": 0,
+            "provenance_count": 5,
+            "review_state": "ready-for-human-edit",
+            "has_structured_content": false
+          },
+          {
+            "sub_section_id": "1.16",
+            "heading": "",
+            "confidence": "HIGH",
+            "char_count": 263,
+            "issue_count": 0,
+            "provenance_count": 4,
+            "review_state": "ready-for-human-edit",
+            "has_structured_content": false
+          },
+          {
+            "sub_section_id": "1.17",
+            "heading": "",
+            "confidence": "HIGH",
+            "char_count": 263,
+            "issue_count": 0,
+            "provenance_count": 5,
+            "review_state": "ready-for-human-edit",
+            "has_structured_content": false
+          },
+          {
+            "sub_section_id": "1.18",
+            "heading": "",
+            "confidence": "HIGH",
+            "char_count": 263,
+            "issue_count": 0,
+            "provenance_count": 5,
+            "review_state": "ready-for-human-edit",
+            "has_structured_content": false
+          },
+          {
+            "sub_section_id": "2.1",
+            "heading": "",
+            "confidence": "HIGH",
+            "char_count": 262,
+            "issue_count": 0,
+            "provenance_count": 5,
+            "review_state": "ready-for-human-edit",
+            "has_structured_content": false
+          },
+          {
+            "sub_section_id": "2.2",
+            "heading": "",
+            "confidence": "HIGH",
+            "char_count": 262,
+            "issue_count": 0,
+            "provenance_count": 5,
+            "review_state": "ready-for-human-edit",
+            "has_structured_content": false
+          },
+          {
+            "sub_section_id": "2.3",
+            "heading": "",
+            "confidence": "HIGH",
+            "char_count": 262,
+            "issue_count": 0,
+            "provenance_count": 5,
+            "review_state": "ready-for-human-edit",
+            "has_structured_content": false
+          },
+          {
+            "sub_section_id": "2.4",
+            "heading": "",
+            "confidence": "HIGH",
+            "char_count": 262,
+            "issue_count": 0,
+            "provenance_count": 5,
+            "review_state": "ready-for-human-edit",
+            "has_structured_content": false
+          },
+          {
+            "sub_section_id": "2.5",
+            "heading": "",
+            "confidence": "HIGH",
+            "char_count": 262,
+            "issue_count": 0,
+            "provenance_count": 5,
+            "review_state": "ready-for-human-edit",
+            "has_structured_content": false
+          },
+          {
+            "sub_section_id": "3.1",
+            "heading": "",
+            "confidence": "HIGH",
+            "char_count": 262,
+            "issue_count": 0,
+            "provenance_count": 5,
+            "review_state": "ready-for-human-edit",
+            "has_structured_content": false
+          },
+          {
+            "sub_section_id": "3.2",
+            "heading": "",
+            "confidence": "HIGH",
+            "char_count": 262,
+            "issue_count": 0,
+            "provenance_count": 5,
+            "review_state": "ready-for-human-edit",
+            "has_structured_content": true
+          },
+          {
+            "sub_section_id": "3.3",
+            "heading": "",
+            "confidence": "HIGH",
+            "char_count": 494,
+            "issue_count": 0,
+            "provenance_count": 5,
+            "review_state": "ready-for-human-edit",
+            "has_structured_content": true
+          },
+          {
+            "sub_section_id": "3.4",
+            "heading": "",
+            "confidence": "HIGH",
+            "char_count": 320,
+            "issue_count": 0,
+            "provenance_count": 5,
+            "review_state": "ready-for-human-edit",
+            "has_structured_content": false
+          },
+          {
+            "sub_section_id": "3.5",
+            "heading": "",
+            "confidence": "HIGH",
+            "char_count": 319,
+            "issue_count": 0,
+            "provenance_count": 5,
+            "review_state": "ready-for-human-edit",
+            "has_structured_content": false
+          },
+          {
+            "sub_section_id": "3.6",
+            "heading": "",
+            "confidence": "HIGH",
+            "char_count": 262,
+            "issue_count": 0,
+            "provenance_count": 5,
+            "review_state": "ready-for-human-edit",
+            "has_structured_content": false
+          },
+          {
+            "sub_section_id": "4.1",
+            "heading": "",
+            "confidence": "HIGH",
+            "char_count": 248,
+            "issue_count": 0,
+            "provenance_count": 5,
+            "review_state": "ready-for-human-edit",
+            "has_structured_content": false
+          },
+          {
+            "sub_section_id": "4.2",
+            "heading": "",
+            "confidence": "HIGH",
+            "char_count": 253,
+            "issue_count": 0,
+            "provenance_count": 5,
+            "review_state": "ready-for-human-edit",
+            "has_structured_content": false
+          },
+          {
+            "sub_section_id": "4.3",
+            "heading": "",
+            "confidence": "HIGH",
+            "char_count": 262,
+            "issue_count": 0,
+            "provenance_count": 5,
+            "review_state": "ready-for-human-edit",
+            "has_structured_content": false
+          },
+          {
+            "sub_section_id": "4.4",
+            "heading": "",
+            "confidence": "HIGH",
+            "char_count": 255,
+            "issue_count": 0,
+            "provenance_count": 5,
+            "review_state": "ready-for-human-edit",
+            "has_structured_content": false
+          },
+          {
+            "sub_section_id": "5.1",
+            "heading": "",
+            "confidence": "HIGH",
+            "char_count": 262,
+            "issue_count": 0,
+            "provenance_count": 5,
+            "review_state": "ready-for-human-edit",
+            "has_structured_content": false
+          },
+          {
+            "sub_section_id": "5.2",
+            "heading": "",
+            "confidence": "HIGH",
+            "char_count": 302,
+            "issue_count": 0,
+            "provenance_count": 5,
+            "review_state": "ready-for-human-edit",
+            "has_structured_content": false
+          },
+          {
+            "sub_section_id": "5.3",
+            "heading": "",
+            "confidence": "HIGH",
+            "char_count": 262,
+            "issue_count": 0,
+            "provenance_count": 5,
+            "review_state": "ready-for-human-edit",
+            "has_structured_content": false
+          }
+        ],
+        "focus": {
+          "1.1": {
+            "text": "This synthetic client-demo case illustrates a municipal solid waste facility that diverts waste from landfill disposal, recovers energy through treatment with power export, and demonstrates a Verra-style drafting workflow using deterministic demo inputs.",
+            "truncated": false,
+            "char_count": 254,
+            "confidence": "HIGH",
+            "issues": [],
+            "provenance": [
+              "[CORPUS: VCS_Bergama_Project-Description.norm, Summary Description of the Project]",
+              "[CORPUS: VCS_DRAFT_Yanjiang_Project-Description.norm, Summary Description of the Project]",
+              "[CORPUS: VCS_Guangzhou_Project-Description.norm, Summary Description of the Project]",
+              "[CORPUS: VCS_Guanxi_Zhuang_Project_Description.norm, Summary Description of the Project]",
+              "[CORPUS: VCS_Inegol_Project-Description.norm, Summary Description of the Project]"
+            ],
+            "fact_provenance": [],
+            "synthetic_uses": []
+          },
+          "1.13": {
+            "text": "Section 1.13 for the client demo is drafted as readable synthetic prose using the curated demo assumptions register. This text is intentionally concise, internally consistent with the demo inputs, and suitable for client-facing illustration rather than audit use.",
+            "truncated": false,
+            "char_count": 263,
+            "confidence": "HIGH",
+            "issues": [],
+            "provenance": [
+              "[CORPUS: VCS_Bergama_Project-Description.norm, Conditions Prior to Project Initiation]",
+              "[CORPUS: VCS_DRAFT_Yanjiang_Project-Description.norm, Conditions Prior to Project Initiation]",
+              "[CORPUS: VCS_Guangzhou_Project-Description.norm, Conditions Prior to Project Initiation]",
+              "[CORPUS: VCS_Guanxi_Zhuang_Project_Description.norm, Conditions Prior to Project Initiation]",
+              "[CORPUS: VCS_Inegol_Project-Description.norm, Conditions Prior to Project Initiation]"
+            ],
+            "fact_provenance": [],
+            "synthetic_uses": []
+          },
+          "3.5": {
+            "text": "This synthetic demo presents additionality as a client-readable narrative rather than a validator-ready claim. The sample assumes the project requires dedicated waste-to-energy investment, specialized operating capability, and municipal coordination that would not be represented by the baseline landfill pathway alone.",
+            "truncated": false,
+            "char_count": 319,
+            "confidence": "HIGH",
+            "issues": [],
+            "provenance": [
+              "[CORPUS: VCS_Bergama_Project-Description.norm, Additionality]",
+              "[CORPUS: VCS_DRAFT_Yanjiang_Project-Description.norm, Additionality]",
+              "[CORPUS: VCS_Guangzhou_Project-Description.norm, Additionality]",
+              "[CORPUS: VCS_Guanxi_Zhuang_Project_Description.norm, Additionality]",
+              "[CORPUS: VCS_Inegol_Project-Description.norm, Additionality]"
+            ],
+            "fact_provenance": [],
+            "synthetic_uses": []
+          },
+          "4.1": {
+            "text": "Baseline emissions in the synthetic demo are set based on the curated assumptions register. This value is carried consistently across the assumptions companion and the quantification narrative so the client-demo artifact remains internally aligned.",
+            "truncated": false,
+            "char_count": 248,
+            "confidence": "HIGH",
+            "issues": [],
+            "provenance": [
+              "[CORPUS: VCS_Bergama_Project-Description.norm, Baseline Emissions]",
+              "[CORPUS: VCS_DRAFT_Yanjiang_Project-Description.norm, Baseline Emissions]",
+              "[CORPUS: VCS_Guangzhou_Project-Description.norm, Baseline Emissions]",
+              "[CORPUS: VCS_Guanxi_Zhuang_Project_Description.norm, Baseline Emissions]",
+              "[CORPUS: VCS_Inegol_Project-Description.norm, Baseline Emissions]"
+            ],
+            "fact_provenance": [],
+            "synthetic_uses": []
+          }
+        }
+      }
+    },
+    "judge": {
+      "judge_ran": false,
+      "reason": "Both lanes ran with --no-judge / no --judge flag; no LLM judge was executed."
+    },
+    "review": {
+      "noop": {
+        "state_counts": {
+          "needs-domain-review": 36
+        },
+        "all_approved": false,
+        "stdout_tail": "-domain-review\n2026-09-08 12:19:57 [info     ] section_state                  key=2/2.4 state=needs-domain-review\n2026-09-08 12:19:57 [info     ] section_state                  key=2/2.5 state=needs-domain-review\n2026-09-08 12:19:57 [info     ] section_state                  key=3/3.1 state=needs-domain-review\n2026-09-08 12:19:57 [info     ] section_state                  key=3/3.2 state=needs-domain-review\n2026-09-08 12:19:57 [info     ] section_state                  key=3/3.3 state=needs-domain-review\n2026-09-08 12:19:57 [info     ] section_state                  key=3/3.4 state=needs-domain-review\n2026-09-08 12:19:57 [info     ] section_state                  key=3/3.5 state=needs-domain-review\n2026-09-08 12:19:57 [info     ] section_state                  key=3/3.6 state=needs-domain-review\n2026-09-08 12:19:57 [info     ] section_state                  key=4/4.1 state=needs-domain-review\n2026-09-08 12:19:57 [info     ] section_state                  key=4/4.2 state=needs-domain-review\n2026-09-08 12:19:57 [info     ] section_state                  key=4/4.3 state=needs-domain-review\n2026-09-08 12:19:57 [info     ] section_state                  key=4/4.4 state=needs-domain-review\n2026-09-08 12:19:57 [info     ] section_state                  key=5/5.1 state=needs-domain-review\n2026-09-08 12:19:57 [info     ] section_state                  key=5/5.2 state=needs-domain-review\n2026-09-08 12:19:57 [info     ] section_state                  key=5/5.3 state=needs-domain-review\n"
+      },
+      "demo": {
+        "state_counts": {
+          "ready-for-human-edit": 36
+        },
+        "all_approved": false,
+        "stdout_tail": "2026-09-08 12:20:37 [info     ] section_state                  key=2/2.4 state=ready-for-human-edit\n2026-09-08 12:20:37 [info     ] section_state                  key=2/2.5 state=ready-for-human-edit\n2026-09-08 12:20:37 [info     ] section_state                  key=3/3.1 state=ready-for-human-edit\n2026-09-08 12:20:37 [info     ] section_state                  key=3/3.2 state=ready-for-human-edit\n2026-09-08 12:20:37 [info     ] section_state                  key=3/3.3 state=ready-for-human-edit\n2026-09-08 12:20:37 [info     ] section_state                  key=3/3.4 state=ready-for-human-edit\n2026-09-08 12:20:37 [info     ] section_state                  key=3/3.5 state=ready-for-human-edit\n2026-09-08 12:20:37 [info     ] section_state                  key=3/3.6 state=ready-for-human-edit\n2026-09-08 12:20:37 [info     ] section_state                  key=4/4.1 state=ready-for-human-edit\n2026-09-08 12:20:37 [info     ] section_state                  key=4/4.2 state=ready-for-human-edit\n2026-09-08 12:20:37 [info     ] section_state                  key=4/4.3 state=ready-for-human-edit\n2026-09-08 12:20:37 [info     ] section_state                  key=4/4.4 state=ready-for-human-edit\n2026-09-08 12:20:37 [info     ] section_state                  key=5/5.1 state=ready-for-human-edit\n2026-09-08 12:20:37 [info     ] section_state                  key=5/5.2 state=ready-for-human-edit\n2026-09-08 12:20:37 [info     ] section_state                  key=5/5.3 state=ready-for-human-edit\n"
+      }
+    },
+    "export_gate": {
+      "noop": {
+        "blocked": true,
+        "hard_blocks": [
+          "[1.10↔4.4] Section 1.10 (1) and Section 4.4 (4) report different net tCO2e values. These MUST match.",
+          "[4.1/4.2↔4.4] Net tCO2e calculation error: Baseline (4) - Project (4) = 0, but Section 4.4 reports 4."
+        ],
+        "required_inputs_count": 0,
+        "advisory_count": 5,
+        "advisories": [
+          "[1.10↔ProjectInput] Section 1.10 waste throughput (1 tonnes) differs from ProjectInput (262,970 tonnes).",
+          "[3.3↔schema] Section 3.3 appears to lack 'included emission sources'. Required per VCS PDD schema. Keywords checked: included, emission source.",
+          "[3.3↔schema] Section 3.3 appears to lack 'excluded emission sources'. Required per VCS PDD schema. Keywords checked: excluded, emission source.",
+          "[3.3↔schema] Section 3.3 appears to lack 'temporal boundary'. Required per VCS PDD schema. Keywords checked: temporal, crediting period, time boundary.",
+          "[3.3↔schema] Section 3.3 appears to lack 'project type'. Required per VCS PDD schema. Keywords checked: project type, single project, poa, programme of activities."
+        ],
+        "would_export_unforced": false
+      },
+      "demo": {
+        "blocked": false,
+        "hard_blocks": [],
+        "required_inputs_count": 0,
+        "advisory_count": 0,
+        "advisories": [],
+        "would_export_unforced": true
+      }
+    },
+    "package": {
+      "review": {
+        "path": "reports\\review-packages\\inegol-integrated-solid-waste-storage-and-disposal-facility\\walkthrough-inegol-noop",
+        "manifest_exists": true
+      },
+      "demo": {
+        "path": "reports\\demo-packages\\inegol-integrated-solid-waste-storage-and-disposal-facility\\walkthrough-inegol-demo",
+        "manifest_exists": true
+      }
+    }
+  },
+  "tinh_lane": {
+    "evidence_grade": "measured",
+    "evidence_grade_note": "Mechanical packaging measured on this machine; authoring stage documented_only.",
+    "stages": [
+      {
+        "name": "00_INPUT manifest",
+        "status": "executed",
+        "notes": "14 files hashed; see inputs hash table."
+      },
+      {
+        "name": "mechanical packaging",
+        "status": "executed",
+        "notes": "returncode=0 seconds=224.213; 139 source pages, 3 workbook PDFs, 560-page merged PDF."
+      },
+      {
+        "name": "codex authoring (36-slot prose, citations, attestations)",
+        "status": "documented_only",
+        "notes": "Authoring stage (36-slot prose, citations, attestations) was not executed; only the mechanical runner scripts/run_pdd_in_place.py was executed. No new calculation created."
+      },
+      {
+        "name": "calculation transfer",
+        "status": "documented_only",
+        "notes": "Workspace attests no new calculation; values transferred with cell lineage."
+      }
+    ],
+    "inputs": {
+      "3908_Approval Letter_2nd Exemption Request_23 June 2023.pdf": {
+        "sha256": "c8c733b546a71c66f72c30669bd5e42d13d52541f2f5d0f2fb7f8118ee622186",
+        "bytes": 73413
+      },
+      "3908_Exemption_approved.pdf": {
+        "sha256": "4214fa92640d1601613d0919c2158c084add2df1b529229326b2b12a44c65f43",
+        "bytes": 188349
+      },
+      "3908_Exemption_Verra Approval Letter.pdf": {
+        "sha256": "3a8009b4b58d67b7459ae7b3b7f833c891b2b300e063f6cf0a50295e40052eb6",
+        "bytes": 106205
+      },
+      "BIOTREND vs MVC vs GAIA - VCS Registration Deed of Representation - INEGOL .pdf": {
+        "sha256": "f9d9ff2c37d36a0d12d6d79f231b263952f6e8f2ca6c24b7fa9f38239909c241",
+        "bytes": 15729833
+      },
+      "Deed_Inegol.pdf": {
+        "sha256": "57fe7d7a6b91eb2712f957c548e308cff6e23a1744a04cf8332ebbf28cd3e6c3",
+        "bytes": 1435915
+      },
+      "ER Calculation.v04_21.07.2025.xlsx": {
+        "sha256": "31029631aef8531f92d4240a8c109655c8581a23ac1bf8fc19379bf995a5f9a4",
+        "bytes": 2682933
+      },
+      "Inegol IRR_R5_22.08.2025.xlsx": {
+        "sha256": "0529e87d30e87755edfb58e2c2e86dc37ccf18ae8c3c97f6040066266240cc86",
+        "bytes": 2559842
+      },
+      "INEGOL_CPA_R3_21.07.2025.xlsx": {
+        "sha256": "deb2f1a8ee1d7a17994e64c057f26553cf12b0745c671f97f51c38f90d185b59",
+        "bytes": 1607949
+      },
+      "INEGOL_PDD_PRR_R3_clean.pdf": {
+        "sha256": "74235e7dd25bdf729b26f5c9c691d7cad26ab472a1da481e670255a90bced05a",
+        "bytes": 5878389
+      },
+      "Project ID 3908_PRR_03SEPT2025.pdf": {
+        "sha256": "e3baf6ea1d063eb46d3b4cc9d7509ccbb01df19e1812de6c96ee52a5d20c81d9",
+        "bytes": 844743
+      },
+      "Validation-Representation-v4.2.pdf": {
+        "sha256": "22646f53ea528112371d441a59a86a88b5ed19951385b016c8a5d40a77bbcfa5",
+        "bytes": 127168
+      },
+      "VCS ValR_3908_20250902_CL.pdf": {
+        "sha256": "c280199ed574622d3c20e32615ba35810d9857195b1a07f3aee64792f4a4e8ef",
+        "bytes": 1600594
+      },
+      "VCS_ExemptionRequest_3908_23122024 .pdf": {
+        "sha256": "6ea416c89ae5762e3538dd01d550fa362f7a0bb6ce69db493e1199463ef07615",
+        "bytes": 803774
+      },
+      "VCS_PROJ_DESC_PCP_3908_20MAR2023.pdf": {
+        "sha256": "375d20254d77fdc06396fe149b21c0cc58a5ea7c3f9e656b21885eb073c4b104",
+        "bytes": 4678686
+      }
+    },
+    "outputs": [
+      {
+        "path": "00_PACKAGE_COVER.pdf",
+        "bytes": 5918,
+        "pages": 2
+      },
+      {
+        "path": "3908_PDD_in_place_Codex.docx",
+        "bytes": 37438799
+      },
+      {
+        "path": "3908_PDD_in_place_Codex.pdf",
+        "bytes": 9065146,
+        "pages": 560
+      },
+      {
+        "path": "calculation_evidence\\ER Calculation.v04_21.07.2025.pdf",
+        "bytes": 1961467,
+        "pages": 52
+      },
+      {
+        "path": "calculation_evidence\\Inegol IRR_R5_22.08.2025.pdf",
+        "bytes": 527258,
+        "pages": 56
+      },
+      {
+        "path": "calculation_evidence\\INEGOL_CPA_R3_21.07.2025.pdf",
+        "bytes": 706201,
+        "pages": 312
+      },
+      {
+        "path": "in_place_run_manifest.json",
+        "bytes": 6802
+      },
+      {
+        "path": "source_page_images\\page-001.png",
+        "bytes": 171530
+      },
+      {
+        "path": "source_page_images\\page-002.png",
+        "bytes": 202377
+      },
+      {
+        "path": "source_page_images\\page-003.png",
+        "bytes": 114024
+      },
+      {
+        "path": "source_page_images\\page-004.png",
+        "bytes": 365112
+      },
+      {
+        "path": "source_page_images\\page-005.png",
+        "bytes": 268486
+      },
+      {
+        "path": "source_page_images\\page-006.png",
+        "bytes": 327794
+      },
+      {
+        "path": "source_page_images\\page-007.png",
+        "bytes": 319633
+      },
+      {
+        "path": "source_page_images\\page-008.png",
+        "bytes": 247584
+      },
+      {
+        "path": "source_page_images\\page-009.png",
+        "bytes": 178173
+      },
+      {
+        "path": "source_page_images\\page-010.png",
+        "bytes": 265917
+      },
+      {
+        "path": "source_page_images\\page-011.png",
+        "bytes": 300574
+      },
+      {
+        "path": "source_page_images\\page-012.png",
+        "bytes": 206589
+      },
+      {
+        "path": "source_page_images\\page-013.png",
+        "bytes": 407103
+      },
+      {
+        "path": "source_page_images\\page-014.png",
+        "bytes": 193161
+      },
+      {
+        "path": "source_page_images\\page-015.png",
+        "bytes": 263189
+      },
+      {
+        "path": "source_page_images\\page-016.png",
+        "bytes": 220823
+      },
+      {
+        "path": "source_page_images\\page-017.png",
+        "bytes": 192556
+      },
+      {
+        "path": "source_page_images\\page-018.png",
+        "bytes": 336689
+      },
+      {
+        "path": "source_page_images\\page-019.png",
+        "bytes": 270756
+      },
+      {
+        "path": "source_page_images\\page-020.png",
+        "bytes": 682578
+      },
+      {
+        "path": "source_page_images\\page-021.png",
+        "bytes": 196926
+      },
+      {
+        "path": "source_page_images\\page-022.png",
+        "bytes": 371782
+      },
+      {
+        "path": "source_page_images\\page-023.png",
+        "bytes": 1207815
+      },
+      {
+        "path": "source_page_images\\page-024.png",
+        "bytes": 252239
+      },
+      {
+        "path": "source_page_images\\page-025.png",
+        "bytes": 365344
+      },
+      {
+        "path": "source_page_images\\page-026.png",
+        "bytes": 349618
+      },
+      {
+        "path": "source_page_images\\page-027.png",
+        "bytes": 254079
+      },
+      {
+        "path": "source_page_images\\page-028.png",
+        "bytes": 303233
+      },
+      {
+        "path": "source_page_images\\page-029.png",
+        "bytes": 404494
+      },
+      {
+        "path": "source_page_images\\page-030.png",
+        "bytes": 400679
+      },
+      {
+        "path": "source_page_images\\page-031.png",
+        "bytes": 307704
+      },
+      {
+        "path": "source_page_images\\page-032.png",
+        "bytes": 264321
+      },
+      {
+        "path": "source_page_images\\page-033.png",
+        "bytes": 630032
+      },
+      {
+        "path": "source_page_images\\page-034.png",
+        "bytes": 340238
+      },
+      {
+        "path": "source_page_images\\page-035.png",
+        "bytes": 336792
+      },
+      {
+        "path": "source_page_images\\page-036.png",
+        "bytes": 318091
+      },
+      {
+        "path": "source_page_images\\page-037.png",
+        "bytes": 291929
+      },
+      {
+        "path": "source_page_images\\page-038.png",
+        "bytes": 392031
+      },
+      {
+        "path": "source_page_images\\page-039.png",
+        "bytes": 342502
+      },
+      {
+        "path": "source_page_images\\page-040.png",
+        "bytes": 278292
+      },
+      {
+        "path": "source_page_images\\page-041.png",
+        "bytes": 223061
+      },
+      {
+        "path": "source_page_images\\page-042.png",
+        "bytes": 237294
+      },
+      {
+        "path": "source_page_images\\page-043.png",
+        "bytes": 337853
+      },
+      {
+        "path": "source_page_images\\page-044.png",
+        "bytes": 242182
+      },
+      {
+        "path": "source_page_images\\page-045.png",
+        "bytes": 229951
+      },
+      {
+        "path": "source_page_images\\page-046.png",
+        "bytes": 239757
+      },
+      {
+        "path": "source_page_images\\page-047.png",
+        "bytes": 282838
+      },
+      {
+        "path": "source_page_images\\page-048.png",
+        "bytes": 230645
+      },
+      {
+        "path": "source_page_images\\page-049.png",
+        "bytes": 317848
+      },
+      {
+        "path": "source_page_images\\page-050.png",
+        "bytes": 219647
+      },
+      {
+        "path": "source_page_images\\page-051.png",
+        "bytes": 319086
+      },
+      {
+        "path": "source_page_images\\page-052.png",
+        "bytes": 262484
+      },
+      {
+        "path": "source_page_images\\page-053.png",
+        "bytes": 303122
+      },
+      {
+        "path": "source_page_images\\page-054.png",
+        "bytes": 291963
+      },
+      {
+        "path": "source_page_images\\page-055.png",
+        "bytes": 291737
+      },
+      {
+        "path": "source_page_images\\page-056.png",
+        "bytes": 323963
+      },
+      {
+        "path": "source_page_images\\page-057.png",
+        "bytes": 339014
+      },
+      {
+        "path": "source_page_images\\page-058.png",
+        "bytes": 265247
+      },
+      {
+        "path": "source_page_images\\page-059.png",
+        "bytes": 263997
+      },
+      {
+        "path": "source_page_images\\page-060.png",
+        "bytes": 264944
+      },
+      {
+        "path": "source_page_images\\page-061.png",
+        "bytes": 229154
+      },
+      {
+        "path": "source_page_images\\page-062.png",
+        "bytes": 254013
+      },
+      {
+        "path": "source_page_images\\page-063.png",
+        "bytes": 265751
+      },
+      {
+        "path": "source_page_images\\page-064.png",
+        "bytes": 292435
+      },
+      {
+        "path": "source_page_images\\page-065.png",
+        "bytes": 311461
+      },
+      {
+        "path": "source_page_images\\page-066.png",
+        "bytes": 278100
+      },
+      {
+        "path": "source_page_images\\page-067.png",
+        "bytes": 306906
+      },
+      {
+        "path": "source_page_images\\page-068.png",
+        "bytes": 277034
+      },
+      {
+        "path": "source_page_images\\page-069.png",
+        "bytes": 389468
+      },
+      {
+        "path": "source_page_images\\page-070.png",
+        "bytes": 280858
+      },
+      {
+        "path": "source_page_images\\page-071.png",
+        "bytes": 329829
+      },
+      {
+        "path": "source_page_images\\page-072.png",
+        "bytes": 340454
+      },
+      {
+        "path": "source_page_images\\page-073.png",
+        "bytes": 319497
+      },
+      {
+        "path": "source_page_images\\page-074.png",
+        "bytes": 314856
+      },
+      {
+        "path": "source_page_images\\page-075.png",
+        "bytes": 191271
+      },
+      {
+        "path": "source_page_images\\page-076.png",
+        "bytes": 277547
+      },
+      {
+        "path": "source_page_images\\page-077.png",
+        "bytes": 257767
+      },
+      {
+        "path": "source_page_images\\page-078.png",
+        "bytes": 264348
+      },
+      {
+        "path": "source_page_images\\page-079.png",
+        "bytes": 215898
+      },
+      {
+        "path": "source_page_images\\page-080.png",
+        "bytes": 230510
+      },
+      {
+        "path": "source_page_images\\page-081.png",
+        "bytes": 235846
+      },
+      {
+        "path": "source_page_images\\page-082.png",
+        "bytes": 185725
+      },
+      {
+        "path": "source_page_images\\page-083.png",
+        "bytes": 230855
+      },
+      {
+        "path": "source_page_images\\page-084.png",
+        "bytes": 231620
+      },
+      {
+        "path": "source_page_images\\page-085.png",
+        "bytes": 269273
+      },
+      {
+        "path": "source_page_images\\page-086.png",
+        "bytes": 279904
+      },
+      {
+        "path": "source_page_images\\page-087.png",
+        "bytes": 348384
+      },
+      {
+        "path": "source_page_images\\page-088.png",
+        "bytes": 284798
+      },
+      {
+        "path": "source_page_images\\page-089.png",
+        "bytes": 224368
+      },
+      {
+        "path": "source_page_images\\page-090.png",
+        "bytes": 134729
+      },
+      {
+        "path": "source_page_images\\page-091.png",
+        "bytes": 192512
+      },
+      {
+        "path": "source_page_images\\page-092.png",
+        "bytes": 229049
+      },
+      {
+        "path": "source_page_images\\page-093.png",
+        "bytes": 166245
+      },
+      {
+        "path": "source_page_images\\page-094.png",
+        "bytes": 186580
+      },
+      {
+        "path": "source_page_images\\page-095.png",
+        "bytes": 224768
+      },
+      {
+        "path": "source_page_images\\page-096.png",
+        "bytes": 214801
+      },
+      {
+        "path": "source_page_images\\page-097.png",
+        "bytes": 275510
+      },
+      {
+        "path": "source_page_images\\page-098.png",
+        "bytes": 278788
+      },
+      {
+        "path": "source_page_images\\page-099.png",
+        "bytes": 221066
+      },
+      {
+        "path": "source_page_images\\page-100.png",
+        "bytes": 211749
+      },
+      {
+        "path": "source_page_images\\page-101.png",
+        "bytes": 229370
+      },
+      {
+        "path": "source_page_images\\page-102.png",
+        "bytes": 268804
+      },
+      {
+        "path": "source_page_images\\page-103.png",
+        "bytes": 193767
+      },
+      {
+        "path": "source_page_images\\page-104.png",
+        "bytes": 169071
+      },
+      {
+        "path": "source_page_images\\page-105.png",
+        "bytes": 200778
+      },
+      {
+        "path": "source_page_images\\page-106.png",
+        "bytes": 339524
+      },
+      {
+        "path": "source_page_images\\page-107.png",
+        "bytes": 311762
+      },
+      {
+        "path": "source_page_images\\page-108.png",
+        "bytes": 254481
+      },
+      {
+        "path": "source_page_images\\page-109.png",
+        "bytes": 218848
+      },
+      {
+        "path": "source_page_images\\page-110.png",
+        "bytes": 243383
+      },
+      {
+        "path": "source_page_images\\page-111.png",
+        "bytes": 236267
+      },
+      {
+        "path": "source_page_images\\page-112.png",
+        "bytes": 224840
+      },
+      {
+        "path": "source_page_images\\page-113.png",
+        "bytes": 260809
+      },
+      {
+        "path": "source_page_images\\page-114.png",
+        "bytes": 241682
+      },
+      {
+        "path": "source_page_images\\page-115.png",
+        "bytes": 281068
+      },
+      {
+        "path": "source_page_images\\page-116.png",
+        "bytes": 228429
+      },
+      {
+        "path": "source_page_images\\page-117.png",
+        "bytes": 236742
+      },
+      {
+        "path": "source_page_images\\page-118.png",
+        "bytes": 206254
+      },
+      {
+        "path": "source_page_images\\page-119.png",
+        "bytes": 287167
+      },
+      {
+        "path": "source_page_images\\page-120.png",
+        "bytes": 254669
+      },
+      {
+        "path": "source_page_images\\page-121.png",
+        "bytes": 250303
+      },
+      {
+        "path": "source_page_images\\page-122.png",
+        "bytes": 247473
+      },
+      {
+        "path": "source_page_images\\page-123.png",
+        "bytes": 191453
+      },
+      {
+        "path": "source_page_images\\page-124.png",
+        "bytes": 231830
+      },
+      {
+        "path": "source_page_images\\page-125.png",
+        "bytes": 293112
+      },
+      {
+        "path": "source_page_images\\page-126.png",
+        "bytes": 359438
+      },
+      {
+        "path": "source_page_images\\page-127.png",
+        "bytes": 336029
+      },
+      {
+        "path": "source_page_images\\page-128.png",
+        "bytes": 355498
+      },
+      {
+        "path": "source_page_images\\page-129.png",
+        "bytes": 286390
+      },
+      {
+        "path": "source_page_images\\page-130.png",
+        "bytes": 338812
+      },
+      {
+        "path": "source_page_images\\page-131.png",
+        "bytes": 302693
+      },
+      {
+        "path": "source_page_images\\page-132.png",
+        "bytes": 84886
+      },
+      {
+        "path": "source_page_images\\page-133.png",
+        "bytes": 1274398
+      },
+      {
+        "path": "source_page_images\\page-134.png",
+        "bytes": 1245898
+      },
+      {
+        "path": "source_page_images\\page-135.png",
+        "bytes": 398235
+      },
+      {
+        "path": "source_page_images\\page-136.png",
+        "bytes": 230475
+      },
+      {
+        "path": "source_page_images\\page-137.png",
+        "bytes": 248475
+      },
+      {
+        "path": "source_page_images\\page-138.png",
+        "bytes": 76948
+      },
+      {
+        "path": "source_page_images\\page-139.png",
+        "bytes": 131981
+      }
+    ],
+    "timing_seconds": 224.213,
+    "tools": {
+      "poppler_url": "https://github.com/oschwartz10612/poppler-windows/releases/download/v26.07.0-0/Release-26.07.0-0.zip",
+      "pdftoppm_version": "pdftoppm version 26.07.0",
+      "soffice_path": "C:/Program Files/LibreOffice/program/soffice.exe"
+    },
+    "process_excerpt": "# Codex-authored Verra PDD process\n\n## Canonical flow\n\n`MIXED INPUTS -> ACTIVE CODEX TASK -> SOURCE-PRESERVING VERRA PDD PACKAGE`\n\nThe active Codex task is the sole document authoring stage. It reads the\nproject evidence in place, applies the official Verra template, and performs\nthe render/review loop. It must not launch a nested `codex exec` process or\nhand the final document to a second content-blind renderer.\n\nFor a repeatable source-preserving package, use:\n\n```powershell\npython scripts\\run_pdd_in_place.py `\n  --input-dir <project-file-or-folder> `\n  --template library\\templates\\vcs\\VCS-Project-Description-Template-v4.4-FINAL2.docx `\n  --output-dir outputs\\<run-name>\n```\n\nProject inputs may be YAML, JSON, PDF, Word, Excel, CSV, text, KML/KMZ or a\nfolder containing a mixture of those formats. The runner does not create an\nintermediate facts YAML, deterministic narrative draft or replacement\ncalculation workbook.\n\n## Stage 00_INPUT - evidence manifest\n\nThe runner inventories and hashes the supplied source files without changing\nthem. `00_INPUT/input_manifest.json` assigns each file one authority role:\n\n- `project_input`: may support project facts and reported calculations;\n- `example`: may support writing style and section organization only;\n- `methodology` or `tool`: may support rules, applicability and calculation\n  justification only; and\n- `template`: controls the final Word structure and formatting.\n\nApproved comparable-project PDDs belong in `inputs/pdd_examples/` by default,\nor in the folder supplied with `--examples-dir`. An example must never supply a\ncurrent-project name, date, owner, location, parameter, assumption, formula or\nnumber.\n\nActive methodology and tool references are read from\n`library/methodologies/active/`. Codex selects and reads the documents matching\nthe methodologies and tools identified in the project inputs. A methodology\ndocument establishes the rule; project evidence must separately establish that\nthe current project satisfies it.\n\n## In-place Codex authoring stage - sole authoring stage\n\nThe active task reads the run-local input manifest, source files, approved\nexamples, methodology/tool library, and the official template. It must:\n\n1. read the relevant mixed project inputs directly;\n2. produce finished prose for all 36 VCS Project Description template slots;\n3. cite every claim with a PDF page, Word section, YAML path or Excel\n   worksheet/cell/range;\n4. transfer calculations only when they are already reported or formula-backed\n   in an input workbook;\n5. explain the calculation components, formula, units, periods and source-cell\n   lineage and check them against the applicable methodology/tools;\n6. preserve broken formulas, external links, stale cached values, conflicts and\n   missing evidence as review items; and\n7. attest that it created no new calculation or invented numeric value; and\n8. render the Word/PDF output and inspect every page before release.\n\nThe in-place runner creates a traceability cover, preserves the authoritative\nsource PDD page-for-page, and appends read-only PDF renditions of the supplied\ncalculation workbooks. It does not create a normalized-facts YAML, a PREOUTPUT\nprose stage, a nested Codex contract, or a replacement calculation model.\n\nThe final Verra deliverable is the PDF package; the Word file is a faithful\nworking copy for review. Supporting approvals, deeds, validation material and\nexemption requests remain unchanged in the input evidence folder.\n\n## Calculation requirements\n\n- Do not build a new calculation model.\n- Do not repair, overwrite or resave source workbooks.\n- Use only workbook inputs, formulas, displayed/cached outputs and assumptions\n  that can be traced to exact cells/ranges.\n- State the source workbook, worksheet, cell/range, formula status, unit and\n  period for every reported PDD calculation.\n- Explain why the reported calculation follows the applicable Verra/CDM\n  methodology and tools, with exact methodology/tool locators.\n- A zero, not-applicable component or total is permitted only when directly\n  supported by project evidence.\n- If a value is ambiguous, stale, externally linked, formula-broken or missing,\n  leave a data gap or review-required statement. Never recompute a substitute.\n\n## Release gates\n\nBefore release:\n\n1. confirm every source input is inventoried and hashed;\n2. confirm the source PDD and calculation evidence are present;\n3. verify no new calculation model or unsupported value was introduced;\n4. render the DOCX and inspect every page when LibreOffice is available; and\n5. record source, template and final artifact hashes in the run manifest.\n\nThe output remains review-ready, not automatically approved, validated,\nregistered or submission-ready.\n\n## Legacy process\n\nThe historical `INPUT -> YAML -> PREOUTPUT -> CODEX_FINISHED` pipeline and its\nscripts are retained under `_archive/cleanup_20260827/` for recovery only. They\nare not the canonical PDD creation route and must not be used as project\nevidence.\n",
+    "known_defects": [
+      "Authoring stage (36-slot prose, citations, attestations) was not executed; only the mechanical runner scripts/run_pdd_in_place.py was executed. No new calculation created.",
+      "Source PDD identifies VCS Version 4.2; v4.4 migration requires validator review."
+    ]
+  },
+  "reality_checks": [
+    {
+      "id": "no-model-run",
+      "claim": "The repository lane shows what the pipeline writes.",
+      "truth": "No model-backed drafting run has ever completed in this repository beyond a single-section smoke test. The noop lane shows placeholders; the demo lane shows hand-written synthetic prose, not model output.",
+      "severity": "material"
+    },
+    {
+      "id": "retrieval-reachability",
+      "claim": "Corpus retrieval grounds every section in registered PDDs.",
+      "truth": "Index holds 2545 headline rows but only 891 are reachable through retrieval; the ACM0022 methodology document itself (EB111_repan07_ACM0022_v03.0) is in missing_documents, so methodology rules never arrive via retrieval.",
+      "severity": "material"
+    },
+    {
+      "id": "methodology-not-retrievable",
+      "claim": "The methodology document is available to the drafter.",
+      "truth": "Missing from the index: Bergama_VCS-Joint-Project-Description-Monitoring-Report-v4.2.norm, DraftProjectDescription.norm, EB111_repan07_ACM0022_v03.0.norm, VCS-Project-Description-HEREKO-v4.1_2022-10-24.norm. Sections citing them fall back to other families or to nothing.",
+      "severity": "caution"
+    },
+    {
+      "id": "structured-table-coverage",
+      "claim": "Verra tables render for every section that needs one.",
+      "truth": "All 11 structured-table renderers are registered in docx_export._TABLE_RENDERERS, but only 3 of the 36 Inegol sections (proponent, applicability, ghg_boundary) carry structured_content, so risk_assessment, sustainable_development and data_gaps tables are registered yet unexercised by this project.",
+      "severity": "info"
+    },
+    {
+      "id": "oracle-xfail",
+      "claim": "The calculator is fully cross-validated.",
+      "truth": "Two tests in tests/test_registered_pdd_oracle.py remain xfail; cross-validation against the five reconciled registered projects (VCS 4818 x2, 5040, 4940, 4921) is recommended follow-up, not done here.",
+      "severity": "caution"
+    },
+    {
+      "id": "climate-zone-derived",
+      "claim": "Every calc parameter was supplied by the project input.",
+      "truth": "calc_climate_zone_resolved: zone=boreal_temperate_wet derived=True — no location.climate_zone was supplied, so the methane decay-rate column driving the baseline was inferred from latitude. Open human decision.",
+      "severity": "material"
+    },
+    {
+      "id": "tinh-authoring-not-executed",
+      "claim": "Both lanes were executed end to end on this machine.",
+      "truth": "Only the portable workspace's mechanical packaging was executed (560-page merged PDF in 224s). The Codex authoring stage (36-slot prose, citations, attestations) was documented_only, read from PDD_CREATION_PROCESS.md, never run.",
+      "severity": "material"
+    },
+    {
+      "id": "no-assumption-register",
+      "claim": "Assumption gating was exercised by this project.",
+      "truth": "Inegol has no configs/demo/inegol_project_input.assumptions.yaml, so the ASSUMPTION-BLOCK/WARN review path is present in rules/verra/wte_review_rules.yaml but not exercised. Five subsections (3.4, 3.5, 1.13, 4.1, 4.4) can never auto-approve under WTE rules.",
+      "severity": "info"
+    }
+  ],
+  "breadth": [
+    {
+      "methodology_id": "VM0051",
+      "engine_module": "pdd_agent.calc.rice_vm0051",
+      "gating_field": "technology.rice_cultivation",
+      "has_corpus_document": false,
+      "has_registered_oracle": false,
+      "review_rules_path": "rules/verra/rice_vm0051_rules.yaml",
+      "has_review_rules": true
+    },
+    {
+      "methodology_id": "VM0044",
+      "engine_module": "pdd_agent.calc.biochar_vm0044",
+      "gating_field": "technology.biochar_production",
+      "has_corpus_document": false,
+      "has_registered_oracle": false,
+      "review_rules_path": "rules/verra/biochar_vm0044_rules.yaml",
+      "has_review_rules": true
+    },
+    {
+      "methodology_id": "AMS-II.G",
+      "engine_module": "pdd_agent.calc.cookstove_amsiig",
+      "gating_field": "technology.cookstove_fleet",
+      "has_corpus_document": false,
+      "has_registered_oracle": false,
+      "review_rules_path": "rules/verra/cookstove_amsiig_rules.yaml",
+      "has_review_rules": true
+    }
+  ],
+  "missing_inputs": []
+}

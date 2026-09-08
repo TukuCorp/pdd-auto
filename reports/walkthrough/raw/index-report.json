@@ -1,0 +1,35 @@
+2026-09-08 12:17:44 [info     ] index_report_start             corpus_dir=data/corpus/normalized db=data/index/corpus.fts.db
+{
+  "db_path": "data\\index\\corpus.fts.db",
+  "total_rows": 2545,
+  "distinct_texts": 2492,
+  "duplication_rate": 0.021,
+  "documents": 13,
+  "rows_by_document": {
+    "VCS_Bergama_Project-Description.norm": 313,
+    "VCS_DRAFT_Yanjiang_Project-Description.norm": 179,
+    "VCS_Guangzhou_Project-Description.norm": 192,
+    "VCS_Guanxi_Zhuang_Project_Description.norm": 163,
+    "VCS_Inegol_Project-Description.norm": 230,
+    "VCS_Linfen_Project-Description.norm": 177,
+    "VCS_Lizuhou_Project-Description.norm": 203,
+    "VCS_Mahindra_Project-Description.norm": 138,
+    "VCS_Shunping_Project-Description.norm": 253,
+    "VCS_Soc_Son_Project-Description.norm": 187,
+    "VCS_Tamil_Nadu_Project-Description.norm": 134,
+    "VCS_Yingoku_Project-Description.norm": 115,
+    "VCS_\u00c3_demis_Project-Description.norm": 261
+  },
+  "mean_text_chars": 1103.1,
+  "median_text_chars": 1066,
+  "rows_at_500_chars": 2,
+  "reachable_rows": 891,
+  "reachable_documents": 13,
+  "missing_documents": [
+    "Bergama_VCS-Joint-Project-Description-Monitoring-Report-v4.2.norm",
+    "DraftProjectDescription.norm",
+    "EB111_repan07_ACM0022_v03.0.norm",
+    "VCS-Project-Description-HEREKO-v4.1_2022-10-24.norm"
+  ]
+}
+2026-09-08 12:17:44 [info     ] index_report_done              db=data/index/corpus.fts.db
