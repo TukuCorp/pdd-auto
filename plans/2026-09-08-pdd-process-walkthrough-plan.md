@@ -1,7 +1,7 @@
 ---
 title: "Interactive Inegol PDD Walkthrough and Two-Track Practicality Comparison"
 date: "2026-09-08"
-status: "draft"
+status: "complete — all 5 phases shipped in 3a44a96 + e71f470 (reports/walkthrough/ page, bundle, scripts, 14 passing tests; phase-01..05 reports all PASS)"
 request: "Build an interactive, step-by-step HTML walkthrough of the full PDD creation process (start to finish) with user input required at each step, following one real project end to end, so the reader can re-onboard on the process and compare the pdd-auto repo pipeline against the portable Codex workspace track on practicality."
 plan_type: "multi-phase"
 research_inputs:
@@ -387,46 +387,46 @@ Produce real Inegol artifacts from this repository using only the `noop` and `de
 and record the timings, exit codes, and gate behaviour that the walkthrough will display.
 
 **Tasks**
-- [ ] TASK-01-01: Create directories `reports/walkthrough/` and `reports/walkthrough/raw/`.
+- [x] TASK-01-01: Create directories `reports/walkthrough/` and `reports/walkthrough/raw/`.
   Add `reports/walkthrough/raw/.gitkeep`.
-- [ ] TASK-01-02: Record the environment. Run each of the following and save the combined output
+- [x] TASK-01-02: Record the environment. Run each of the following and save the combined output
   to `reports/walkthrough/raw/environment.txt`:
   ```
   PYTHONPATH= uv run --no-sync python -c "import sys, platform; print(sys.version); print(platform.platform())"
   PYTHONPATH= uv run --no-sync python -m pytest -m "not corpus" -q 2>&1 | tail -5
   git rev-parse HEAD
   ```
-- [ ] TASK-01-03: Capture retrieval-index health as JSON:
+- [x] TASK-01-03: Capture retrieval-index health as JSON:
   ```
   PYTHONPATH= uv run --no-sync pdd-agent index-report --json > reports/walkthrough/raw/index-report.json
   ```
   If `data/index/corpus.fts.db` is missing, first build the demo index with
   `PYTHONPATH= uv run --no-sync pdd-agent demo-setup` and record in the file which index was used.
-- [ ] TASK-01-04: Capture the calculation result as JSON and as human-readable text:
+- [x] TASK-01-04: Capture the calculation result as JSON and as human-readable text:
   ```
   PYTHONPATH= uv run --no-sync pdd-agent calc --input configs/demo/inegol_project_input.yaml --output reports/walkthrough/raw/calc-inegol.json
   PYTHONPATH= uv run --no-sync pdd-agent calc --input configs/demo/inegol_project_input.yaml > reports/walkthrough/raw/calc-inegol.txt 2>&1
   ```
-- [ ] TASK-01-05: Run the full 36-section draft with the `noop` provider, using a fixed run id so
+- [x] TASK-01-05: Run the full 36-section draft with the `noop` provider, using a fixed run id so
   the artifacts are addressable, and time it:
   ```
   PYTHONPATH= uv run --no-sync python -c "import time,subprocess,sys,json,pathlib; t=time.perf_counter(); r=subprocess.run([sys.executable,'-m','pdd_agent.cli','draft','--input','configs/demo/inegol_project_input.yaml','--provider','noop','--run-id','walkthrough-inegol-noop','--no-judge'],capture_output=True,text=True); d=round(time.perf_counter()-t,3); pathlib.Path('reports/walkthrough/raw/draft-noop.json').write_text(json.dumps({'seconds':d,'returncode':r.returncode,'stdout':r.stdout[-8000:],'stderr':r.stderr[-8000:]},indent=2),encoding='utf-8'); print(d, r.returncode)"
   ```
-- [ ] TASK-01-06: Run review for the `noop` run and save stdout:
+- [x] TASK-01-06: Run review for the `noop` run and save stdout:
   ```
   PYTHONPATH= uv run --no-sync pdd-agent review --run-id walkthrough-inegol-noop --input configs/demo/inegol_project_input.yaml > reports/walkthrough/raw/review-noop.txt 2>&1
   ```
-- [ ] TASK-01-07: Attempt the `noop` export **without** `--force`, capturing the exact outcome
+- [x] TASK-01-07: Attempt the `noop` export **without** `--force`, capturing the exact outcome
   (this is evidence, see ASM-007):
   ```
   PYTHONPATH= uv run --no-sync pdd-agent export --run-id walkthrough-inegol-noop --input configs/demo/inegol_project_input.yaml > reports/walkthrough/raw/export-noop-unforced.txt 2>&1; echo "exit=$?" >> reports/walkthrough/raw/export-noop-unforced.txt
   ```
   Then, only if the unforced attempt did not produce `data/runs/walkthrough-inegol-noop.docx`,
   re-run with `--force` into `reports/walkthrough/raw/export-noop-forced.txt`.
-- [ ] TASK-01-08: Repeat TASK-01-05 through TASK-01-07 for the `demo` provider with run id
+- [x] TASK-01-08: Repeat TASK-01-05 through TASK-01-07 for the `demo` provider with run id
   `walkthrough-inegol-demo`, writing to `draft-demo.json`, `review-demo.txt`,
   `export-demo.txt`. Do not pass `--judge` in either run.
-- [ ] TASK-01-09: Publish both packages **programmatically**, not via `--review-output-dir`
+- [x] TASK-01-09: Publish both packages **programmatically**, not via `--review-output-dir`
   (see RISK-01-01). Write a one-off snippet that calls `publish_review_package` for the `noop`
   run into `reports/review-packages/` and `publish_demo_package` for the `demo` run into
   `reports/demo-packages/`, passing `project_name` from
@@ -434,7 +434,7 @@ and record the timings, exit codes, and gate behaviour that the walkthrough will
   `project_yaml_path=configs/demo/inegol_project_input.yaml`, `assumptions_yaml_path=Path("")`,
   and `assumption_burden_path=reports/assumption-burden.md`. Save the returned package paths to
   `reports/walkthrough/raw/packages.json`.
-- [ ] TASK-01-10: Confirm that `data/runs/walkthrough-inegol-noop.json`,
+- [x] TASK-01-10: Confirm that `data/runs/walkthrough-inegol-noop.json`,
   `data/runs/walkthrough-inegol-demo.json`,
   `data/runs/review-state-walkthrough-inegol-noop.json`, and
   `data/runs/review-state-walkthrough-inegol-demo.json` all exist and are valid JSON.
@@ -494,7 +494,7 @@ comparison rests on measured artifacts rather than on documentation, and record 
 stage is executed versus reviewed-from-documentation.
 
 **Tasks**
-- [ ] TASK-02-01: Confirm the workspace is present and record its inventory:
+- [x] TASK-02-01: Confirm the workspace is present and record its inventory:
   ```
   ls "data/runs/tinh-20260827/ws/PDD_Portable_Workspace_20260827"
   ls "data/runs/tinh-20260827/ws/PDD_Portable_Workspace_20260827/inputs/fresh_registry/verra_public_download_3908_20260824/project_3908/extracted"
@@ -502,10 +502,10 @@ stage is executed versus reviewed-from-documentation.
   Expected in `extracted/`: `INEGOL_PDD_PRR_R3_clean.pdf`, `ER Calculation.v04_21.07.2025.xlsx`,
   `INEGOL_CPA_R3_21.07.2025.xlsx`, `Inegol IRR_R5_22.08.2025.xlsx`, plus approval, deed,
   validation-report and exemption PDFs.
-- [ ] TASK-02-02: Compute SHA-256 for every file in that `extracted/` directory and save to
+- [x] TASK-02-02: Compute SHA-256 for every file in that `extracted/` directory and save to
   `reports/walkthrough/raw/tinh-3908-hashes.json` as an object mapping filename to
   `{sha256, bytes}`. Use `hashlib.sha256` over 1 MiB chunks.
-- [ ] TASK-02-03: Install Poppler portably per ASM-004. Download a Poppler-for-Windows release
+- [x] TASK-02-03: Install Poppler portably per ASM-004. Download a Poppler-for-Windows release
   archive, extract it so that
   `data/runs/tinh-20260827/ws/PDD_Portable_Workspace_20260827/tools/poppler/Library/bin/pdftoppm.exe`
   exists. Verify with:
@@ -514,8 +514,8 @@ stage is executed versus reviewed-from-documentation.
   ```
   Record the resolved version string and the exact download URL in
   `reports/walkthrough/raw/tinh-tools.txt`. Do not alter the system `PATH`.
-- [ ] TASK-02-04: Create the short staging root `C:/t3908/job` (ASM-006).
-- [ ] TASK-02-05: Run the workspace's own packaging pipeline, timed, from the short path:
+- [x] TASK-02-04: Create the short staging root `C:/t3908/job` (ASM-006).
+- [x] TASK-02-05: Run the workspace's own packaging pipeline, timed, from the short path:
   ```
   PYTHONPATH= uv run --no-sync python "data/runs/tinh-20260827/ws/PDD_Portable_Workspace_20260827/scripts/run_pdd_in_place.py" --input-dir "data/runs/tinh-20260827/ws/PDD_Portable_Workspace_20260827/inputs/fresh_registry/verra_public_download_3908_20260824/project_3908/extracted" --template "data/runs/tinh-20260827/ws/PDD_Portable_Workspace_20260827/library/templates/vcs/VCS-Project-Description-Template-v4.4-FINAL2.docx" --output-dir "C:/t3908/job" --soffice "C:/Program Files/LibreOffice/program/soffice.exe" --pdftoppm "data/runs/tinh-20260827/ws/PDD_Portable_Workspace_20260827/tools/poppler/Library/bin/pdftoppm.exe"
   ```
@@ -524,17 +524,17 @@ stage is executed versus reviewed-from-documentation.
   If the template path above does not exist, locate the actual template with
   `find "data/runs/tinh-20260827/ws/PDD_Portable_Workspace_20260827/library/templates" -name "*.docx"`
   and use the VCS v4.4 file found there.
-- [ ] TASK-02-06: Record the output inventory: for every file produced under `C:/t3908/job`,
+- [x] TASK-02-06: Record the output inventory: for every file produced under `C:/t3908/job`,
   capture relative path, byte size, and — for PDFs — page count via `pypdf.PdfReader`. Save to
   `reports/walkthrough/raw/tinh-outputs.json`.
-- [ ] TASK-02-07: Copy only the run manifest produced by the pipeline (a small JSON) into
+- [x] TASK-02-07: Copy only the run manifest produced by the pipeline (a small JSON) into
   `reports/walkthrough/raw/tinh-run-manifest.json`. Do **not** copy the merged PDF or any
   workbook into `reports/` — they are large and the walkthrough only needs their metadata (CON-006).
-- [ ] TASK-02-08: Extract, verbatim, the canonical process description and release gates from
+- [x] TASK-02-08: Extract, verbatim, the canonical process description and release gates from
   `data/runs/tinh-20260827/ws/PDD_Portable_Workspace_20260827/process/PDD_CREATION_PROCESS.md`
   into `reports/walkthrough/raw/tinh-process-excerpt.md`. Cap the excerpt at 400 lines. This is
   the only source for the authoring stage, which is **not** executed.
-- [ ] TASK-02-09: Write `reports/walkthrough/raw/tinh-execution-status.json` recording, per stage,
+- [x] TASK-02-09: Write `reports/walkthrough/raw/tinh-execution-status.json` recording, per stage,
   whether it was `executed` or `documented_only`. The authoring stage must be `documented_only`.
 
 **File Changes**
@@ -591,40 +591,40 @@ Turn the raw captures from PHASE-01 and PHASE-02 into one validated, versioned J
 fully determines the walkthrough's content.
 
 **Tasks**
-- [ ] TASK-03-01: Create `scripts/build_walkthrough_evidence.py`. It must import nothing outside
+- [x] TASK-03-01: Create `scripts/build_walkthrough_evidence.py`. It must import nothing outside
   the repo's existing dependencies, clear no global state, and write exactly one file.
-- [ ] TASK-03-02: Implement the raw-artifact readers: load every file written under
+- [x] TASK-03-02: Implement the raw-artifact readers: load every file written under
   `reports/walkthrough/raw/`, tolerating absent optional files by recording `null` plus a
   `missing_inputs` list rather than raising.
-- [ ] TASK-03-03: Implement `capture_retrieval(section_ids)` which, for each of the four focus
+- [x] TASK-03-03: Implement `capture_retrieval(section_ids)` which, for each of the four focus
   subsections `4.1`, `3.5`, `1.13`, `1.1`, calls
   `pdd_agent.retrieval.search.get_examples_for_section` and records for each hit:
   `document_name`, `canonical_heading`, `score`, `matched_terms`, `from_fallback_family`, and a
   400-character excerpt. If the retrieval index is unavailable, record an empty list plus the
   reason string; this is itself a finding.
-- [ ] TASK-03-04: Implement `capture_prompt(section_id, sub_section_id)` which constructs a
+- [x] TASK-03-04: Implement `capture_prompt(section_id, sub_section_id)` which constructs a
   `SectionOrchestrator` with the `noop` provider and the Inegol `ProjectInput`, attaches the calc
   result via `set_calc_result`, and captures the assembled prompt for subsection `4.1` by calling
   the orchestrator's prompt builder. Store the full prompt text if under 20,000 characters,
   otherwise the first and last 8,000 characters with an elision marker, plus the true character
   count and a per-component character breakdown.
-- [ ] TASK-03-05: Implement `summarize_sections(run_dict)` producing, for all 36 subsections:
+- [x] TASK-03-05: Implement `summarize_sections(run_dict)` producing, for all 36 subsections:
   `sub_section_id`, `heading`, `confidence`, `char_count`, `issue_count`, `provenance_count`,
   `review_state`, and `has_structured_content`. Read review states from
   `data/runs/review-state-{run_id}.json`.
-- [ ] TASK-03-06: Implement `focus_sections(run_dict)` producing, for `4.1`, `3.5`, `1.13`, `1.1`,
+- [x] TASK-03-06: Implement `focus_sections(run_dict)` producing, for `4.1`, `3.5`, `1.13`, `1.1`,
   the full section text capped at 4,000 characters plus the complete `issues`, `provenance`,
   `fact_provenance`, and `synthetic_uses` arrays.
-- [ ] TASK-03-07: Implement `capture_export_gate()` which calls
+- [x] TASK-03-07: Implement `capture_export_gate()` which calls
   `pdd_agent.export.docx_export.check_export_gate` on both run dicts with the Inegol
   `ProjectInput` and the calc result, and records `hard_blocks`, `required_inputs` count,
   `advisory` count, and whether export would have proceeded without `--force`.
-- [ ] TASK-03-08: Implement `capture_breadth()` which reads
+- [x] TASK-03-08: Implement `capture_breadth()` which reads
   `pdd_agent.calc.dispatch.ENGINE_BY_METHODOLOGY` and, for each of `VM0051`, `VM0044`,
   `AMS-II.G`, records the engine module path, the `ProjectInput` field that gates it
   (`technology.rice_cultivation`, `technology.biochar_production`, `technology.cookstove_fleet`),
   and whether any corpus document, registered oracle, or review-rules file exists for it.
-- [ ] TASK-03-09: Implement `build_reality_checks()` returning the fixed list of honest-state
+- [x] TASK-03-09: Implement `build_reality_checks()` returning the fixed list of honest-state
   statements the page must show. At minimum: no model-backed drafting run has ever been performed
   in this repository beyond a single-section smoke test; all prose shown here is placeholder or
   synthetic; the retrieval index's reachable row count is lower than its headline row count
@@ -632,9 +632,9 @@ fully determines the walkthrough's content.
   reachable through retrieval; three of eleven Verra structured-table renderers are unwired;
   two oracle tests remain `xfail`; the climate zone driving the baseline was derived from
   latitude rather than supplied; the portable-workspace authoring stage was not executed.
-- [ ] TASK-03-10: Assemble and write `reports/walkthrough/inegol-evidence.json` per the schema in
+- [x] TASK-03-10: Assemble and write `reports/walkthrough/inegol-evidence.json` per the schema in
   the Gotchas section. Include `schema_version: "1.0"` and a UTC `generated_at`.
-- [ ] TASK-03-11: Add `tests/test_walkthrough_evidence.py` covering the pure helpers only. No test
+- [x] TASK-03-11: Add `tests/test_walkthrough_evidence.py` covering the pure helpers only. No test
   may execute the pipeline, touch the network, or require `data/runs/` content.
 
 **File Changes**
@@ -700,51 +700,51 @@ Produce the interactive page: a hand-authored HTML template with a placeholder f
 evidence, and a render script that injects the bundle and writes the final file.
 
 **Tasks**
-- [ ] TASK-04-01: Create `reports/walkthrough/template.html` as a complete standalone document
+- [x] TASK-04-01: Create `reports/walkthrough/template.html` as a complete standalone document
   with inline `<style>` and inline `<script>`, no external resources of any kind, and a single
   injection point: `<script type="application/json" id="evidence">__EVIDENCE_JSON__</script>`.
-- [ ] TASK-04-02: Implement the fourteen screens in the template's JavaScript, driven entirely by
+- [x] TASK-04-02: Implement the fourteen screens in the template's JavaScript, driven entirely by
   the bundle. Screen ids and titles, in order: `00` Orientation; `01` Corpus and retrieval index;
   `02` Project intake; `03` Methodology screening; `04` Quantification; `05` Per-section
   retrieval; `06` Prompt assembly; `07` Drafting the 36 subsections; `08` Judge and redraft;
   `09` Review and quality gates; `10` Export gate and document assembly; `11` Packaging and
   delivery; `12` Breadth across other methodologies; `13` Verdict and decision brief.
-- [ ] TASK-04-03: Implement the per-screen layout in this fixed order: title and one-line purpose;
+- [x] TASK-04-03: Implement the per-screen layout in this fixed order: title and one-line purpose;
   a collapsed `<details>` element labelled "Why a validation body cares" carrying the domain note;
   the **predict** panel (a textarea plus a "Lock in prediction" button and a "Skip" link); the
   **reveal** panel, hidden until a prediction is locked or skipped, containing two side-by-side
   lanes; the **reality check** band, always visible, never collapsible; the **judge** panel with
   the four labelled scales from `## Specification` S2 plus a note textarea; and a "Next step"
   button disabled until the judge panel is submitted or skipped.
-- [ ] TASK-04-04: Implement screen `04` to render the full equation chain from
+- [x] TASK-04-04: Implement screen `04` to render the full equation chain from
   `## Specification` S1 using the bundle's calc component values, the seven-year schedule as a
   table, and the `calc_climate_zone_resolved` warning as a callout. State explicitly on this
   screen that the headline "net emission reductions per year" figure is the **year-one** value
   under a first-order decay model, not an average.
-- [ ] TASK-04-05: Implement screen `07` to render a 36-cell grid coloured by confidence, with each
+- [x] TASK-04-05: Implement screen `07` to render a 36-cell grid coloured by confidence, with each
   cell showing subsection id, confidence and issue count, and to render the four focus subsections
   in full below the grid, each shown for both the `noop` and `demo` lanes with the `demo` lane
   labelled "synthetic — not model output".
-- [ ] TASK-04-06: Implement `localStorage` persistence under the key `pdd-walkthrough-v1` with the
+- [x] TASK-04-06: Implement `localStorage` persistence under the key `pdd-walkthrough-v1` with the
   shape given in Gotchas. Every read and every write must be wrapped in `try`/`catch`; on failure
   the page must continue in read-only mode and show a single non-blocking banner.
-- [ ] TASK-04-07: Implement export and import of reader state as JSON: an "Export my answers"
+- [x] TASK-04-07: Implement export and import of reader state as JSON: an "Export my answers"
   button that triggers a `Blob` download, and an "Import answers" control that accepts pasted JSON.
   This is the durable path when `localStorage` is unavailable.
-- [ ] TASK-04-08: Implement screen `13` to compute the aggregation in `## Specification` S2 and
+- [x] TASK-04-08: Implement screen `13` to compute the aggregation in `## Specification` S2 and
   render a Markdown decision brief into a `<textarea>`, with a copy button that selects the
   textarea and calls `document.execCommand("copy")` — `navigator.clipboard` is unavailable over
   `file://` in Chromium. The brief must contain: date, project, evidence-grade of each lane, a
   per-step table of the four scores and the note, the per-axis means, both overall means, the
   divergence list, and a "recommended follow-up experiments" section seeded with the two
   experiments named in Gotchas.
-- [ ] TASK-04-09: Implement responsive layout: the two lanes sit side by side above 900 px and
+- [x] TASK-04-09: Implement responsive layout: the two lanes sit side by side above 900 px and
   stack below it; every table and code block scrolls inside its own `overflow-x: auto` container;
   the page body never scrolls horizontally.
-- [ ] TASK-04-10: Create `scripts/render_walkthrough.py` which reads the template and the bundle,
+- [x] TASK-04-10: Create `scripts/render_walkthrough.py` which reads the template and the bundle,
   replaces the single `__EVIDENCE_JSON__` token with the serialized bundle, and writes
   `reports/walkthrough/pdd-walkthrough.html`.
-- [ ] TASK-04-11: Add `tests/test_walkthrough_render.py` covering the renderer's pure functions.
+- [x] TASK-04-11: Add `tests/test_walkthrough_render.py` covering the renderer's pure functions.
 
 **File Changes**
 - `reports/walkthrough/template.html` (create): the full page with `__EVIDENCE_JSON__` token.
@@ -794,19 +794,19 @@ Prove the whole artifact reproduces from a clean checkout plus the two capture p
 to regenerate it, and land it in one commit.
 
 **Tasks**
-- [ ] TASK-05-01: Create `reports/walkthrough/README.md` documenting: what the walkthrough is; the
+- [x] TASK-05-01: Create `reports/walkthrough/README.md` documenting: what the walkthrough is; the
   exact command sequence to re-capture and re-render; the meaning of the four scoring axes; the
   fact that both lanes ran without any model-backed provider; and which portable-workspace stage
   was executed versus documented only.
-- [ ] TASK-05-02: Delete `reports/walkthrough/pdd-walkthrough.html` and regenerate it with
+- [x] TASK-05-02: Delete `reports/walkthrough/pdd-walkthrough.html` and regenerate it with
   `scripts/render_walkthrough.py` to prove the renderer is the sole author of that file.
-- [ ] TASK-05-03: Run the full verification suite in `## Verification Strategy` and fix anything that fails.
-- [ ] TASK-05-04: Confirm the working tree contains no unintended additions:
+- [x] TASK-05-03: Run the full verification suite in `## Verification Strategy` and fix anything that fails.
+- [x] TASK-05-04: Confirm the working tree contains no unintended additions:
   `git status --porcelain` must show only the files this plan creates, plus the pre-existing
   modification to `plans/2026-08-28-defensible-numbers-and-document-assembly-plan.md` and the
   pre-existing untracked `reports/2026-09-04-tinh-portable-workspace-test-report.html`, which are
   **not** part of this work and must not be staged by it.
-- [ ] TASK-05-05: Stage and commit only this plan's files, with a message beginning
+- [x] TASK-05-05: Stage and commit only this plan's files, with a message beginning
   `feat(walkthrough): interactive Inegol PDD process walkthrough and track comparison`.
 
 **File Changes**
