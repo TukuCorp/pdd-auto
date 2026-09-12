@@ -166,18 +166,31 @@ DECAY_RATE_BY_WASTE_TYPE: dict[str, float] = dict(
 _VALID_ZONES = set(DECAY_RATE_BY_CLIMATE_ZONE.keys())
 
 
+def climate_zone_resolution(latitude: float, declared: str | None = None) -> tuple[str, bool]:
+    """Resolve the IPCC climate zone, reporting whether it was derived.
+
+    Returns ``(zone, derived)`` where ``derived`` is False when ``declared``
+    was used. A derived zone is latitude-only: IPCC wet vs dry depends on
+    precipitation/PET and cannot be derived from latitude, so callers must
+    warn (``calc_climate_zone_ambiguous``) and projects should declare
+    ``location.climate_zone`` from a registered source.
+    """
+    if declared is not None:
+        if declared not in _VALID_ZONES:
+            raise ValueError(f"Unknown climate_zone '{declared}'. Valid: {sorted(_VALID_ZONES)}")
+        return declared, False
+    if abs(latitude) <= 23.5:
+        return "tropical_wet", True
+    return "boreal_temperate_wet", True
+
+
 def climate_zone_for(latitude: float, declared: str | None = None) -> str:
     """Derive IPCC climate zone from latitude, or honour a declared zone.
 
     Returns one of the four zone keys in DECAY_RATE_BY_CLIMATE_ZONE.
     """
-    if declared is not None:
-        if declared not in _VALID_ZONES:
-            raise ValueError(f"Unknown climate_zone '{declared}'. Valid: {sorted(_VALID_ZONES)}")
-        return declared
-    if abs(latitude) <= 23.5:
-        return "tropical_wet"
-    return "boreal_temperate_wet"
+    zone, _ = climate_zone_resolution(latitude, declared)
+    return zone
 
 
 # Fossil fuel emission factors (tCO2/GJ) - CDM Tool 03 defaults

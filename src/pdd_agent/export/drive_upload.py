@@ -11,6 +11,8 @@ import subprocess
 import structlog
 from pathlib import Path
 
+from pdd_agent.paths import default_runs_dir
+
 logger = structlog.get_logger()
 
 _GWS_PATH = Path.home() / "AppData/Roaming/npm/gws.cmd"
@@ -112,7 +114,7 @@ def upload_docx_run(
         dict with upload result (same shape as upload_file).
     """
     if runs_dir is None:
-        runs_dir = Path(__file__).parent.parent.parent.parent / "data" / "runs"
+        runs_dir = default_runs_dir()
     runs_dir = Path(runs_dir)
 
     docx_path = runs_dir / f"{run_id}.docx"

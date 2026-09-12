@@ -75,6 +75,7 @@ class RetrievalResult:
         score: float,
         matched_terms: list[str],
         from_fallback_family: bool = False,
+        channel: str = "precedent",
     ) -> None:
         self.section_id = section_id
         self.sub_section_id = sub_section_id
@@ -86,8 +87,13 @@ class RetrievalResult:
         self.score = score
         self.matched_terms = matched_terms
         self.from_fallback_family = from_fallback_family
+        self.channel = channel
 
     def to_dict(self) -> dict[str, Any]:
+        if self.channel == "normative":
+            provenance = f"[METHODOLOGY: {self.document_name}, {self.canonical_heading}]"
+        else:
+            provenance = f"[CORPUS: {self.document_name}, {self.canonical_heading}]"
         return {
             "section_id": self.section_id,
             "sub_section_id": self.sub_section_id,
@@ -98,7 +104,8 @@ class RetrievalResult:
             "review_sensitivity": self.review_sensitivity,
             "score": self.score,
             "matched_terms": self.matched_terms,
-            "provenance": f"[CORPUS: {self.document_name}, {self.canonical_heading}]",
+            "channel": self.channel,
+            "provenance": provenance,
         }
 
     def __repr__(self) -> str:

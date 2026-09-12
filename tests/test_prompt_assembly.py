@@ -63,6 +63,8 @@ def _mock_retrieval_result(
     result.text = text
     result.score = score
     result.content_class = "NARRATIVE"
+    result.matched_terms = ["family:wte", "tech:biogas"]
+    result.from_fallback_family = False
     return result
 
 
@@ -396,8 +398,8 @@ class TestEnhancedRetrieval:
             _mock_retrieval_result("Doc2", "Heading2", "Text2", 3.2),
         ]
         result = orch._format_retrieval_results(examples, max_examples=5, max_chars=1500)
-        assert "FTS5/BM25 retrieval" in result
-        assert "BM25 score: 7.500" in result
+        assert "Precedent Evidence (ranked by project similarity)" in result
+        assert "similarity score: 7.50; matched: family:wte, tech:biogas" in result
         assert "Doc1" in result
         assert "Doc2" in result
 
@@ -426,8 +428,11 @@ class TestEnhancedRetrieval:
 
 
 class TestBudgetIntegration:
-    @patch("pdd_agent.agent.section_orchestrator.get_examples_for_section", return_value=[])
-    def test_budget_exhaustion_stops_drafting(self, _mock_ex):
+    @patch("pdd_agent.agent.section_orchestrator.ground_section")
+    def test_budget_exhaustion_stops_drafting(self, mock_ground):
+        from pdd_agent.grounding import Grounding
+
+        mock_ground.return_value = Grounding([], [], [], False)
         project = _mock_project_input()
         budget = TokenBudget(max_tokens=100)
         budget.record("0.0", input_tokens=80, output_tokens=30)
@@ -444,8 +449,11 @@ class TestBudgetIntegration:
         assert result.confidence == "UNSUPPORTED"
         assert "BUDGET EXHAUSTED" in result.text
 
-    @patch("pdd_agent.agent.section_orchestrator.get_examples_for_section", return_value=[])
-    def test_budget_summary_in_run_notes(self, _mock_ex):
+    @patch("pdd_agent.agent.section_orchestrator.ground_section")
+    def test_budget_summary_in_run_notes(self, mock_ground):
+        from pdd_agent.grounding import Grounding
+
+        mock_ground.return_value = Grounding([], [], [], False)
         project = _mock_project_input()
         budget = TokenBudget(max_tokens=500000)
 

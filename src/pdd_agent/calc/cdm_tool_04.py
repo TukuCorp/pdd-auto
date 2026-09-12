@@ -10,6 +10,7 @@ Application B: waste diverted from SWDS during the crediting period.
 from __future__ import annotations
 
 import math
+from collections.abc import Sequence
 
 from pdd_agent.calc.constants import (
     CH4_TO_CO2_RATIO,
@@ -39,6 +40,7 @@ def methane_from_swds(
     doc_f: float = DOC_F_DEFAULT,
     f_ch4: float = F_CH4_DEFAULT,
     climate_zone: str | None = None,
+    annual_waste_by_year: Sequence[float] | None = None,
 ) -> float:
     """Calculate baseline methane emissions from SWDS using the FOD model (tCO2e/year).
 
@@ -64,7 +66,11 @@ def methane_from_swds(
         f_ch4: Volume fraction of CH4 in SWDS gas.
         climate_zone: IPCC climate zone key (e.g. tropical_wet). When set,
             looked up in DECAY_RATE_BY_CLIMATE_ZONE; otherwise legacy table.
-
+        annual_waste_by_year: Optional per-year waste deposits (tonnes/year),
+            index 0 = crediting year 1. The deposit for year ``x`` is
+            ``annual_waste_by_year[min(x, len(annual_waste_by_year)) - 1]``
+            (the last value carries forward past the end). When None, the
+            constant ``annual_waste_tonnes`` is used for every year.
     Returns:
         Methane emissions in tCO2e for the given year.
     """
@@ -87,7 +93,10 @@ def methane_from_swds(
     # Sum over all disposal years x from crediting_start_year to year
     fod_sum = 0.0
     for x in range(crediting_start_year, year + 1):
-        w_j_x = annual_waste_tonnes  # constant annual input
+        if annual_waste_by_year is not None:
+            w_j_x = annual_waste_by_year[min(x, len(annual_waste_by_year)) - 1]
+        else:
+            w_j_x = annual_waste_tonnes  # constant annual input
         term = w_j_x * doc_j * math.exp(-k_j * (year - x)) * (1 - math.exp(-k_j))
         fod_sum += term
 

@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/tah-allotrope/pdd-auto/actions/workflows/ci.yml/badge.svg)](https://github.com/tah-allotrope/pdd-auto/actions/workflows/ci.yml)
 
-**Status:** 960 tests passing (969 collected, 7 corpus-marked deselected, 2 documented xfails), green under CI on Python 3.11/3.12. Pipeline skeleton is mature: corpus RAG, rule-based review, VCS v4.4 DOCX export with native Markdown/table/math rendering and per-section length budgets, LLM-judge + capped redraft loop, a local FastAPI section-review service with paginated run listing, calc engines for ACM0022 (now including ACM0022 Eq. 22/27/28 project emissions, climate-zone decay rates, and a consumed `capacity_ramp`), AMS-II.G, VM0051, and VM0044 wired into the drafting pipeline via `pdd-agent calc` / `compute_for()`, truthful token/cost accounting for the `claude-code` provider, and assistant-preamble normalization for all real providers. Real LLM providers (OpenAI, Anthropic, Ollama, claude-code) are implemented; live drafting runs are pending API keys (Ollama runs today with no key required — see `pdd-agent doctor`). All demo/benchmark output to date uses the deterministic `demo`/`noop` providers.
+**Status:** 960 tests passing (969 collected, 7 corpus-marked deselected, 2 documented xfails), green under CI on Python 3.11/3.12. Pipeline skeleton is mature: corpus RAG, rule-based review, VCS v4.4 DOCX export with native Markdown/table/math rendering and per-section length budgets, LLM-judge + capped redraft loop, a local FastAPI section-review service with paginated run listing, calc engines for ACM0022 (now including ACM0022 Eq. 22/27/28 project emissions, climate-zone decay rates, and a consumed `capacity_ramp`), AMS-II.G, VM0051, and VM0044 wired into the drafting pipeline via `pdd-agent calc` / `compute_for()`, truthful token/cost accounting for the `claude-code` provider, and assistant-preamble normalization for all real providers. Real LLM providers (OpenAI, Anthropic, Ollama, claude-code) are implemented; the keyless `claude-code` provider has completed live drafting runs, while no paid provider (OpenAI/Anthropic) has run yet — keys and `PDD_MAX_COST_USD` remain unset (see `pdd-agent doctor`). All demo/benchmark output to date uses the deterministic `demo`/`noop` providers.
 
 **Demo Quickstart:** Want to see it working in 5 minutes? → [QUICKSTART.md](QUICKSTART.md)
 
@@ -90,6 +90,7 @@ pdd-agent upload --run-id <run-id>
 | `pdd-agent run-vietnam-pdd` | Run the full Vietnam spreadsheet-to-review-package workflow |
 | `pdd-agent prove` | Run a project through every available provider, judge each, write a head-to-head scorecard |
 | `pdd-agent calc` | Compute methodology quantification for a ProjectInput without any LLM call |
+| `pdd-agent reconcile` | Recompute an ACM0022 project and diff it against its registered workbook (exit 0 pass, 3 outside tolerance) |
 
 ### Running a real drafting run
 
@@ -148,14 +149,23 @@ Both are synthetic demos with a bold cover-page disclaimer — not real PDDs. Se
 - **`src/pdd_agent/phase06/assumptions.py`** — Companion assumptions-register loader plus section routing and assumption-burden reporting helpers.
 - **`src/pdd_agent/agent/section_orchestrator.py`** — Per-section retrieval → prompt assembly → provider call → assumption-aware review gate pipeline. `run()` and `run_review()` methods.
 
+### Grounding (ranked precedent + normative methodology channel)
+- **`src/pdd_agent/grounding/selection.py`** — Deterministic per-section precedent ranking (S-1): same-family, technology-keyword, country, methodology-id and rank-normalized BM25 features with a damaged-text penalty, sorted by score then document name; the project's own registered PDD is self-excluded by default via `registry_ids` (S-3).
+- A separate normative channel (S-2) retrieves up to 3 ACM0022 methodology chunks per section from `methodology_documents`, injected under a `## Methodology Requirements (normative)` prompt heading before the ranked precedent block and recorded as `[METHODOLOGY: …]` provenance.
+
 ### Review & Export (PHASE-04)
-- **`src/pdd_agent/review/checks.py`** — DC-01 to DC-04 double-counting guards, quantitative cross-refs (1.10↔4.4), evidence requirements, auto-approval logic, and assumption-aware review gates.
-- **`src/pdd_agent/review/consistency.py`** — Cross-section numeric consistency: net tCO2e arithmetic, baseline/project/leakage relation, crediting period total.
+- **`src/pdd_agent/review/checks.py`** â€” DC-01 to DC-04 double-counting guards, quantitative cross-refs (1.10â†”4.4), evidence requirements, auto-approval logic, and assumption-aware review gates.
+- **`src/pdd_agent/review/consistency.py`** â€” Cross-section numeric consistency: net tCO2e arithmetic, baseline/project/leakage relation, crediting period total.
 - **`src/pdd_agent/review/states.py`** — 5-state review workflow (drafted→needs-input→drafted, drafted→needs-domain-review→ready-for-human-edit→approved). JSON persistence to `data/runs/review-state-{run_id}.json`.
 - **`src/pdd_agent/export/docx_export.py`** — python-docx export with a front-matter disclaimer, cover metadata, section-level source summaries, an assumption appendix, and a reviewer issues appendix. The export gate is tiered: CRITICAL consistency flags and fabricated evidence IDs hard-block (unless `--force`), `[MISSING]` markers become a first-class "Appendix — Required Inputs" that exports without `--force`, and HIGH-severity flags stay advisory. Section bodies render real model output natively via `export/markdown_docx.py`: Markdown headings become Word headings, pipe tables become styled Word tables, emphasis becomes bold/italic runs, lists become Word lists, and `$$…$$`/`$…$` math renders as cleaned italic text with the verbatim LaTeX preserved in a "Formulas (verbatim source)" appendix.
 - **`src/pdd_agent/export/assembly.py`** — Subsection headings export as `{sub_section_id} {heading}` at Word Heading level 2 (e.g. `4.1 Baseline Emissions`); a leading title-echo heading in the body (an ATX heading restating the canonical title) is stripped before rendering, everything else untouched.
 - **`src/pdd_agent/review/document_coherence.py`** — Document-level checks over the assembled run (not one section): `NUMBER_DISAGREEMENT` and `CALC_DISAGREEMENT` (`HIGH`), `DUPLICATE_BODY`, `DANGLING_CROSS_REFERENCE`, `TITLE_ECHO` (`ADVISORY`). `run_review()` returns them under `document_coherence`; the DOCX reviewer appendix renders them for non-demo runs. None hard-blocks export.
 - **`src/pdd_agent/export/drive_upload.py`** — `gws drive files create` subprocess wrapper.
+
+### Reconcile (engine vs registered workbook)
+- **`src/pdd_agent/reconcile/workbook.py`** — Reads a registered ACM0022 ER calculation workbook into typed values with sheet/cell lineage (`SUMMARY (ER)` schedule, `Waste Parameters` decay rates, `Waste Projection` composition and per-year waste, `Project Emissions` ECBL electricity with a separated-baseline cross-check).
+- **`src/pdd_agent/reconcile/diff.py`** — Per-year, per-component engine-vs-registered comparison with a tolerance verdict on the crediting-period net total, parameter-mismatch notes (climate zone, composition, biomethanization fraction, TDL), and Markdown/JSON reports.
+- `pdd-agent reconcile --input configs/demo/inegol_project_input.yaml`
 
 ### Quantification precedence
 
@@ -368,7 +378,7 @@ After a successful run, the client-demo package lives at:
 
 ```
 src/pdd_agent/
-├── cli.py                          # CLI entry point (6 commands)
+├── cli.py                          # CLI entry point (draft, calc, reconcile, review, export, ...)
 ├── ingest/                         # PHASE-01: Drive, download, normalize, bucket
 ├── parse/section_parser.py         # PHASE-02: Corpus → canonical schema mapper
 ├── domain/methodology_rules.py     # PHASE-02: Verra WTE rules engine
@@ -382,7 +392,9 @@ src/pdd_agent/
 ├── review/checks.py               # PHASE-04: Rule-based compliance checks
 ├── review/consistency.py          # PHASE-04: Cross-section numeric consistency
 ├── review/states.py               # PHASE-04: Approval state machine
-└── export/docx_export.py         # PHASE-04: DOCX template writer
+├── export/docx_export.py         # PHASE-04: DOCX template writer
+├── grounding/                      # Ranked precedent + normative methodology channel
+└── reconcile/                      # Registered-workbook reader + engine-vs-registered diff
 ```
 
 ## Known Gaps
@@ -394,7 +406,7 @@ src/pdd_agent/
 - The `reports/demo-packages/` client-demo path is implemented — `python scripts/run_demo.py` publishes a readable synthetic DOCX with zero placeholders, aligned quantification, and a strong synthetic disclosure
 - The first benchmark is a workflow proof on one Soc Son-like case; a second project is still needed before claiming broader WTE coverage
 - The Soc Son spreadsheet mapper intentionally blocks review-sensitive quantitative splits, coordinates, and safeguards fields when they rely on synthetic assumptions
-- `ingest/registry_download.py` (public Verra/CDM registry PDD downloader) is a stub — the rice/AMS-II.G/biochar calc engines have golden tests against synthetic-but-documented values, not real registered-PDD corpora
+- `ingest/registry_download.py` (public Verra/CDM registry PDD downloader) is a best-effort registry search with a manual-download fallback — the rice/AMS-II.G/biochar calc engines have golden tests against synthetic-but-documented values, not real registered-PDD corpora
 - The FastAPI service's `/dashboard` and `/api/runs` are paginated (default page size 50, `?limit=`/`?offset=`, newest first, limit clamped to 200) so per-request cost no longer scales with the run count; `claude-code` is a first-class service provider. There is still no retention policy — run JSONs accumulate by design.
 - Three of the eleven Verra table renderers in `docx_export.py` still have no producer wiring
   `structured_content` for them: `risk_assessment`, `sustainable_development`, and `data_gaps`. These

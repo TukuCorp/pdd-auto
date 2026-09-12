@@ -1,7 +1,7 @@
 ---
 title: "Defensible Numbers and Document Assembly: reproduce the registered PDD's arithmetic, then own the document it goes into"
 date: "2026-08-28"
-status: "open — all six phases' source landed in c1543e4 (915 pass, 2 xfail), but 13 of 66 tasks remain: 5 required test files (test_table_lookup, test_climate_zone, test_assembly, test_document_coherence, test_run_survivability), the Eq.22/27/28 specs in test_incineration, all five README documentation tasks, the assumptions.yaml re-sourcing, and the run_review coherence call (coherence runs from docx_export instead)."
+status: "complete — all 66 tasks closed across c1543e4 (915 pass, 2 xfail) plus 7d5d87b (960 pass, 2 xfail): 5 required test files, Eq.22/27/28 specs, README docs, assumptions.yaml re-sourcing, run_review coherence call; evidence reports/2026-09-05-defensible-numbers-remaining-tasks-evidence.html, pushed to main"
 request: "Implement the 2026-08-27 brainstorm: close both ACM0022 oracle discrepancies together (climate-zone-aware FOD decay rates plus a methodology-faithful project-emission model sourced from the registered PDD's own parameter tables, with corpus re-normalization so extracted tables exist), own the assembled DOCX (canonical subsection numbering, no title echo, a real section length contract, document-level coherence checks), and make the first real full model run survivable (pre-flight cost estimate, per-section checkpointing, --resume, bounded concurrency, CLI budget flags)."
 plan_type: "multi-phase"
 research_inputs:

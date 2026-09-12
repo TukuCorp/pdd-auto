@@ -298,3 +298,69 @@ class TestSectionSpans:
         result = parse_document(doc_path, SCHEMA_PATH)
 
         assert result["section_spans"] == []
+
+
+class TestTextPlainDocuments:
+    """Text/plain records (methodology among them) must yield section spans."""
+
+    def _methodology_record(self):
+        page_text = (
+            "CONTENTS\n1. INTRODUCTION ........ 4\n2. SCOPE ........ 5\n"
+            "1. INTRODUCTION\nThis methodology applies to ...\n"
+            "2. SCOPE\nApplicable to MSW ..."
+        )
+        return {
+            "mime_type": "text/plain",
+            "headings": [
+                {"text": "1. INTRODUCTION ........ 4", "level": 1},
+                {"text": "2. SCOPE ........ 5", "level": 1},
+                {"text": "1. INTRODUCTION", "level": 1},
+                {"text": "2. SCOPE", "level": 1},
+            ],
+            "text_blocks": [
+                {"heading": "1. INTRODUCTION ........ 4", "text": ""},
+                {"heading": "2. SCOPE ........ 5", "text": ""},
+                {"heading": "1. INTRODUCTION", "text": "This methodology applies to ..."},
+                {"heading": "2. SCOPE", "text": "Applicable to MSW ..."},
+            ],
+            "pages": [{"page": 1, "chars": 400, "text": page_text}],
+        }
+
+    def test_text_plain_yields_spans_without_dotted_leaders(self, tmp_path):
+        from pdd_agent.parse.section_parser import DOTTED_LEADER_RE
+
+        doc_path = tmp_path / "Methodology.norm.json"
+        doc_path.write_text(json.dumps(self._methodology_record()), encoding="utf-8")
+        result = parse_document(doc_path, SCHEMA_PATH)
+        assert len(result["section_spans"]) >= 2
+        assert not any(
+            DOTTED_LEADER_RE.search(span["heading_text"]) for span in result["section_spans"]
+        )
+        assert any(
+            "This methodology applies to" in span["text"] for span in result["section_spans"]
+        )
+
+    def test_explicit_page_toc_heading_still_skipped(self, tmp_path):
+        record = self._methodology_record()
+        record["headings"] = [{"text": "1. INTRODUCTION", "level": 1, "page": 1}]
+        record["text_blocks"] = [
+            {"heading": "1. INTRODUCTION", "text": "This methodology applies to ..."}
+        ]
+        doc_path = tmp_path / "TocPage.norm.json"
+        doc_path.write_text(json.dumps(record), encoding="utf-8")
+        result = parse_document(doc_path, SCHEMA_PATH)
+        assert result["section_spans"] == []
+
+    def test_pdf_shaped_span_count_unchanged(self, tmp_path):
+        doc_path = tmp_path / "solo.norm.json"
+        _write_norm_doc(
+            doc_path,
+            headings=[{"text": "1.1 Summary", "level": 1, "page": 1}],
+            text_blocks=[
+                {"heading": "", "text": "preamble"},
+                {"heading": "1.1 Summary", "text": "Body text about the project."},
+            ],
+            pages=[{"page": 1, "text": "1.1 Summary\nBody text about the project."}],
+        )
+        result = parse_document(doc_path, SCHEMA_PATH)
+        assert len(result["section_spans"]) == 1

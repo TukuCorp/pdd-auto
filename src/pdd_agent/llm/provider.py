@@ -8,11 +8,14 @@ without changing orchestration code.
 from __future__ import annotations
 
 import json
-import structlog
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
+
+import structlog
+
+from pdd_agent.paths import default_runs_dir
 
 logger = structlog.get_logger()
 
@@ -353,7 +356,7 @@ class DraftRun:
 
     def save(self, output_dir: Path | None = None) -> Path:
         if output_dir is None:
-            output_dir = Path(__file__).parent.parent.parent.parent / "data" / "runs"
+            output_dir = default_runs_dir()
         output_dir = Path(output_dir)
         output_dir.mkdir(parents=True, exist_ok=True)
         path = output_dir / f"{self.run_id}.json"
@@ -365,7 +368,7 @@ class DraftRun:
     @classmethod
     def load(cls, run_id: str, output_dir: Path | None = None) -> "DraftRun":
         if output_dir is None:
-            output_dir = Path(__file__).parent.parent.parent.parent / "data" / "runs"
+            output_dir = default_runs_dir()
         output_dir = Path(output_dir)
         path = output_dir / f"{run_id}.json"
         if not path.exists():

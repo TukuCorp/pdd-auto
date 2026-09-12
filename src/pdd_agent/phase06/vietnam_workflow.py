@@ -7,8 +7,6 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-import yaml
-
 from pdd_agent.agent.section_orchestrator import SectionOrchestrator
 from pdd_agent.export.docx_export import export_run_to_docx
 from pdd_agent.export.drive_upload import upload_review_package_docx
@@ -23,7 +21,7 @@ from pdd_agent.phase06.spreadsheet_mapper import (
     generate_project_artifacts,
 )
 from pdd_agent.review.states import ReviewStateStore
-from schemas.project_input import ProjectInput
+from pdd_agent.config_io import load_project_input
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_GAP_ANALYSIS_PATH = REPO_ROOT / "reports" / "vietnam-pdd-gap-analysis.md"
@@ -73,8 +71,7 @@ def run_vietnam_pdd_workflow(
         candidate_key=candidate_key,
     )
 
-    with open(spreadsheet_artifacts.project_yaml_path, encoding="utf-8") as handle:
-        project_input = ProjectInput.model_validate(yaml.safe_load(handle))
+    project_input = load_project_input(spreadsheet_artifacts.project_yaml_path)
 
     assumption_register = (
         load_assumption_register(spreadsheet_artifacts.assumptions_yaml_path) or {}

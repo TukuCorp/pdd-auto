@@ -26,6 +26,7 @@ location:
   city: "İnegöl District"
   latitude: 40.1505
   longitude: 29.5810
+  climate_zone: boreal_temperate_dry  # registered ER workbook, sheet "Waste Parameters": k column matches boreal_temperate_dry exactly (wood 0.02, paper 0.04, food 0.06, textiles 0.04, garden 0.05)
   landfill_latitude: null
   landfill_longitude: null
   site_area_m2: 38490.14
@@ -65,9 +66,34 @@ technology:
   waste_type:
     - "municipal_solid_waste"
   annual_waste_throughput: 262970.37
-  # Assumption — organic fraction routed to anaerobic digestion; not published in
-  # the VCS-3908 PDD. Drives the AD pathway only, not avoided landfill methane.
-  biomethanization_suitable_fraction: 0.35
+  # Facility-level waste composition, registered ER workbook, sheet "Waste Projection",
+  # column "At the Integrated Solid Waste Facility" (cells N4-N8, N11).
+  waste_composition:
+    - waste_type: "wood"
+      mass_fraction: 0.0414
+      source: registered ER workbook, sheet "Waste Projection", cell N4
+    - waste_type: "paper_cardboard"
+      mass_fraction: 0.0569
+      source: registered ER workbook, sheet "Waste Projection", cell N5
+    - waste_type: "food_waste"
+      mass_fraction: 0.5276
+      source: registered ER workbook, sheet "Waste Projection", cell N6
+    - waste_type: "textiles"
+      mass_fraction: 0.1709
+      source: registered ER workbook, sheet "Waste Projection", cell N7
+    - waste_type: "garden_waste"
+      mass_fraction: 0.0114
+      source: registered ER workbook, sheet "Waste Projection", cell N8
+    - waste_type: "inert"
+      mass_fraction: 0.1918
+      source: registered ER workbook, sheet "Waste Projection", cell N11
+  # Tonnes/year received, registered ER workbook, sheet "Waste Projection",
+  # column "Total Waste (A)" (cells B3-B9), index 0 = 2021.
+  annual_waste_by_year: [299300, 365000, 419750, 456250, 492750, 547500, 456250]
+  # Net electricity displaced (MWh/year), registered ER workbook, sheet
+  # "Project Emissions", column "ECBL,k,y" (cells B15-B21), index 0 = 2021.
+  energy_generation_mwh_by_year: [8395.389, 43872.46, 59455.872, 59455.872, 59455.872, 59455.872, 59455.872]
+  biomethanization_suitable_fraction: 0.4312  # registered ER workbook, sheet "Waste Projection": Biomethanization / Total Waste (A), constant 0.4312 in every year 2021-2027
   installed_capacity_mw: 8.484
   energy_generation_mwh_year: 49935.315
   tip_fee_usd_per_tonne: null
@@ -90,7 +116,6 @@ technology:
     max_capacity_tph: 27
     planned_2024_tpd: 93
     planned_2035_tpd: 125
-  biomethanization_suitable_fraction: 0.45
 
 methodology_applicability:
   eligibility_checklist:

@@ -24,3 +24,9 @@ documents:
   VCS_Yingoku_Project-Description.norm: wte
 
   "VCS_\xC3_demis_Project-Description.norm": wte
+
+registry_ids:
+  VCS_Inegol_Project-Description.norm: "3908"
+  VCS_Soc_Son_Project-Description.norm: "2567"
+methodology_documents:
+  - EB111_repan07_ACM0022_v03.0.norm

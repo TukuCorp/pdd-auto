@@ -146,7 +146,7 @@ def _read_docx_xml(docx_path: Path) -> str:
 
 def test_export_run_to_docx_includes_disclaimer_and_appendices(tmp_path: Path, monkeypatch):
     run_path = _write_run(tmp_path)
-    monkeypatch.setattr("pdd_agent.export.docx_export._DRAFT_RUNS_DIR", run_path.parent)
+    monkeypatch.setenv("PDD_RUNS_DIR", str(run_path.parent))
 
     output = export_run_to_docx("docx-run", output_path=tmp_path / "out.docx")
     xml = _read_docx_xml(output)
@@ -174,7 +174,7 @@ def test_export_run_to_docx_demo_mode_suppresses_reviewer_noise(tmp_path: Path, 
     payload["sections"][0]["synthetic_uses"][0]["blocked_review"] = False
     run_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
 
-    monkeypatch.setattr("pdd_agent.export.docx_export._DRAFT_RUNS_DIR", run_path.parent)
+    monkeypatch.setenv("PDD_RUNS_DIR", str(run_path.parent))
 
     output = export_run_to_docx("demo-docx-run", output_path=tmp_path / "demo.docx")
     xml = _read_docx_xml(output)
@@ -226,7 +226,7 @@ _CALC_RESULT_DICT = {
 
 def test_export_run_to_docx_without_calc_omits_appendix(tmp_path: Path, monkeypatch):
     run_path = _write_run(tmp_path, run_id="no-calc-run")
-    monkeypatch.setattr("pdd_agent.export.docx_export._DRAFT_RUNS_DIR", run_path.parent)
+    monkeypatch.setenv("PDD_RUNS_DIR", str(run_path.parent))
 
     output = export_run_to_docx("no-calc-run", output_path=tmp_path / "no-calc.docx")
     xml = _read_docx_xml(output)
@@ -239,7 +239,7 @@ def test_export_run_to_docx_with_calc_renders_appendix(tmp_path: Path, monkeypat
     payload = json.loads(run_path.read_text(encoding="utf-8"))
     payload["calc_result"] = _CALC_RESULT_DICT
     run_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
-    monkeypatch.setattr("pdd_agent.export.docx_export._DRAFT_RUNS_DIR", run_path.parent)
+    monkeypatch.setenv("PDD_RUNS_DIR", str(run_path.parent))
 
     output = export_run_to_docx("calc-run", output_path=tmp_path / "calc.docx")
     xml = _read_docx_xml(output)
@@ -257,7 +257,7 @@ def test_export_run_to_docx_calc_explicit_override(tmp_path: Path, monkeypatch):
     payload = json.loads(run_path.read_text(encoding="utf-8"))
     payload["calc_result"] = _CALC_RESULT_DICT
     run_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
-    monkeypatch.setattr("pdd_agent.export.docx_export._DRAFT_RUNS_DIR", run_path.parent)
+    monkeypatch.setenv("PDD_RUNS_DIR", str(run_path.parent))
 
     other_calc_dict = {
         **_CALC_RESULT_DICT,
@@ -285,7 +285,7 @@ def test_export_run_to_docx_calc_explicit_override(tmp_path: Path, monkeypatch):
 
 
 def test_export_run_to_docx_raises_clear_error_when_run_missing(tmp_path: Path, monkeypatch):
-    monkeypatch.setattr("pdd_agent.export.docx_export._DRAFT_RUNS_DIR", tmp_path / "runs")
+    monkeypatch.setenv("PDD_RUNS_DIR", str(tmp_path / "runs"))
 
     try:
         export_run_to_docx("missing-run", output_path=tmp_path / "missing.docx")
@@ -307,7 +307,7 @@ def _minimal_project_input(audit_history=None):
 
 def test_export_run_to_docx_no_audit_history_omits_heading(tmp_path: Path, monkeypatch):
     run_path = _write_run(tmp_path, run_id="no-audit-history-run")
-    monkeypatch.setattr("pdd_agent.export.docx_export._DRAFT_RUNS_DIR", run_path.parent)
+    monkeypatch.setenv("PDD_RUNS_DIR", str(run_path.parent))
     project_input = _minimal_project_input()
     assert project_input.project.audit_history == []
 
@@ -323,7 +323,7 @@ def test_export_run_to_docx_no_audit_history_omits_heading(tmp_path: Path, monke
 
 def test_export_run_to_docx_with_audit_history_renders_table(tmp_path: Path, monkeypatch):
     run_path = _write_run(tmp_path, run_id="audit-history-run")
-    monkeypatch.setattr("pdd_agent.export.docx_export._DRAFT_RUNS_DIR", run_path.parent)
+    monkeypatch.setenv("PDD_RUNS_DIR", str(run_path.parent))
     project_input = _minimal_project_input(
         audit_history=[
             {
@@ -384,7 +384,7 @@ class TestMarkdownRendering:
             "# H\n\n## H2\n\n| A | B |\n|---|---|\n| 1 | 2 |\n\n**bold** and $x$\n\n$$y = 2x$$"
         )
         run_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
-        monkeypatch.setattr("pdd_agent.export.docx_export._DRAFT_RUNS_DIR", run_path.parent)
+        monkeypatch.setenv("PDD_RUNS_DIR", str(run_path.parent))
 
         output = export_run_to_docx("markdown-run", output_path=tmp_path / "md.docx")
         doc = Document(str(output))

@@ -323,6 +323,23 @@ class ProjectTechnology(BaseModel):
             "with the last value carried forward beyond the ramp's length."
         ),
     )
+    annual_waste_by_year: list[float] | None = Field(
+        None,
+        description=(
+            "Optional per-crediting-period-year waste received by the project "
+            "(tonnes/year), index 0 = year 1. Consumed by the ACM0022 engine "
+            "per S-4 (each deposit year decays independently); the last value "
+            "carries forward beyond the list's length."
+        ),
+    )
+    energy_generation_mwh_by_year: list[float] | None = Field(
+        None,
+        description=(
+            "Optional per-crediting-period-year net electricity displaced "
+            "(MWh/year), index 0 = year 1. Consumed by the ACM0022 engine "
+            "for BE_EC; the last value carries forward beyond the list's length."
+        ),
+    )
     auxiliary_fossil_fuel: list[AuxiliaryFuel] = Field(
         default_factory=list, description="Auxiliary fossil fuel consumption for ACM0022 PE_FC"
     )
@@ -357,6 +374,21 @@ class ProjectTechnology(BaseModel):
             for idx, value in enumerate(self.capacity_ramp):
                 if not 0.0 <= value <= 1.0:
                     raise ValueError(f"capacity_ramp[{idx}] value {value} is outside [0.0, 1.0]")
+
+        if self.annual_waste_by_year is not None:
+            for idx, value in enumerate(self.annual_waste_by_year):
+                if not value > 0:
+                    raise ValueError(f"annual_waste_by_year[{idx}] value {value} must be > 0")
+
+        if self.energy_generation_mwh_by_year is not None:
+            for idx, value in enumerate(self.energy_generation_mwh_by_year):
+                if not value >= 0:
+                    raise ValueError(
+                        f"energy_generation_mwh_by_year[{idx}] value {value} must be >= 0"
+                    )
+
+        if self.capacity_ramp is not None and self.annual_waste_by_year is not None:
+            raise ValueError("capacity_ramp and annual_waste_by_year are mutually exclusive")
 
         return self
 

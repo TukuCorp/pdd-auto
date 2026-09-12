@@ -10,7 +10,7 @@ import structlog
 import threading
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any
+from typing import Any, Sequence
 
 import sqlite3
 import yaml
@@ -58,6 +58,32 @@ def load_corpus_families(path: Path | None = None) -> tuple[str, dict[str, str]]
     default_family = raw.get("default_family") or "wte"
     documents = raw.get("documents") or {}
     return default_family, documents
+
+
+def _load_corpus_raw(path: Path | None) -> dict[str, Any]:
+    """Read the corpus families YAML file, returning {} when unavailable."""
+    if path is None:
+        path = Path(__file__).parent.parent.parent.parent / "configs" / "corpus_families.yaml"
+    path = Path(path)
+    if not path.exists():
+        return {}
+    try:
+        with open(path, encoding="utf-8") as f:
+            return yaml.safe_load(f) or {}
+    except (OSError, yaml.YAMLError) as exc:
+        logger.warning("corpus_families_load_failed", path=str(path), error=str(exc))
+        return {}
+
+
+def load_corpus_config(
+    path: Path | None = None,
+) -> tuple[dict[str, str], dict[str, str], list[str]]:
+    """Load families, registry ids and methodology documents from YAML."""
+    raw = _load_corpus_raw(path)
+    families = raw.get("documents") or {}
+    registry_ids = {str(k): str(v) for k, v in (raw.get("registry_ids") or {}).items()}
+    methodology_documents = list(raw.get("methodology_documents") or [])
+    return families, registry_ids, methodology_documents
 
 
 class RetrievalIndex:
@@ -227,6 +253,7 @@ class RetrievalIndex:
         )
         for name in docs_with_zero_sections:
             logger.warning("corpus_document_yielded_no_sections", document=name)
+            logger.warning("document_zero_rows", document=name)
 
         return {
             "docs_indexed": docs_indexed,
@@ -236,6 +263,7 @@ class RetrievalIndex:
             "built_at": datetime.now(timezone.utc).isoformat(),
             "rows_by_document": rows_by_document,
             "docs_with_zero_sections": docs_with_zero_sections,
+            "zero_row_documents": list(docs_with_zero_sections),
         }
 
     def search(
@@ -245,6 +273,7 @@ class RetrievalIndex:
         content_class: str | None = None,
         document_family: str | None = None,
         k: int = 5,
+        document_names: Sequence[str] | None = None,
     ) -> list[dict[str, Any]]:
         """BM25 full-text search with optional filters.
 
@@ -269,7 +298,12 @@ class RetrievalIndex:
         if document_family:
             where_parts.append("document_family = ?")
             args.append(document_family)
-
+        if document_names is not None:
+            if len(document_names) == 0:
+                return []
+            placeholders = ", ".join(["?"] * len(document_names))
+            where_parts.append(f"document_name IN ({placeholders})")
+            args.extend(document_names)
         where_clause = " AND " + " AND ".join(where_parts) if where_parts else ""
 
         sql = f"""
@@ -285,6 +319,19 @@ class RetrievalIndex:
         """
         rows = conn.execute(sql, [query, *args, k]).fetchall()
         return [_row_to_doc(row[:10]) | {"score": row[10]} for row in rows]
+
+    def document_mentions(self, document_name: str, terms: Sequence[str]) -> bool:
+        """Return True if any term matches any row of the named document."""
+        cleaned = [t.strip() for t in terms if t and t.strip()]
+        if not cleaned:
+            return False
+        conn = self._open()
+        quoted = " OR ".join('"' + t.replace('"', '""') + '"' for t in cleaned)
+        row = conn.execute(
+            "SELECT COUNT(*) FROM sections_fts WHERE sections_fts MATCH ? AND document_name = ?",
+            [quoted, document_name],
+        ).fetchone()
+        return bool(row and row[0] > 0)
 
     def search_by_heading(
         self,

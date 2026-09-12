@@ -29,6 +29,7 @@ load_dotenv(find_dotenv(usecwd=True))
 
 from pdd_agent.agent.section_orchestrator import SectionOrchestrator
 from pdd_agent.export.docx_export import export_run_to_docx
+from pdd_agent.paths import default_runs_dir
 from pdd_agent.ingest.extract import extract_project_input
 from pdd_agent.llm.env_config import configure_provider_from_env
 from pdd_agent.llm.provider import get_provider_registry
@@ -40,6 +41,7 @@ from pdd_agent.review.states import (
     path_to_approved,
 )
 from schemas.project_input import ProjectInput
+from pdd_agent.config_io import load_project_input
 
 logger = structlog.get_logger()
 
@@ -47,7 +49,7 @@ REPO_ROOT = Path(__file__).resolve().parents[3]
 
 
 def _service_runs_dir() -> Path:
-    return Path(os.environ.get("PDD_SERVICE_RUNS_DIR", REPO_ROOT / "data" / "runs"))
+    return Path(os.environ.get("PDD_SERVICE_RUNS_DIR") or default_runs_dir())
 
 
 RUNS_DIR = REPO_ROOT / "data" / "runs"
@@ -147,7 +149,7 @@ def _get_provider(provider_name: str | None = None):
 
 
 def _runs_dir() -> Path:
-    return Path(os.environ.get("PDD_SERVICE_RUNS_DIR", RUNS_DIR))
+    return Path(os.environ.get("PDD_SERVICE_RUNS_DIR") or default_runs_dir())
 
 
 def _run_json_path(run_id: str) -> Path:
@@ -202,9 +204,7 @@ def _save_review_state(store: ReviewStateStore) -> None:
 
 
 def _load_project_input(path: Path) -> ProjectInput:
-    with open(path, encoding="utf-8") as f:
-        data = yaml.safe_load(f)
-    return ProjectInput.model_validate(data)
+    return load_project_input(path)
 
 
 def _run_status(run_id: str) -> dict[str, Any]:

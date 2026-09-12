@@ -75,3 +75,51 @@
 **Suite state:** 909 passed, 4 xfailed (Inegol year-1 ×2, D-1, D-2 — all with dated measured residuals). TOLERANCE untouched at 0.20.
 
 **Risks still open:** D-1 FOD parameter gap (out of scope, RISK-05-03); OMML math not generated (ALT-003); `docs/vietnam-pdd-*.md` reports are stale until `run-vietnam-pdd` is re-run after the composition change (RISK-05-04).
+
+---
+
+# ACTIVE — 2026-09-10 Two-Lane Bench (replaces the 2026-09-08 walkthrough as the explainer)
+
+**Problem:** `reports/walkthrough/pdd-walkthrough.html` confused the reader. It was
+built as a grading exam (13 steps x 2 lanes x 4 axes = ~96 judgments, predict/reveal/judge),
+it never executed anything, it used repo vocabulary as common nouns, and it scored two
+tracks head-to-head that do not do the same job.
+
+**Chosen shape** (user decision, 2026-09-10): Claude-driven bench, five decision
+questions, built on today's evidence with the missing real-LLM run labelled, not faked.
+
+## Tasks
+
+- [x] TASK-01: Restructure the comparison around five questions, not 13 steps
+- [x] TASK-02: State the framing correction up front — repo lane authors a new PDD,
+      workspace lane preserves an existing one; they are not competitors on one job
+- [x] TASK-03: Every number sourced from `reports/walkthrough/inegol-evidence.json`
+      or a direct file read; each labelled measured / documented-only
+- [x] TASK-04: One "Run this for real" action per question, emitting a paste-ready
+      instruction that triggers execution in this session
+- [x] TASK-05: Publish as an Artifact (shareable link), keep source under `reports/bench/`
+- [x] TASK-06: Honesty banner — neither lane has a model-written document on record
+
+## Review / Results
+
+**Delivered:** `reports/bench/two-lane-bench.html`, published as an Artifact
+(https://claude.ai/code/artifact/50acba36-1f42-4caf-b9d6-ba352a78a56b).
+
+**Key finding that drove the rebuild:** the two tracks do not do the same job.
+Lane A authors a PDD from a 180-value form; Lane B preserves and re-packages an
+existing 139-page PDD. The 2026-09-08 walkthrough scored them head-to-head over
+13 steps anyway, which is the likeliest root cause of the confusion reported.
+
+**Sharpest contrast surfaced:** 9,791 characters of new prose (demo mode, 36
+sections) against 560 packaged pages. Second: Lane A blocked its own export over
+an arithmetic contradiction (2 hard blocks, 5 advisories); Lane B has no content
+check at all and would package a wrong number silently.
+
+**Honest gaps carried onto the page rather than papered over:**
+- No real-model run exists in either lane. No API key in the repo today.
+- Workspace authoring stage: `documented_only`. Only mechanical packaging ran.
+- Corpus retrieval reaches 891 of 2,545 rows; 4 of 13 documents unreachable.
+- LLM judge never ran on either lane.
+
+**Not done / next:** the five "Run it" instructions are paste-ready but none has
+been executed yet; result slots on the page read "not yet run" until they are.

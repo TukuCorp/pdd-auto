@@ -272,15 +272,41 @@ class TestWasteCompositionValidator:
         obj = ProjectInput(**data)
         assert obj.technology.capacity_ramp == [0.5, 1.0]
 
+    def test_ramp_and_annual_waste_mutually_exclusive(self):
+        data = make_minimal_input()
+        data["technology"]["capacity_ramp"] = [0.5, 1.0]
+        data["technology"]["annual_waste_by_year"] = [1.0, 2.0]
+        with pytest.raises(ValidationError, match="mutually exclusive"):
+            ProjectInput(**data)
+
+    def test_annual_waste_by_year_must_be_positive(self):
+        data = make_minimal_input()
+        data["technology"]["annual_waste_by_year"] = [100.0, 0.0]
+        with pytest.raises(ValidationError):
+            ProjectInput(**data)
+        data["technology"]["annual_waste_by_year"] = [100.0, 200.0]
+        obj = ProjectInput(**data)
+        assert obj.technology.annual_waste_by_year == [100.0, 200.0]
+
+    def test_energy_generation_mwh_by_year_must_be_non_negative(self):
+        data = make_minimal_input()
+        data["technology"]["energy_generation_mwh_by_year"] = [100.0, -5.0]
+        with pytest.raises(ValidationError):
+            ProjectInput(**data)
+        data["technology"]["energy_generation_mwh_by_year"] = [0.0, 100.0]
+        obj = ProjectInput(**data)
+        assert obj.technology.energy_generation_mwh_by_year == [0.0, 100.0]
+
     def test_backward_compatibility_no_composition(self):
         import yaml
 
         for pat in [
             "configs/projects/demo_socson_like.yaml",
             "configs/projects/rice_vm0051_pilot.yaml",
-            "configs/demo/inegol_project_input.yaml",
         ]:
             data = yaml.safe_load(open(Path(__file__).parent.parent / pat, encoding="utf-8"))
             obj = ProjectInput.model_validate(data)
             assert obj.technology.waste_composition == []
             assert obj.technology.capacity_ramp is None
+            assert obj.technology.annual_waste_by_year is None
+            assert obj.technology.energy_generation_mwh_by_year is None

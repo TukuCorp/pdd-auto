@@ -224,7 +224,7 @@ class TestDocxExportIntegration:
         )
         run_path = run_dir / f"{run.run_id}.json"
         run_path.write_text(json.dumps(run.to_dict()), encoding="utf-8")
-        monkeypatch.setattr("pdd_agent.export.docx_export._DRAFT_RUNS_DIR", run_dir)
+        monkeypatch.setenv("PDD_RUNS_DIR", str(run_dir))
 
         output = export_run_to_docx(run.run_id, output_path=tmp_path / "out.docx")
         doc = Document(str(output))
@@ -247,7 +247,7 @@ class TestDocxExportIntegration:
         )
         run_path = run_dir / f"{run.run_id}.json"
         run_path.write_text(json.dumps(run.to_dict()), encoding="utf-8")
-        monkeypatch.setattr("pdd_agent.export.docx_export._DRAFT_RUNS_DIR", run_dir)
+        monkeypatch.setenv("PDD_RUNS_DIR", str(run_dir))
 
         output = export_run_to_docx(
             run.run_id,

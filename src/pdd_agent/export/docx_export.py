@@ -23,6 +23,7 @@ from pdd_agent.export.assembly import canonical_subsection_title, strip_leading_
 from pdd_agent.export.table_helpers import (
     add_styled_table,
 )
+from pdd_agent.paths import default_runs_dir
 
 logger = structlog.get_logger()
 
@@ -189,7 +190,7 @@ def export_run_to_docx(
     carries (reconstructed via ``PddCalcResult.from_dict``); an explicit
     argument overrides that.
     """
-    effective_runs_dir = runs_dir or _DRAFT_RUNS_DIR
+    effective_runs_dir = Path(runs_dir) if runs_dir is not None else default_runs_dir()
     run_path = effective_runs_dir / f"{run_id}.json"
     if not run_path.exists():
         message = f"Draft run not found for run_id `{run_id}` at `{run_path}`"

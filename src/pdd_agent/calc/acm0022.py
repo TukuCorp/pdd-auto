@@ -40,7 +40,14 @@ class ACM0022Calculator:
         components: list[EmissionComponent] = []
 
         # --- Intermediate: biogas and methane production ---
-        total_waste = sum(ws.annual_tonnes for ws in self._inp.waste_streams)
+        year = self._inp.calculation_year
+        if all(ws.annual_tonnes_by_year for ws in self._inp.waste_streams):
+            total_waste = sum(
+                ws.annual_tonnes_by_year[min(year, len(ws.annual_tonnes_by_year)) - 1]  # type: ignore[union-attr]
+                for ws in self._inp.waste_streams
+            )
+        else:
+            total_waste = sum(ws.annual_tonnes for ws in self._inp.waste_streams)
         organic_to_ad = total_waste * self._inp.biomethanization_fraction
         annual_biogas_m3 = organic_to_ad * self._inp.biogas_yield_m3_per_tonne
         annual_methane_m3 = annual_biogas_m3 * self._inp.methane_fraction_biogas
@@ -60,6 +67,9 @@ class ACM0022Calculator:
         be_ch4_total = 0.0
         for ws in self._inp.waste_streams:
             diverted_from_swds = ws.annual_tonnes * self._inp.swds_diversion_fraction
+            series = None
+            if ws.annual_tonnes_by_year is not None:
+                series = [t * self._inp.swds_diversion_fraction for t in ws.annual_tonnes_by_year]
             be_ch4_ws = cdm_tool_04.methane_from_swds(
                 waste_type=ws.waste_type,
                 annual_waste_tonnes=diverted_from_swds,
@@ -73,6 +83,7 @@ class ACM0022Calculator:
                 doc_f=self._inp.doc_f,
                 f_ch4=self._inp.f_ch4,
                 climate_zone=self._inp.climate_zone,
+                annual_waste_by_year=series,
             )
             be_ch4_total += be_ch4_ws
 

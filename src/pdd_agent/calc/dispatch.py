@@ -167,6 +167,18 @@ def _map_acm0022(pi: ProjectInput) -> tuple[dict[str, Any], list[str]] | None:
     waste_streams: list[dict[str, Any]] = []
     incineration_streams: list[dict[str, Any]] = []
     is_incineration = tech.technology_type == "incineration_with_energy_recovery"
+    # Per-year waste schedule (S-4): fit to the crediting period, carrying the
+    # last value forward past a short list and truncating a long one (ASM-008).
+    cpy = pi.dates.crediting_period_years
+    waste_schedule: list[float] | None = None
+    if tech.annual_waste_by_year is not None:
+        waste_schedule = list(tech.annual_waste_by_year)
+        if len(waste_schedule) > cpy:
+            warnings.append(
+                f"annual_waste_by_year has {len(waste_schedule)} entries for a "
+                f"{cpy}-year crediting period; truncating to {cpy} (ASM-008)"
+            )
+            waste_schedule = waste_schedule[:cpy]
     if tech.waste_composition:
         excluded_fraction = 0.0
         for entry in tech.waste_composition:
@@ -175,9 +187,15 @@ def _map_acm0022(pi: ProjectInput) -> tuple[dict[str, Any], list[str]] | None:
             )
             annual_tonnes = tech.annual_waste_throughput * entry.mass_fraction
             if entry.waste_type in DOC_BY_WASTE_TYPE:
-                waste_streams.append(
-                    {"waste_type": entry.waste_type, "annual_tonnes": annual_tonnes}
-                )
+                stream: dict[str, Any] = {
+                    "waste_type": entry.waste_type,
+                    "annual_tonnes": annual_tonnes,
+                }
+                if waste_schedule is not None:
+                    stream["annual_tonnes_by_year"] = [
+                        t * entry.mass_fraction for t in waste_schedule
+                    ]
+                waste_streams.append(stream)
             else:
                 excluded_fraction += entry.mass_fraction
                 if not is_incineration:
@@ -207,7 +225,10 @@ def _map_acm0022(pi: ProjectInput) -> tuple[dict[str, Any], list[str]] | None:
             return None
         per_type_tonnes = tech.annual_waste_throughput / len(kept)
         for wt in kept:
-            waste_streams.append({"waste_type": wt, "annual_tonnes": per_type_tonnes})
+            stream = {"waste_type": wt, "annual_tonnes": per_type_tonnes}
+            if waste_schedule is not None:
+                stream["annual_tonnes_by_year"] = [t / len(kept) for t in waste_schedule]
+            waste_streams.append(stream)
         if excluded:
             warnings.append(
                 f"waste types {excluded} are not in DOC_BY_WASTE_TYPE; their mass was redistributed across {kept}"
@@ -243,12 +264,17 @@ def _map_acm0022(pi: ProjectInput) -> tuple[dict[str, Any], list[str]] | None:
     }
     # Climate zone resolution (S-1d): declared wins else derived from latitude
     try:
-        from pdd_agent.calc.constants import climate_zone_for
+        from pdd_agent.calc.constants import climate_zone_resolution
 
-        zone = climate_zone_for(pi.location.latitude, pi.location.climate_zone)
+        zone, derived = climate_zone_resolution(pi.location.latitude, pi.location.climate_zone)
         mapped["climate_zone"] = zone
-        derived = pi.location.climate_zone is None
         warnings.append(f"calc_climate_zone_resolved: zone={zone} derived={derived}")
+        if derived:
+            warnings.append(
+                f"calc_climate_zone_ambiguous: latitude={pi.location.latitude} "
+                f"derived={zone}; IPCC wet vs dry depends on precipitation/PET "
+                "and cannot be derived from latitude - declare location.climate_zone"
+            )
     except Exception as exc:
         warnings.append(f"climate_zone resolution failed: {exc}")
     if incineration_streams:
@@ -393,7 +419,16 @@ def compute_for(project_input: ProjectInput) -> PddCalcResult | None:
     cpy = project_input.dates.crediting_period_years
 
     if mid == "ACM0022":
-        calc_input = ACM0022CalcInput(**engine_inputs)
+        # The year-1 nameplate scalars stay computed from the unscheduled
+        # engine inputs: strip any per-year waste series so a schedule never
+        # moves the scalar baseline/project/leakage/net fields.
+        base_inputs = dict(engine_inputs)
+        if any("annual_tonnes_by_year" in ws for ws in base_inputs.get("waste_streams", [])):
+            base_inputs["waste_streams"] = [
+                {k: v for k, v in ws.items() if k != "annual_tonnes_by_year"}
+                for ws in base_inputs["waste_streams"]
+            ]
+        calc_input = ACM0022CalcInput(**base_inputs)
         raw = ACM0022Calculator(calc_input).calculate()
         components = [
             CalcComponent(
@@ -411,7 +446,17 @@ def compute_for(project_input: ProjectInput) -> PddCalcResult | None:
         # none of their inputs are time-varying in ProjectInput. A declared
         # capacity_ramp scales every year's waste masses and electricity export
         # (S-5c); the year-1 nameplate scalars on PddCalcResult stay unramped.
+        # A per-year waste or electricity schedule (S-4) overrides the constant
+        # for its year instead, with the last value carried forward (ASM-008).
         ramp = project_input.technology.capacity_ramp
+        elec_schedule = project_input.technology.energy_generation_mwh_by_year
+        if elec_schedule is not None and len(elec_schedule) > cpy:
+            warnings.append(
+                f"energy_generation_mwh_by_year has {len(elec_schedule)} entries for a "
+                f"{cpy}-year crediting period; truncating to {cpy} (ASM-008)"
+            )
+            elec_schedule = elec_schedule[:cpy]
+        waste_sched = project_input.technology.annual_waste_by_year
         schedule: list[AnnualErEntry] = []
         for y in range(1, cpy + 1):
             year_inputs = dict(engine_inputs)
@@ -431,6 +476,19 @@ def compute_for(project_input: ProjectInput) -> PddCalcResult | None:
                     year_inputs["electricity_exported_mwh_per_year"] = (
                         year_inputs["electricity_exported_mwh_per_year"] * factor
                     )
+            if elec_schedule is not None:
+                year_inputs["electricity_exported_mwh_per_year"] = elec_schedule[
+                    min(y, len(elec_schedule)) - 1
+                ]
+            if waste_sched is not None and year_inputs.get("incineration_streams"):
+                # S-4: incineration (like every waste-mass term) uses that year's
+                # mass; fractions are constant so scaling by the schedule ratio
+                # reproduces throughput[y] x fraction exactly.
+                ratio = waste_sched[min(y, len(waste_sched)) - 1] / waste_sched[0]
+                year_inputs["incineration_streams"] = [
+                    {**s, "annual_tonnes": s["annual_tonnes"] * ratio}
+                    for s in year_inputs["incineration_streams"]
+                ]
             year_raw = ACM0022Calculator(ACM0022CalcInput(**year_inputs)).calculate()
             schedule.append(
                 AnnualErEntry(

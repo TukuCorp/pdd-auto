@@ -381,6 +381,34 @@ class TestRetrievalIndexBuildStats:
         assert "onlydoc.norm" in stats["docs_with_zero_sections"]
         assert stats["rows_by_document"]["onlydoc.norm"] == 0
 
+    def test_zero_yield_document_zero_row_key_and_warning(self, tmp_path):
+        from pdd_agent.retrieval.index import RetrievalIndex
+
+        corpus_dir = tmp_path / "normalized"
+        corpus_dir.mkdir()
+        _norm_doc = {
+            "headings": [{"text": "3.4 Baseline Scenario", "level": 1, "page": 1}],
+            "pages": [{"page": 1, "text": "3.4 Baseline Scenario\nBaseline body text."}],
+            "text_blocks": [
+                {"heading": "", "text": "preamble"},
+                {"heading": "3.4 Baseline Scenario", "text": "Baseline body text."},
+            ],
+        }
+        empty_doc = {"headings": [], "pages": [], "text_blocks": [], "text": ""}
+        (corpus_dir / "gooddoc.norm.json").write_text(json.dumps(_norm_doc), encoding="utf-8")
+        (corpus_dir / "emptydoc.norm.json").write_text(json.dumps(empty_doc), encoding="utf-8")
+
+        idx = RetrievalIndex(db_path=tmp_path / "index.fts.db")
+        try:
+            with structlog.testing.capture_logs() as logs:
+                stats = idx.build(normalized_dir=corpus_dir)
+        finally:
+            idx.close()
+
+        assert stats["zero_row_documents"] == ["emptydoc.norm"]
+        assert "emptydoc.norm" in stats["docs_with_zero_sections"]
+        assert any(entry.get("event") == "document_zero_rows" for entry in logs)
+
 
 class TestFallbackFamilyTagging:
     """Fallback results must be tagged so the orchestrator can flag grounding."""

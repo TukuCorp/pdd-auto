@@ -271,14 +271,21 @@ class TestWasteCompositionMassConservation:
         assert not any(s["waste_type"] == "glass" for s in inputs["waste_streams"])
         assert any("glass" in w and "PE_INC" in w for w in warnings)
 
-    def test_inegol_unchanged(self):
+    def test_inegol_sourced_composition(self):
+        """Inegol now carries the workbook-sourced 6-entry composition (PHASE-05).
+
+        Five degradable streams reach the engine (inert contributes no BE_CH4),
+        each with a per-year series sourced from the registered workbook.
+        """
         from pdd_agent.calc.dispatch import build_engine_inputs
 
         pi = _load_pi("configs/demo/inegol_project_input.yaml")
         _mid, inputs, _warnings = build_engine_inputs(pi)  # type: ignore
-        assert len(inputs["waste_streams"]) == 1
-        assert inputs["waste_streams"][0]["waste_type"] == "municipal_solid_waste"
-        assert inputs["waste_streams"][0]["annual_tonnes"] == pytest.approx(262_970.37)
+        streams = {s["waste_type"]: s for s in inputs["waste_streams"]}
+        assert set(streams) == {"wood", "paper_cardboard", "food_waste", "textiles", "garden_waste"}
+        assert streams["food_waste"]["annual_tonnes"] == pytest.approx(262_970.37 * 0.5276)
+        assert streams["wood"]["annual_tonnes_by_year"][0] == pytest.approx(299300 * 0.0414)
+        assert len(streams["wood"]["annual_tonnes_by_year"]) == 7
 
 
 class TestCapacityRamp:
@@ -354,3 +361,81 @@ class TestIncinerationStreamMapping:
         assert not any(
             c.name.startswith("PE_COM_CO2") and c.value_tco2e > 0 for c in result.components
         )
+
+
+class TestPerYearSchedules:
+    """PHASE-04 (2026-09-11 plan): S-4 per-year waste and electricity schedules."""
+
+    # Crediting-period total of configs/projects/vietnam_socson_from_sheet.yaml
+    # measured 2026-09-12 before the per-year-schedule change. The Soc Son
+    # config declares its climate zone and sets no schedule, so this guards
+    # that the change is byte-identical for schedule-free configs.
+    SOC_SON_CREDITING_TOTAL_PRE_SCHEDULES = 3_606_564.5
+
+    def _inegol(self):
+        return _load_pi("configs/demo/inegol_project_input.yaml")
+
+    def test_declared_zone_has_no_ambiguous_warning(self):
+        result = compute_for(_load_pi("configs/projects/vietnam_socson_from_sheet.yaml"))
+        assert result is not None
+        assert any(w.startswith("calc_climate_zone_resolved") for w in result.warnings)
+        assert not any(w.startswith("calc_climate_zone_ambiguous") for w in result.warnings)
+
+    def test_derived_zone_warns_ambiguous(self):
+        pi = self._inegol()
+        pi.location.climate_zone = None  # Inegol declares its zone; undeclare it here
+        result = compute_for(pi)
+        assert result is not None
+        assert any(w.startswith("calc_climate_zone_ambiguous") for w in result.warnings)
+
+    def test_socson_crediting_total_unchanged(self):
+        result = compute_for(_load_pi("configs/projects/vietnam_socson_from_sheet.yaml"))
+        assert result is not None
+        assert result.crediting_period_total_tco2e == pytest.approx(
+            self.SOC_SON_CREDITING_TOTAL_PRE_SCHEDULES, abs=1.0
+        )
+
+    def test_growing_waste_schedule_back_loads_baseline(self):
+        base = compute_for(self._inegol())
+        assert base is not None
+        pi = self._inegol()
+        pi.technology.annual_waste_by_year = [
+            100000.0,
+            200000.0,
+            300000.0,
+            300000.0,
+            300000.0,
+            300000.0,
+            300000.0,
+        ]
+        result = compute_for(pi)
+        assert result is not None
+        assert result.annual_schedule[1].baseline_tco2e > result.annual_schedule[0].baseline_tco2e
+        # The year-1 nameplate scalar stays computed from the unscheduled inputs.
+        assert result.baseline_emissions_tco2e == pytest.approx(base.baseline_emissions_tco2e)
+
+    def test_per_year_electricity_moves_be_ec(self):
+        grid_ef = self._inegol().quantification.grid_emission_factor
+        assert grid_ef is not None
+        pi_low = self._inegol()
+        pi_low.technology.energy_generation_mwh_by_year = [1000.0, 2000.0]
+        pi_high = self._inegol()
+        pi_high.technology.energy_generation_mwh_by_year = [2000.0, 2000.0]
+        low = compute_for(pi_low)
+        high = compute_for(pi_high)
+        assert low is not None and high is not None
+        # Year 1 differs by exactly 1000 MWh x grid EF; year 2 is identical.
+        assert (high.annual_schedule[0].baseline_tco2e - low.annual_schedule[0].baseline_tco2e) == (
+            pytest.approx(1000.0 * grid_ef, abs=1e-6)
+        )
+        assert high.annual_schedule[1].baseline_tco2e == pytest.approx(
+            low.annual_schedule[1].baseline_tco2e
+        )
+
+    def test_long_waste_schedule_truncates_with_warning(self):
+        pi = self._inegol()
+        pi.technology.annual_waste_by_year = [200000.0] * 9
+        result = compute_for(pi)
+        assert result is not None
+        assert len(result.annual_schedule) == 7
+        assert any("truncating to 7" in w for w in result.warnings)

@@ -17,6 +17,7 @@ from pdd_agent.calc import (
 )
 from pdd_agent.calc.constants import (
     CH4_TO_CO2_RATIO,
+    DECAY_RATE_BY_CLIMATE_ZONE,
     DOC_BY_WASTE_TYPE,
     DOC_F_DEFAULT,
     EF_CH4_DIGESTER_DEFAULT,
@@ -28,6 +29,7 @@ from pdd_agent.calc.constants import (
     GWP_CH4,
     MCF_DEFAULT,
     MODEL_CORRECTION_FACTOR_DEFAULT,
+    OX_DEFAULT,
 )
 
 
@@ -180,6 +182,51 @@ class TestTool04FODModelMath:
         )
         result = cdm_tool_04.methane_from_swds("municipal_solid_waste", w, year=year)
         assert result == pytest.approx(expected, rel=1e-6)
+
+    def test_constant_series_matches_scalar(self):
+        """A constant per-year series must reproduce today's scalar results."""
+        scalar = cdm_tool_04.methane_from_swds("food_waste", 1000.0, 3)
+        series = cdm_tool_04.methane_from_swds(
+            "food_waste", 1000.0, 3, annual_waste_by_year=[1000.0, 1000.0, 1000.0]
+        )
+        assert series == pytest.approx(scalar, rel=1e-9)
+
+    def test_growing_series_hand_value(self):
+        """Year-2 deposit of zero leaves only the decayed year-1 deposit (S-4)."""
+        k_j = DECAY_RATE_BY_CLIMATE_ZONE["boreal_temperate_dry"]["food_waste"]  # 0.06
+        doc_food = DOC_BY_WASTE_TYPE["food_waste"]  # 0.15
+        fod_sum = 1000.0 * doc_food * math.exp(-k_j * 1) * (1 - math.exp(-k_j))
+        expected = (
+            MODEL_CORRECTION_FACTOR_DEFAULT
+            * GWP_CH4
+            * (1 - OX_DEFAULT)
+            * CH4_TO_CO2_RATIO
+            * F_CH4_DEFAULT
+            * DOC_F_DEFAULT
+            * MCF_DEFAULT
+            * fod_sum
+        )
+        result = cdm_tool_04.methane_from_swds(
+            "food_waste",
+            0.0,
+            2,
+            annual_waste_by_year=[1000.0, 0.0],
+            climate_zone="boreal_temperate_dry",
+        )
+        assert result == pytest.approx(expected, rel=1e-9)
+
+    def test_short_series_carries_last_value_forward(self):
+        """Years past the end of the list reuse its last value (ASM-008)."""
+        short = cdm_tool_04.methane_from_swds(
+            "food_waste", 0.0, year=5, annual_waste_by_year=[100.0, 200.0]
+        )
+        carried = cdm_tool_04.methane_from_swds(
+            "food_waste",
+            0.0,
+            year=5,
+            annual_waste_by_year=[100.0, 200.0, 200.0, 200.0, 200.0],
+        )
+        assert short == pytest.approx(carried, rel=1e-12)
 
 
 class TestTool04Simplified:

@@ -345,7 +345,7 @@ class TestCalcStructuredContentEndToEnd:
         }
         run_path = run_dir / "structured-content-run.json"
         run_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
-        monkeypatch.setattr("pdd_agent.export.docx_export._DRAFT_RUNS_DIR", run_dir)
+        monkeypatch.setenv("PDD_RUNS_DIR", str(run_dir))
 
         output = export_run_to_docx(
             "structured-content-run", output_path=tmp_path / "structured.docx"
@@ -389,7 +389,7 @@ class TestCalcStructuredContentEndToEnd:
         }
         run_path = run_dir / "unresolved-table-type-run.json"
         run_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
-        monkeypatch.setattr("pdd_agent.export.docx_export._DRAFT_RUNS_DIR", run_dir)
+        monkeypatch.setenv("PDD_RUNS_DIR", str(run_dir))
 
         output = export_run_to_docx(
             "unresolved-table-type-run", output_path=tmp_path / "unresolved.docx"
@@ -426,7 +426,7 @@ class TestCalcStructuredContentEndToEnd:
         }
         run_path = run_dir / "no-structured-content-run.json"
         run_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
-        monkeypatch.setattr("pdd_agent.export.docx_export._DRAFT_RUNS_DIR", run_dir)
+        monkeypatch.setenv("PDD_RUNS_DIR", str(run_dir))
 
         output = export_run_to_docx(
             "no-structured-content-run", output_path=tmp_path / "no-structured.docx"

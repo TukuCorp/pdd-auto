@@ -10,6 +10,13 @@ class WasteStream(BaseModel):
 
     waste_type: str = Field(..., description="Waste type key matching constants.DOC_BY_WASTE_TYPE")
     annual_tonnes: float = Field(..., ge=0, description="Annual waste input (tonnes/year)")
+    annual_tonnes_by_year: list[float] | None = Field(
+        None,
+        description=(
+            "Optional per-crediting-period-year waste deposits (tonnes/year), "
+            "index 0 = year 1; the last value carries forward past the end"
+        ),
+    )
     doc_override: float | None = Field(None, ge=0, le=1, description="Override DOC fraction")
     decay_rate_override: float | None = Field(
         None, gt=0, description="Override decay rate k (1/year)"

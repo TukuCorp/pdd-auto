@@ -56,7 +56,9 @@ class TestSmokeExportHeadings:
 
         from pdd_agent.export.docx_export import export_run_to_docx
 
-        out = export_run_to_docx("smoke-4-1", output_path=tmp_path / "smoke-4-1.docx", force=True)
+        out = export_run_to_docx(
+            "smoke-4-1", output_path=tmp_path / "smoke-4-1.docx", force=True, runs_dir=_RUNS_DIR
+        )
         doc = Document(str(out))
         headings = [
             (p.style.name, p.text) for p in doc.paragraphs if p.style.name.startswith("Heading")

@@ -74,6 +74,8 @@ _CHUNK_MAX_CHARS = 2000
 _CHUNK_OVERLAP_CHARS = 200
 _CHUNK_MIN_CHARS = 80
 
+DOTTED_LEADER_RE = re.compile(r"\.{4,}\s*\d+\s*$")
+
 
 def _chunk_block(body: str) -> list[str]:
     """Split one section block's text into indexable chunks (S-1, ASM-002).
@@ -169,7 +171,27 @@ def parse_document(
         dotted_lines = re.findall(r"\d+\.\d+\s+[A-Z]", text)
         return len(dotted_lines) >= 8
 
-    def _find_content_page(start_page: int, canonical_heading: str) -> str:
+    def _find_content_page(
+        start_page: int,
+        canonical_heading: str,
+        heading: dict[str, Any] | None = None,
+        heading_idx: int | None = None,
+    ) -> str:
+        # Single-page (text/plain) records carry no per-heading page numbers.
+        # Their headings align with text blocks, so preview the aligned block
+        # body directly instead of the whole page text.
+        if heading is not None and "page" not in heading and len(pages) == 1:
+            lookup_blocks: list[dict[str, Any]] = doc.get("text_blocks", [])
+            candidates: list[dict[str, Any]] = []
+            if heading_idx is not None and 0 <= heading_idx < len(lookup_blocks):
+                candidates.append(lookup_blocks[heading_idx])
+            candidates.extend(
+                b for b in lookup_blocks if b.get("heading", "") == heading.get("text", "")
+            )
+            for block in candidates:
+                body = block.get("text", "").strip()
+                if body:
+                    return body[:500]
         target_upper = canonical_heading.upper()
         for pg in range(start_page, max_page + 1):
             pg_text = page_texts.get(pg, "")
@@ -184,6 +206,8 @@ def parse_document(
         return ""
 
     for idx, h in enumerate(headings):
+        if DOTTED_LEADER_RE.search(h.get("text", "")):
+            continue
         match = _best_match(h["text"], alias_index)
         h_page: int = h.get("page", 1)
         canonical = (
@@ -195,7 +219,7 @@ def parse_document(
             if match
             else ""
         )
-        text_preview = _find_content_page(h_page, canonical)
+        text_preview = _find_content_page(h_page, canonical, heading=h, heading_idx=idx)
         if match:
             sid, ssid = match
             sections_mapped.append(
@@ -237,18 +261,11 @@ def parse_document(
             blocks=len(blocks),
             headings=len(headings),
         )
-        # PHASE-02 honest-gap closure (2026-08-20): four normalized
-        # documents (ACM0022 methodology, two joint-monitoring reports,
-        # DraftProjectDescription) have 1 text_block vs 50 headings, so the
-        # strict S-1 pairing correctly flags them as misaligned. The spec's
-        # per-document fallback to _find_content_page yields no rows for
-        # them (pages table is collapsed to a single entry), so they stay
-        # invisible to index-report and to the ACM0022-retrievability check.
-        # Emit generic chunks directly from the raw text_blocks so every
-        # normalized document contributes at least one searchable row; this
-        # keeps the index retrievable for methodology text without
-        # re-running normalization (raw PDFs for these four are not in
-        # data/corpus/raw/verra).
+        # Misaligned-fallback branch: text/plain documents now align (their
+        # headings carry no "page" key and pair with text blocks in the strict
+        # branch below), so this path only runs for genuinely misaligned
+        # records. Emit generic chunks directly from the raw text_blocks so
+        # every normalized document contributes at least one searchable row.
         fallback_blocks = doc.get("text_blocks", [])
         # When the only block is a collapsed preamble (heading == ""), keep it;
         # otherwise the S-1 preamble-drop already removed it and fallback_blocks
@@ -308,11 +325,12 @@ def parse_document(
                     )
     else:
         for k, h in enumerate(headings):
+            if DOTTED_LEADER_RE.search(h.get("text", "")):
+                continue
             body = blocks[k].get("text", "").strip()
             if not body:
                 continue
-            h_page: int = h.get("page", 1)
-            if _is_toc_page(page_texts.get(h_page, "")):
+            if "page" in h and _is_toc_page(page_texts.get(h["page"], "")):
                 continue
             match = _best_match(h["text"], alias_index)
             if match:

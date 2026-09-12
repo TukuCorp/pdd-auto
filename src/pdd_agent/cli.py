@@ -26,7 +26,7 @@ from pdd_agent.phase06.spreadsheet_mapper import fetch_workbook, generate_projec
 from pdd_agent.phase06.vietnam_workflow import run_vietnam_pdd_workflow
 from pdd_agent.doctor import run_doctor
 from pdd_agent.llm.env_config import configure_provider_from_env
-from schemas.project_input import ProjectInput
+from pdd_agent.config_io import load_project_input
 
 # Alias retained for any external callers; use configure_provider_from_env directly
 # in new code.
@@ -45,7 +45,7 @@ def _build_parser() -> argparse.ArgumentParser:
     sub.add_parser("normalize", help="Normalize raw corpus files to plain text")
     sub.add_parser("bucket", help="Assign corpus documents to homogeneity buckets")
     sub.add_parser(
-        "ingest", help="Run full ingestion pipeline (inventory → download → normalize → bucket)"
+        "ingest", help="Run full ingestion pipeline (inventory -> download -> normalize -> bucket)"
     )
 
     build_idx = sub.add_parser(
@@ -426,6 +426,37 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Optional path to write the result as JSON",
     )
 
+    reconcile_parser = sub.add_parser(
+        "reconcile",
+        help="Recompute a project and diff it against its registered workbook",
+    )
+    reconcile_parser.add_argument(
+        "--input",
+        required=True,
+        help="Path to ProjectInput YAML file",
+    )
+    reconcile_parser.add_argument(
+        "--workbook",
+        default=None,
+        help="Path to the registered ER workbook (default: Inegol workbook path)",
+    )
+    reconcile_parser.add_argument(
+        "--tolerance",
+        type=float,
+        default=0.20,
+        help="Relative tolerance for the net-total verdict (default: 0.20)",
+    )
+    reconcile_parser.add_argument(
+        "--output",
+        default=None,
+        help="Output Markdown path (default: reports/reconcile/<slug>-<date>.md)",
+    )
+    reconcile_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Print the report as JSON instead of writing Markdown",
+    )
+
     parser.add_argument(
         "--folder-id",
         default="1pp23yRZ8qtopw1BPXrzVewXsmmWplCse",
@@ -447,9 +478,13 @@ def _build_parser() -> argparse.ArgumentParser:
 
 def main() -> int:
     load_dotenv(find_dotenv(usecwd=True))
+    for _stream in (sys.stdout, sys.stderr):
+        try:
+            _stream.reconfigure(errors="replace")
+        except (AttributeError, ValueError):
+            pass
     parser = _build_parser()
     args = parser.parse_args()
-
     structlog.configure(
         wrapper_class=structlog.make_filtering_bound_logger(-30 if args.verbose else 20),
     )
@@ -466,6 +501,7 @@ def main() -> int:
         "demo-setup": lambda: _run_demo_setup(args, log),
         "draft": lambda: _run_draft(args, log),
         "calc": lambda: _run_calc(args, log),
+        "reconcile": lambda: _run_reconcile(args, log),
         "review": lambda: _run_review(args, log),
         "judge": lambda: _run_judge(args, log),
         "export": lambda: _run_export(args, log),
@@ -584,9 +620,7 @@ def _run_draft(args, log) -> None:
             log.error("input_file_not_found", path=str(input_path))
             return
 
-        with open(input_path, encoding="utf-8") as f:
-            input_data = yaml.safe_load(f)
-        project_input = ProjectInput.model_validate(input_data)
+        project_input = load_project_input(input_path)
 
     # Build TokenBudget from CLI flags, env, then defaults
     import os
@@ -732,9 +766,7 @@ def _run_calc(args, log) -> None:
         log.error("input_file_not_found", path=str(input_path))
         return
 
-    with open(input_path, encoding="utf-8") as f:
-        input_data = yaml.safe_load(f)
-    project_input = ProjectInput.model_validate(input_data)
+    project_input = load_project_input(input_path)
 
     result = compute_for(project_input)
     if result is None:
@@ -818,12 +850,53 @@ def _run_calc(args, log) -> None:
         log.info("calc_output_written", path=str(output_path))
 
 
+def _run_reconcile(args, log) -> int:
+    import json as _json
+    import re
+    from datetime import datetime, timezone
+
+    from pdd_agent.reconcile.diff import reconcile, render_markdown, report_to_dict
+    from pdd_agent.reconcile.workbook import inegol_workbook_path, read_acm0022_workbook
+
+    project_input = load_project_input(args.input)
+    workbook_path = Path(args.workbook) if args.workbook else inegol_workbook_path()
+    workbook = read_acm0022_workbook(workbook_path)
+    report = reconcile(project_input, workbook, tolerance=args.tolerance)
+
+    if args.json:
+        print(_json.dumps(report_to_dict(report), indent=2))
+    else:
+        slug = re.sub(r"[^a-z0-9]+", "-", project_input.project.project_name.lower()).strip("-")
+        dated = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+        output_path = (
+            Path(args.output) if args.output else Path("reports/reconcile") / f"{slug}-{dated}.md"
+        )
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        output_path.write_text(render_markdown(report), encoding="utf-8")
+        log.info("reconcile_report_written", path=str(output_path))
+    verdict = "PASS" if report.verdict_pass else "FAIL"
+    if not args.json:
+        # --json mode keeps stdout pipe-clean: the verdict and totals below
+        # are already inside the printed JSON object.
+        log.info(
+            "reconcile_complete",
+            verdict=verdict,
+            total_registered=report.total_registered,
+            total_engine=report.total_engine,
+            total_rel_diff=report.total_rel_diff,
+        )
+        print(
+            f"Reconcile verdict: {verdict} (engine {report.total_engine:,.1f} "
+            f"vs registered {report.total_registered:,.1f} tCO2e)"
+        )
+    return 0 if report.verdict_pass else 3
+
+
 def _run_review(args, log) -> None:
     from pdd_agent.review.states import ReviewStateStore
 
     if args.input:
-        with open(args.input, encoding="utf-8") as f:
-            ProjectInput.model_validate(yaml.safe_load(f))
+        load_project_input(args.input)
 
     try:
         store = ReviewStateStore.load(args.run_id)
@@ -843,8 +916,7 @@ def _run_judge(args, log) -> None:
 
     project_input = None
     if args.input:
-        with open(args.input, encoding="utf-8") as f:
-            project_input = ProjectInput.model_validate(yaml.safe_load(f))
+        project_input = load_project_input(args.input)
 
     judge = LLMJudge(
         provider_name=run.provider,
@@ -881,17 +953,15 @@ def _run_judge(args, log) -> None:
         sections=total,
         passed=passed,
         critical=critical,
-        advisory=advisory,
     )
 
 
-def _run_export(args, log) -> None:
+def _run_export(args, log) -> int:
     from pdd_agent.export.docx_export import ExportBlockedError
 
     project_input = None
     if getattr(args, "input", None):
-        with open(args.input, encoding="utf-8") as f:
-            project_input = ProjectInput.model_validate(yaml.safe_load(f))
+        project_input = load_project_input(args.input)
 
     if args.review_output_dir:
         docx_path = publish_docx_run_for_review(
@@ -916,7 +986,7 @@ def _run_export(args, log) -> None:
         except ExportBlockedError as exc:
             log.error("export_blocked", run_id=args.run_id, error=str(exc))
             print(f"Export blocked: {exc}")
-            return
+            return 2
         log.info("docx_exported", path=str(docx_path), force=getattr(args, "force", False))
 
     pdf_status = "not_requested"
@@ -934,6 +1004,7 @@ def _run_export(args, log) -> None:
         pdf_status=pdf_status,
         pdf_path=str(pdf_path) if pdf_path else None,
     )
+    return 0
 
 
 def _run_upload(args, log) -> None:
@@ -1157,10 +1228,8 @@ def _run_screen(args, log) -> None:
 
     project_input = None
     if file_path.suffix in (".yaml", ".yml"):
-        with open(file_path, encoding="utf-8") as f:
-            data = yaml.safe_load(f)
         try:
-            project_input = ProjectInput.model_validate(data)
+            project_input = load_project_input(file_path)
             description = project_input.summary()
         except Exception:
             description = file_path.read_text(encoding="utf-8")

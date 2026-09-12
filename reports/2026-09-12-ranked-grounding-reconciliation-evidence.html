@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>09-11 Plan Evidence: Ranked Grounding + Registered Reconciliation (2026-09-12)</title>
+<style>
+body{font-family:system-ui,sans-serif;max-width:960px;margin:2em auto;padding:0 1em;color:#111}
+table{border-collapse:collapse;width:100%;margin:1em 0}
+th,td{border:1px solid #bbb;padding:.4em .6em;text-align:left;font-size:.92em}
+th{background:#f0f0f0}
+.pass{color:#0a6b0a;font-weight:bold}.fail{color:#a00;font-weight:bold}
+code{background:#f4f4f4;padding:0 .3em}
+pre{background:#f4f4f4;padding:1em;overflow-x:auto;font-size:.85em}
+</style>
+</head>
+<body>
+<h1>09-11 Plan Evidence: Ranked Grounding + Registered Reconciliation</h1>
+<p>Date: 2026-09-12 UTC. Plan: <code>plans/2026-09-11-ranked-grounding-and-registered-reconciliation-plan.md</code>.
+All six phases implemented; suite <span class="pass">1037 passed, 0 failed</span> (baseline 974 + 63 new), 1 xfailed, 8 deselected.</p>
+
+<h2>1. PHASE-01 — Hygiene opener</h2>
+<ul>
+<li><code>src/pdd_agent/paths.py</code>: <code>repo_root()</code>, <code>default_runs_dir()</code> ($PDD_RUNS_DIR else repo/data/runs, per-call).</li>
+<li>All 7 run-store defaults (provider, states, docx_export, drive_upload, benchmark, orchestrator x2, service x2) resolve at call time; compat constant names kept.</li>
+<li><code>tests/conftest.py</code> session fixture redirects both run dirs to tmp; <code>tests/test_cli_hygiene.py</code> (7 specs) passes.</li>
+<li><code>_run_export</code> returns 2 on block / 0 success; ingest help ASCII; cp1252 <code>--help</code> exit 0.</li>
+<li><code>data/runs/*.json</code> count 2016 before and after suite — no leakage.</li>
+</ul>
+
+<h2>2. PHASE-02 — Methodology into the index</h2>
+<ul>
+<li>Parser: TOC-page test gated on explicit <code>page</code> key; <code>DOTTED_LEADER_RE</code> (4+ dots) skipped in both branches; single-page docs use aligned block body for <code>text_preview</code>.</li>
+<li>Index <code>build()</code> logs <code>document_zero_rows</code> and returns <code>zero_row_documents</code> (legacy <code>docs_with_zero_sections</code> key/event kept for existing callers).</li>
+</ul>
+
+<h2>3. PHASE-03 — Ranked grounding + normative channel</h2>
+<ul>
+<li>New <code>src/pdd_agent/grounding/</code>: S-1 score = 3F + 2T + C + M + B − 2D, deterministic sort, two-pass per-document selection, heading-fallback top-up; S-2 normative query (k=3, no section filter, <code>channel="normative"</code>, <code>[METHODOLOGY:]</code> provenance); S-3 self-exclusion via <code>registry_ids</code> (3908/2567), caller override.</li>
+<li>Orchestrator calls <code>ground_section()</code> at both sites; prompt has <code>## Methodology Requirements (normative)</code> before <code>## Precedent Evidence (ranked by project similarity)</code> with <code>(similarity score; matched: …)</code>; header bug fixed (<code>(4.1)</code> not <code>(4.4.1)</code>).</li>
+<li>11 new tests in <code>tests/test_grounding_selection.py</code>; beyond-spec fix: FTS quoting for non-alphanumeric terms (bare <code>waste-to-energy</code> crashed FTS5).</li>
+</ul>
+
+<h2>4. PHASE-04 — Zones, schedules, strict YAML</h2>
+<ul>
+<li><code>climate_zone_resolution()</code> + <code>calc_climate_zone_ambiguous</code> warning on derived zones (derived value unchanged).</li>
+<li>S-4 per-year FOD deposit (<code>annual_waste_by_year</code>) + per-year electricity; carry-forward rule; <code>capacity_ramp</code> mutual exclusion.</li>
+<li><code>src/pdd_agent/config_io.py</code> (<code>UniqueKeyLoader</code> / <code>load_yaml_unique</code> / <code>load_project_input</code>); all ProjectInput loads switched.</li>
+<li>Inegol duplicate key resolved to sourced <code>0.4312</code>. Soc Son regression total pinned: <code>3606564.5</code> tCO2e (unchanged).</li>
+</ul>
+
+<h2>5. PHASE-05 — Workbook reader + re-sourced Inegol</h2>
+<ul>
+<li>New <code>src/pdd_agent/reconcile/workbook.py</code>: header-text (not letter) table location, stub-row skip (Days&lt;300), DOC÷100, ASM-002 ECBL cross-check, <code>infer_climate_zone()</code> (S-5), <code>to_project_input_patch()</code> with cell lineage.</li>
+<li>Inegol config: zone <code>boreal_temperate_dry</code>, 6-entry sourced composition, waste <code>[299300, 365000, 419750, 456250, 492750, 547500, 456250]</code>, electricity <code>[8395.389, 43872.46, 59455.872 ×5]</code>; scalars kept per ASM-009.</li>
+<li>Engine now <code>764661.6</code> vs registered <code>730000</code> (<span class="pass">+4.75%, PASS</span>). Both old strict xfails genuinely pass → decorators removed. Years-3–7 annual test strict-xfails with dated residuals (y3 +39.0%, y4 +23.7%, y5 +7.5%, y6 −5.8%, y7 −18.5%). TOLERANCE untouched.</li>
+</ul>
+
+<h2>6. PHASE-06 — <code>pdd-agent reconcile</code> + docs</h2>
+<pre>PYTHONIOENCODING=utf-8 pdd-agent reconcile --input configs/demo/inegol_project_input.yaml
+verdict: True  total_engine: 764661.6  total_registered: 730000.0  rel: 0.0475  exit: 0</pre>
+<p>Report: <code>reports/reconcile/inegol-integrated-solid-waste-storage-and-disposal-facility-2026-09-12.md</code>.
+README resynced (Status live-run wording, Known-Gaps stub→best-effort, Key Files, Grounding + Reconcile subsections, CLI table).</p>
+
+<h2>7. Verification table</h2>
+<table>
+<tr><th>Check</th><th>Result</th></tr>
+<tr><td>pytest -m "not corpus"</td><td class="pass">1037 passed, 8 deselected, 1 xfailed, 0 failed</td></tr>
+<tr><td>ruff check / format --check / uv lock --check</td><td class="pass">all pass</td></tr>
+<tr><td>data/runs count before/after</td><td class="pass">2016 = 2016</td></tr>
+<tr><td>cp1252 --help</td><td class="pass">exit 0</td></tr>
+<tr><td>reconcile --json verdict vs exit</td><td class="pass">PASS / 0, rel +0.0475</td></tr>
+<tr><td>biomethanization key count</td><td class="pass">1</td></tr>
+<tr><td>README reconcile mentions</td><td class="pass">yes (CLI table, subsections)</td></tr>
+</table>
+
+<h2>8. Integration repairs (post-agent)</h2>
+<ul>
+<li>Restored imports agents dropped as whole lines: <code>phase05/benchmark.py</code> (assumptions), <code>service/main.py</code> (<code>export_run_to_docx</code>), <code>agent/section_orchestrator.py</code> (<code>ProjectInput</code>, review checks).</li>
+<li>Removed stray top-level <code>import math</code> in <code>llm/provider.py</code>; repaired zero-row test to actually write the good doc.</li>
+<li>Updated <code>tests/test_inegol_input.py</code> stale pin 0.45 → sourced 0.4312 (ASM-003).</li>
+<li><code>ruff format</code> applied (11 files). Pre-existing working-tree dirt (activeContext 09-10 bench notes, 08-28 plan status line, assumption-burden report) kept as-is.</li>
+</ul>
+</body>
+</html>

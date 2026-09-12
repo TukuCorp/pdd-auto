@@ -12,6 +12,7 @@ from pdd_agent.calc.constants import (
     DECAY_RATE_BY_CLIMATE_ZONE,
     DECAY_RATE_BY_WASTE_TYPE,
     climate_zone_for,
+    climate_zone_resolution,
 )
 from pdd_agent.calc.dispatch import compute_for
 from schemas.project_input import ProjectInput
@@ -36,6 +37,30 @@ class TestClimateZoneFor:
     def test_boundary_latitudes(self):
         assert climate_zone_for(-23.4) == "tropical_wet"
         assert climate_zone_for(23.6) == "boreal_temperate_wet"
+
+    def test_invalid_declared_zone_raises(self):
+        with pytest.raises(ValueError, match="Unknown climate_zone"):
+            climate_zone_for(40.15, declared="atlantis")
+
+
+class TestClimateZoneResolution:
+    """climate_zone_resolution reports whether the zone was derived (PHASE-04)."""
+
+    def test_derived_boreal(self):
+        assert climate_zone_resolution(40.15, None) == ("boreal_temperate_wet", True)
+
+    def test_declared_dry(self):
+        assert climate_zone_resolution(40.15, "boreal_temperate_dry") == (
+            "boreal_temperate_dry",
+            False,
+        )
+
+    def test_derived_tropical(self):
+        assert climate_zone_resolution(21.2, None) == ("tropical_wet", True)
+
+    def test_wrapper_preserves_behaviour(self):
+        assert climate_zone_for(40.15, "boreal_temperate_dry") == "boreal_temperate_dry"
+        assert climate_zone_for(21.2) == "tropical_wet"
 
 
 class TestDecayRateTable:

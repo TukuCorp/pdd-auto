@@ -32,10 +32,8 @@ from pdd_agent.phase06.assumptions import (
     synthetic_entries,
     write_assumption_burden_report,
 )
-from pdd_agent.retrieval.search import (
-    get_examples_for_section,
-    get_section_heading_examples,
-)
+from pdd_agent.grounding import ground_section
+from schemas.project_input import ProjectInput
 from pdd_agent.review.checks import run_review_checks, summarize_review_result
 from pdd_agent.review.consistency import (
     check_quantitative_consistency,
@@ -44,7 +42,7 @@ from pdd_agent.review.consistency import (
 from pdd_agent.review.judge import LLMJudge
 from pdd_agent.review.states import init_review_state, ReviewState
 from pdd_agent.review.tbd_tracker import TBDTracker
-from schemas.project_input import ProjectInput
+from pdd_agent.paths import default_runs_dir
 
 logger = structlog.get_logger()
 
@@ -481,22 +479,37 @@ class SectionOrchestrator:
     def _format_retrieval_results(
         self, examples: Sequence[Any], max_examples: int, max_chars: int
     ) -> str:
-        """Format corpus retrieval results with BM25 scores for prompt injection."""
+        """Format ranked precedent results with similarity scores for prompt injection."""
         if not examples:
             return "\n## Corpus Examples: NONE — human review required.\n"
 
-        parts = ["\n## Corpus Evidence (FTS5/BM25 retrieval)\n"]
+        parts = ["\n## Precedent Evidence (ranked by project similarity)\n"]
         for i, ex in enumerate(examples[:max_examples], 1):
             doc = getattr(ex, "document_name", "unknown")
             heading = getattr(ex, "canonical_heading", "")
             text = getattr(ex, "text", "")
             score = getattr(ex, "score", 0.0)
             content_class = getattr(ex, "content_class", "")
+            matched = getattr(ex, "matched_terms", [])
+            matched_str = ", ".join(matched) if isinstance(matched, (list, tuple)) else str(matched)
             parts.append(
-                f"\n### Evidence {i} [{doc}] (BM25 score: {score:.3f})\n"
+                f"\n### Evidence {i} [{doc}] "
+                f"(similarity score: {score:.2f}; matched: {matched_str})\n"
                 f"**Heading:** {heading}\n"
                 f"**Content class:** {content_class}\n\n"
                 f"{text[:max_chars]}\n"
+            )
+        return "".join(parts)
+
+    def _format_normative_results(self, normative: Sequence[Any], max_chars: int) -> str:
+        """Format normative methodology hits for prompt injection."""
+        parts = ["\n## Methodology Requirements (normative)\n"]
+        for i, ex in enumerate(normative, 1):
+            doc = getattr(ex, "document_name", "unknown")
+            heading = getattr(ex, "canonical_heading", "")
+            text = getattr(ex, "text", "")
+            parts.append(
+                f"\n### Requirement {i} [{doc}]\n**Heading:** {heading}\n\n{text[:max_chars]}\n"
             )
         return "".join(parts)
 
@@ -600,6 +613,7 @@ class SectionOrchestrator:
         sub_section_id: str | None,
         examples: Sequence[Any],
         project_input: ProjectInput | None = None,
+        normative: Sequence[Any] = (),
     ) -> str:
         info = self._section_info(section_id, sub_section_id)
         heading = info.get("heading", f"Section {section_id}")
@@ -611,10 +625,10 @@ class SectionOrchestrator:
         )
         synthetic = synthetic_entries(fact_entries)
 
+        label = sub_section_id or section_id
         prompt_parts = [
             "# PDD Section Draft Request\n",
-            f"## Section: {heading} ({section_id}"
-            f"{'.' + sub_section_id if sub_section_id else ''})\n",
+            f"## Section: {heading} ({label})\n",
             f"Content class: {content_class}\n",
             f"Review sensitivity: {review_sens}\n",
             f"Guidance: {guidance}\n",
@@ -639,6 +653,10 @@ class SectionOrchestrator:
                 prompt_parts.append(f"\n{overlay}\n")
 
         if self._should_inject_retrieval():
+            if normative:
+                prompt_parts.append(
+                    self._format_normative_results(normative, self._max_corpus_chars())
+                )
             prompt_parts.append(
                 self._format_retrieval_results(
                     examples, self._max_corpus_examples(), self._max_corpus_chars()
@@ -789,28 +807,14 @@ class SectionOrchestrator:
         content_class = self._content_class(section_id, sub_section_id)
 
         k = self._max_corpus_examples()
+        normative: Sequence[Any] = ()
+        excluded_documents: list[str] = []
         if examples is None:
-            if self._should_inject_retrieval():
-                heading = self._section_info(section_id, sub_section_id).get("heading", "")
-                examples = get_examples_for_section(
-                    section_id, sub_section_id, k=k, document_family=self._family_slug()
-                )
-                if len(examples) < 2 and heading:
-                    extras = get_section_heading_examples(heading, k=min(3, k))
-                    seen = {
-                        (getattr(e, "document_name", ""), getattr(e, "canonical_heading", ""))
-                        for e in examples
-                    }
-                    for ex in extras:
-                        if (
-                            getattr(ex, "document_name", ""),
-                            getattr(ex, "canonical_heading", ""),
-                        ) not in seen:
-                            examples.append(ex)
-            else:
-                examples = get_examples_for_section(
-                    section_id, sub_section_id, k=k, document_family=self._family_slug()
-                )
+            heading = self._section_info(section_id, sub_section_id).get("heading", "")
+            grounding = ground_section(section_id, sub_section_id, heading, self._project, k=k)
+            examples = grounding.precedent
+            normative = grounding.normative
+            excluded_documents = list(grounding.excluded_documents)
         examples = list(examples)
         grounding_issue: str | None = None
         if any(getattr(e, "from_fallback_family", False) for e in examples):
@@ -831,12 +835,21 @@ class SectionOrchestrator:
         )
         synthetic = synthetic_entries(fact_entries)
 
-        prompt = self._build_prompt(section_id, sub_section_id, examples, self._project)
+        prompt = self._build_prompt(
+            section_id, sub_section_id, examples, self._project, normative=normative
+        )
 
         provenance = [
             f"[CORPUS: {getattr(e, 'document_name', '?')}, {getattr(e, 'canonical_heading', '?')}]"
             for e in examples
         ]
+        provenance.extend(
+            f"[METHODOLOGY: {getattr(e, 'document_name', '?')}, "
+            f"{getattr(e, 'canonical_heading', '?')}]"
+            for e in normative
+        )
+        if excluded_documents:
+            provenance.append(f"[GROUNDING: self-excluded {', '.join(excluded_documents)}]")
 
         draft = self._provider.draft_section(
             section_id=section_id,
@@ -1117,7 +1130,7 @@ class SectionOrchestrator:
 
     def _load_resume(self) -> None:
         """Load existing run file for resume, if present."""
-        runs_dir = self._runs_dir or Path("data/runs")
+        runs_dir = Path(self._runs_dir) if self._runs_dir is not None else default_runs_dir()
         run_path = runs_dir / f"{self._run_id}.json"
         if not run_path.exists():
             return
@@ -1163,7 +1176,7 @@ class SectionOrchestrator:
 
     def checkpoint(self) -> Path:
         """Atomically write run record to data/runs/{run_id}.json."""
-        runs_dir = self._runs_dir or Path("data/runs")
+        runs_dir = Path(self._runs_dir) if self._runs_dir is not None else default_runs_dir()
         runs_dir.mkdir(parents=True, exist_ok=True)
         run_path = runs_dir / f"{self._run_id}.json"
         tmp_path = runs_dir / f".{self._run_id}.tmp"
@@ -1198,20 +1211,20 @@ class SectionOrchestrator:
                         and not text.startswith("[BUDGET EXHAUSTED")
                     ):
                         continue
-                examples = []
+                examples: Sequence[Any] = []
+                normative: Sequence[Any] = []
                 if self._should_inject_retrieval():
                     try:
-                        from pdd_agent.retrieval.search import get_examples_for_section
-
-                        examples = get_examples_for_section(
-                            sid,
-                            ssid,
-                            k=self._max_corpus_examples(),
-                            document_family=self._family_slug(),
+                        heading = self._section_info(sid, ssid).get("heading", "")
+                        section_grounding = ground_section(
+                            sid, ssid, heading, self._project, k=self._max_corpus_examples()
                         )
+                        examples = section_grounding.precedent
+                        normative = section_grounding.normative
                     except Exception:
                         examples = []
-                prompt = self._build_prompt(sid, ssid, examples, self._project)
+                        normative = []
+                prompt = self._build_prompt(sid, ssid, examples, self._project, normative=normative)
                 prompts.append(prompt)
                 section_budgets[ssid] = self.section_budget_chars(sid, ssid)
         avg_prompt_chars = sum(len(pr) for pr in prompts) / len(prompts) if prompts else 0

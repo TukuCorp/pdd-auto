@@ -19,9 +19,9 @@ Sources:
 from pathlib import Path
 
 import pytest
-import yaml
 
 from pdd_agent.calc.dispatch import build_engine_inputs, compute_for
+from pdd_agent.config_io import load_project_input
 from schemas.project_input import ProjectInput
 
 # Headline figures from the registered PDDs, in tCO2e.
@@ -31,6 +31,14 @@ SOC_SON_REGISTERED_BE_EC = 338_059  # tCO2e/year, 388050 MWh *0.84585*1.03
 SOC_SON_REGISTERED_BE_CH4_SUM = 4_384_018
 INEGOL_TOTAL_ERS = 730_000
 INEGOL_ANNUAL_ERS = 104_285
+
+# Year-by-year registered schedule from the registered Inegol ER workbook
+# ("ER Calculation.v04_21.07.2025.xlsx", sheet "SUMMARY (ER)"), years 2021-2027.
+# The one-day 2020-12-31 stub row (BE 14, PE 16, ER -2) is excluded. Leakage is
+# zero in every year, so ER = BE - PE up to sheet rounding.
+INEGOL_REGISTERED_BE_BY_YEAR = [10167, 43251, 72738, 102035, 140719, 189144, 247313]
+INEGOL_REGISTERED_PE_BY_YEAR = [5809, 8088, 9849, 11316, 12294, 13272, 14739]
+INEGOL_REGISTERED_ER_BY_YEAR = [4358, 35163, 62889, 90719, 128425, 175872, 232574]
 
 # Year-by-year schedule from the registered Soc Son PDD (S-5a): Table 9 gives
 # baseline methane from the SWDS; Section 1.10 gives the estimated ERs.
@@ -53,17 +61,17 @@ SOC_SON_REGISTERED_ER_BY_YEAR = [
     739_032,
 ]
 
+
+def _load_pi(path: str) -> ProjectInput:
+    root = Path(__file__).parent.parent
+    return load_project_input(root / path)
+
+
 # The repo configs do not carry waste-composition splits or site-specific
 # project-emission inputs, so an exact match is not achievable. 20% is loose
 # enough to absorb that and tight enough that a structurally missing baseline
 # term cannot hide inside it.
 TOLERANCE = 0.20
-
-
-def _load_pi(path: str) -> ProjectInput:
-    root = Path(__file__).parent.parent
-    with open(root / path, encoding="utf-8") as f:
-        return ProjectInput.model_validate(yaml.safe_load(f))
 
 
 def _relative_error(actual: float, expected: float) -> float:
@@ -156,36 +164,27 @@ class TestSocSonOracle:
             assert "registered PDD" in e.source
 
 
-_YEAR_ONE_XFAIL = pytest.mark.xfail(
-    strict=True,
-    reason=(
-        "Re-measured 2026-08-21 after PE_INC + capacity_ramp push (socson now "
-        "4,010,142 tCO2e, +5.3% vs 3,808,082 — inside tolerance; inegol unchanged "
-        "because its config declares no waste_composition, so it gains no "
-        "incineration_streams and no ramp). The registered 104,285 tCO2e/yr is an "
-        "AVERAGE over the 7-year crediting period, while PddCalcResult's scalars "
-        "describe YEAR 1 of a first-order-decay baseline — the smallest year. "
-        "Measured 2026-08-21: year 1 net = 50,690 (-51.4%), year 3 = 107,226 (+2.8% "
-        "of the registered average), 7-year sum = 893,441 vs registered 730,000 "
-        "(+22.4%). Closing the remaining gap needs site-specific project-emission "
-        "and composition inputs the Inegol config lacks."
-    ),
-)
-
-
 class TestInegolOracle:
-    @_YEAR_ONE_XFAIL
     def test_annual_net_within_tolerance(self):
+        """Mean annual net vs the registered 7-year average (DEC-004).
+
+        Passed 2026-09-12 after the workbook re-sourcing (declared dry zone,
+        6-entry composition, per-year waste and ECBL schedules): engine mean
+        109,237 tCO2e/yr vs registered 104,285 (+4.7%). TOLERANCE untouched.
+        """
         result = compute_for(_load_pi("configs/demo/inegol_project_input.yaml"))
         assert result is not None
-        error = _relative_error(result.net_emission_reductions_tco2e, INEGOL_ANNUAL_ERS)
+        mean_net = sum(e.net_tco2e for e in result.annual_schedule) / len(result.annual_schedule)
+        error = _relative_error(mean_net, INEGOL_ANNUAL_ERS)
         assert error <= TOLERANCE, (
-            f"engine computed {result.net_emission_reductions_tco2e:,.0f} tCO2e/yr against the "
+            f"engine mean {mean_net:,.0f} tCO2e/yr against the "
             f"registered {INEGOL_ANNUAL_ERS:,} tCO2e/yr ({error:.1%} error)"
         )
 
-    @_YEAR_ONE_XFAIL
     def test_crediting_period_total_within_tolerance(self):
+        """Passed 2026-09-12 after the workbook re-sourcing: engine 764,662
+        tCO2e vs registered 730,000 (+4.7%). TOLERANCE untouched.
+        """
         result = compute_for(_load_pi("configs/demo/inegol_project_input.yaml"))
         assert result is not None
         error = _relative_error(result.crediting_period_total_tco2e, INEGOL_TOTAL_ERS)
@@ -272,4 +271,51 @@ class TestSocSonAnnualSchedule:
             )
             assert abs(charge - (-82_276.5)) <= TOLERANCE * abs(-82_276.5), (
                 f"year {y}: non-methane net charge {charge:,.1f} vs registered -82,276.5 tCO2e"
+            )
+
+
+class TestInegolAnnualSchedule:
+    """Year-by-year measurement against the registered workbook schedule."""
+
+    def test_registered_constants_sum_to_published_totals(self):
+        assert sum(INEGOL_REGISTERED_BE_BY_YEAR) == 805367
+        assert sum(INEGOL_REGISTERED_PE_BY_YEAR) == 75367
+        assert sum(INEGOL_REGISTERED_ER_BY_YEAR) == 730000
+
+    def test_registered_identity(self):
+        """Registered ER_y = BE_y - PE_y in every year (leakage is zero)."""
+        for be, pe, er in zip(
+            INEGOL_REGISTERED_BE_BY_YEAR, INEGOL_REGISTERED_PE_BY_YEAR, INEGOL_REGISTERED_ER_BY_YEAR
+        ):
+            assert abs((be - pe) - er) <= 1
+
+    def test_engine_schedule_is_back_loaded(self):
+        """Engine baseline grows year over year as waste deposits grow."""
+        result = compute_for(_load_pi("configs/demo/inegol_project_input.yaml"))
+        assert result is not None
+        baselines = [e.baseline_tco2e for e in result.annual_schedule[:6]]
+        assert all(b < c for b, c in zip(baselines, baselines[1:])), baselines
+
+    @pytest.mark.xfail(
+        strict=True,
+        reason=(
+            "Measured 2026-09-12 after the workbook re-sourcing (engine nets "
+            "[15962, 55749, 87424, 112227, 138072, 165607, 189621] vs registered "
+            "[4358, 35163, 62889, 90719, 128425, 175872, 232574]): years 3-4 "
+            "outside tolerance (y3 +39.0%, y4 +23.7%), years 5-7 inside (y5 "
+            "+7.5%, y6 -5.8%, y7 -18.5%). The engine's FOD baseline is "
+            "front-loaded relative to the registered curve while project "
+            "emissions grow more slowly; closing it needs no unsourced parameter."
+        ),
+    )
+    def test_engine_years_3_to_7_within_tolerance(self):
+        result = compute_for(_load_pi("configs/demo/inegol_project_input.yaml"))
+        assert result is not None
+        for idx, year in enumerate(range(3, 8)):
+            engine_net = result.annual_schedule[idx + 2].net_tco2e
+            registered = INEGOL_REGISTERED_ER_BY_YEAR[idx + 2]
+            error = _relative_error(engine_net, registered)
+            assert error <= TOLERANCE, (
+                f"year {year}: engine net {engine_net:,.0f} vs registered "
+                f"{registered:,} ({error:.1%} error)"
             )

@@ -17,7 +17,6 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 import structlog
-import yaml
 
 from pdd_agent.agent.section_orchestrator import SectionOrchestrator
 from pdd_agent.llm.budget import BudgetExhaustedError, TokenBudget
@@ -31,6 +30,7 @@ from pdd_agent.llm.judge_selection import (
 from pdd_agent.llm.provider import get_provider_registry
 from pdd_agent.review.judge import LLMJudge
 from schemas.project_input import ProjectInput
+from pdd_agent.config_io import load_project_input
 
 logger = structlog.get_logger()
 
@@ -281,8 +281,7 @@ def run_provider_scorecard(
     (demo, ollama, openai, anthropic), skipping unavailable ones gracefully.
     Returns output_path.
     """
-    with open(input_path, encoding="utf-8") as f:
-        project_input = ProjectInput.model_validate(yaml.safe_load(f))
+    project_input = load_project_input(input_path)
 
     resolved = _resolve_providers(providers)
     availability = {p: _is_provider_available(p) for p in resolved}

@@ -116,7 +116,8 @@ class TestInegolTechnology:
         assert inegol_input.technology.rdf_capacity.planned_2035_tpd == pytest.approx(125)
 
     def test_biomethanization_fraction(self, inegol_input):
-        assert inegol_input.technology.biomethanization_suitable_fraction == pytest.approx(0.45)
+        # Sourced: registered ER workbook, sheet "Waste Projection": Biomethanization / Total Waste (A) = 0.4312 (ASM-003).
+        assert inegol_input.technology.biomethanization_suitable_fraction == pytest.approx(0.4312)
 
 
 class TestInegolApplicability:
