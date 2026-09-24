@@ -1,0 +1,12 @@
+{
+  "run_id": "walkthrough-inegol-noop",
+  "project_name": "INEGOL INTEGRATED SOLID WASTE STORAGE AND DISPOSAL FACILITY",
+  "project_slug": "inegol-integrated-solid-waste-storage-and-disposal-facility",
+  "published_docx": "reports\\review-packages\\inegol-integrated-solid-waste-storage-and-disposal-facility\\walkthrough-inegol-noop\\walkthrough-inegol-noop.docx",
+  "source_docx": "data\\runs\\walkthrough-inegol-noop.docx",
+  "validation_report": "reports\\walkthrough\\raw\\_absent",
+  "gap_analysis": "reports\\walkthrough\\raw\\_absent",
+  "assumption_burden": "reports\\review-packages\\inegol-integrated-solid-waste-storage-and-disposal-facility\\walkthrough-inegol-noop\\assumption-burden.md",
+  "assumptions_yaml": "reports\\walkthrough\\raw\\_absent",
+  "project_yaml": "reports\\review-packages\\inegol-integrated-solid-waste-storage-and-disposal-facility\\walkthrough-inegol-noop\\inegol_project_input.yaml"
+}

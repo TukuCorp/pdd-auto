@@ -1,0 +1,483 @@
+<title>Inegol Two-Lane Bench</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+:root{
+  --ground:#F4F6F3; --surface:#FFFFFF; --surface-2:#EDF0EC;
+  --ink:#161A18; --muted:#5C6663; --faint:#828C88;
+  --rule:#DBE0DA; --rule-strong:#C2CAC1;
+  --lane-a:#2E5A7D; --lane-b:#8C5236;
+  --critical:#A32B2B; --caution:#8A6410; --ok:#2F6B4F;
+  --stamp-bg:#E7EBE6;
+  --display:"Archivo",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --body:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --mono:"IBM Plex Mono",ui-monospace,"Cascadia Mono",Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#131715; --surface:#1B201D; --surface-2:#232823;
+    --ink:#E9ECE7; --muted:#A2ABA5; --faint:#7C8681;
+    --rule:#2E3531; --rule-strong:#3C4540;
+    --lane-a:#84B4D6; --lane-b:#DB9B7C;
+    --critical:#E08585; --caution:#D8AE55; --ok:#78BE9B;
+    --stamp-bg:#262C28;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#131715; --surface:#1B201D; --surface-2:#232823;
+  --ink:#E9ECE7; --muted:#A2ABA5; --faint:#7C8681;
+  --rule:#2E3531; --rule-strong:#3C4540;
+  --lane-a:#84B4D6; --lane-b:#DB9B7C;
+  --critical:#E08585; --caution:#D8AE55; --ok:#78BE9B;
+  --stamp-bg:#262C28;
+}
+*{box-sizing:border-box}
+body{
+  background:var(--ground); color:var(--ink);
+  font-family:var(--body); font-size:17px; line-height:1.55;
+  margin:0; padding-inline:20px; padding-block:0 64px;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1080px; margin:0 auto}
+h1,h2,h3,.lane-id,.eyebrow,.stamp,.qnum,.run-head,.sowhat b{font-family:var(--display)}
+:focus-visible{outline:2px solid var(--lane-a); outline-offset:2px; border-radius:2px}
+
+.masthead{padding-block:48px 32px; border-bottom:2px solid var(--ink)}
+.eyebrow{
+  font-size:11.5px; font-weight:600; letter-spacing:.13em; text-transform:uppercase;
+  color:var(--muted); margin:0 0 18px; font-family:var(--mono);
+}
+h1{
+  font-size:clamp(30px,5.2vw,46px); line-height:1.06; font-weight:700;
+  letter-spacing:-.022em; margin:0 0 18px; text-wrap:balance; max-width:17ch;
+}
+.standfirst{font-size:19px; color:var(--muted); margin:0; max-width:62ch}
+.standfirst strong{color:var(--ink); font-weight:600}
+
+.ledger{
+  display:grid; grid-template-columns:repeat(4,1fr); gap:1px;
+  background:var(--rule); border:1px solid var(--rule);
+  margin:28px 0 0;
+}
+.ledger div{background:var(--ground); padding:14px 16px}
+.ledger dt{
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.09em;
+  text-transform:uppercase; color:var(--faint); margin:0 0 6px;
+}
+.ledger dd{
+  margin:0; font-family:var(--display); font-weight:600; font-size:15px;
+  line-height:1.25; font-variant-numeric:tabular-nums;
+}
+.ledger .zero{color:var(--critical)}
+
+.correction{
+  margin-block:36px; padding:24px 26px;
+  background:var(--surface); border:1px solid var(--rule-strong);
+  border-left:4px solid var(--critical);
+}
+.correction .eyebrow{color:var(--critical); margin-bottom:12px}
+.correction > p{margin:0 0 14px; max-width:66ch}
+.correction > p:last-child{margin-bottom:0}
+.defs{display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-top:18px}
+.defs div{padding-top:12px; border-top:1px solid var(--rule)}
+.defs b{font-family:var(--display); font-size:13px; letter-spacing:.02em; display:block; margin-bottom:4px}
+.defs .a b{color:var(--lane-a)}
+.defs .b b{color:var(--lane-b)}
+.defs p{font-size:15.5px; color:var(--muted); margin:0}
+
+.legend{
+  display:flex; flex-wrap:wrap; gap:8px 20px; align-items:center;
+  padding-block:16px; border-bottom:1px solid var(--rule);
+  font-size:13.5px; color:var(--muted);
+}
+.legend > span:first-child{
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.09em;
+  text-transform:uppercase; color:var(--faint);
+}
+.legend em{display:inline-flex; align-items:center; gap:7px; font-style:normal}
+
+.stamp{
+  font-family:var(--mono); font-size:9.5px; font-weight:500; letter-spacing:.08em;
+  text-transform:uppercase; padding:2px 6px; background:var(--stamp-bg);
+  color:var(--muted); white-space:nowrap; border-radius:2px;
+}
+.stamp.m{color:var(--ok); box-shadow:inset 0 0 0 1px currentColor}
+.stamp.d{color:var(--caution); box-shadow:inset 0 0 0 1px currentColor}
+.stamp.n{color:var(--critical); box-shadow:inset 0 0 0 1px currentColor}
+
+.q{padding-block:40px; border-bottom:1px solid var(--rule)}
+.qhead{display:flex; gap:16px; align-items:baseline; margin-bottom:24px}
+.qnum{
+  font-family:var(--mono); font-size:12px; font-weight:500; color:var(--faint);
+  letter-spacing:.06em; flex:none;
+}
+.q h2{
+  font-size:clamp(22px,3.4vw,29px); line-height:1.15; font-weight:600;
+  letter-spacing:-.018em; margin:0; text-wrap:balance;
+}
+.lanes{display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--rule); border:1px solid var(--rule)}
+.lane{background:var(--surface); padding:20px 22px 22px}
+.lane-a-col{border-top:3px solid var(--lane-a)}
+.lane-b-col{border-top:3px solid var(--lane-b)}
+.lane-id{
+  font-size:11.5px; font-weight:600; letter-spacing:.1em; text-transform:uppercase;
+  margin:0 0 12px;
+}
+.lane-a-col .lane-id{color:var(--lane-a)}
+.lane-b-col .lane-id{color:var(--lane-b)}
+.answer{font-size:17px; margin:0 0 18px; max-width:46ch}
+.figs{display:flex; flex-direction:column}
+.figs .row{
+  display:grid; grid-template-columns:1fr auto; gap:4px 12px; align-items:baseline;
+  padding-block:9px; border-top:1px solid var(--rule);
+}
+.figs .row:first-child{border-top:1px solid var(--rule-strong)}
+.figs .k{font-family:var(--mono); font-size:11.5px; color:var(--muted); line-height:1.4}
+.figs .v{
+  font-family:var(--display); font-weight:600; font-size:15px; text-align:right;
+  font-variant-numeric:tabular-nums; letter-spacing:-.01em;
+}
+.figs .v.crit{color:var(--critical)}
+.figs .v.warn{color:var(--caution)}
+.figs .v.good{color:var(--ok)}
+.figs .row .stamp{grid-column:2; justify-self:end}
+.figs .note{
+  grid-column:1 / -1; font-size:14px; color:var(--muted); margin:2px 0 0; max-width:48ch;
+}
+.path{font-family:var(--mono); font-size:.86em; background:var(--surface-2); padding:1px 4px; border-radius:2px; word-break:break-word}
+
+.sowhat{
+  margin:20px 0 0; padding:16px 18px; background:var(--surface-2);
+  font-size:16.5px; border-left:3px solid var(--rule-strong);
+}
+.sowhat b{
+  display:block; font-size:10.5px; letter-spacing:.11em; text-transform:uppercase;
+  color:var(--faint); margin-bottom:6px; font-family:var(--mono); font-weight:500;
+}
+.sowhat i{font-style:normal; font-weight:600}
+
+.run{margin-top:20px; border:1px solid var(--rule-strong); background:var(--surface)}
+.run-head{
+  display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;
+  padding:12px 18px; border-bottom:1px solid var(--rule); background:var(--surface-2);
+  font-size:11.5px; font-weight:600; letter-spacing:.1em; text-transform:uppercase;
+}
+.run-body{padding:16px 18px 18px}
+.run-body > p{margin:0 0 12px; font-size:15.5px; color:var(--muted); max-width:64ch}
+.cmd{
+  font-family:var(--mono); font-size:13.5px; line-height:1.6; margin:0;
+  padding:14px 16px; background:var(--ground); border:1px solid var(--rule);
+  white-space:pre-wrap; word-break:break-word; color:var(--ink);
+}
+.run-actions{display:flex; flex-wrap:wrap; gap:10px 16px; align-items:center; margin-top:12px}
+button.copy{
+  font-family:var(--display); font-size:13px; font-weight:600; letter-spacing:.02em;
+  padding:8px 16px; border:1px solid var(--ink); background:var(--ink); color:var(--ground);
+  cursor:pointer; border-radius:2px;
+}
+button.copy:hover{opacity:.86}
+.donebox{display:inline-flex; align-items:center; gap:8px; font-size:13px; color:var(--muted); cursor:pointer; text-transform:none; letter-spacing:0; font-weight:400; font-family:var(--body)}
+.donebox input{width:15px; height:15px; accent-color:var(--ok); cursor:pointer}
+.needs{
+  margin:12px 0 0; font-size:14px; color:var(--caution);
+  font-family:var(--mono); line-height:1.55; max-width:70ch;
+}
+.result{
+  margin:14px 0 0; padding-top:12px; border-top:1px dashed var(--rule-strong);
+  font-size:13.5px; color:var(--faint); font-family:var(--mono);
+}
+
+.usewhen{margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:9px}
+.usewhen li{font-size:15.5px; padding-left:18px; position:relative; color:var(--muted)}
+.usewhen li::before{
+  content:""; position:absolute; left:0; top:.62em; width:8px; height:1px; background:var(--rule-strong);
+}
+.usewhen li b{color:var(--ink); font-weight:600; font-family:var(--body)}
+
+footer{padding-top:32px; font-size:13.5px; color:var(--faint); font-family:var(--mono); line-height:1.7}
+footer h3{
+  font-size:11.5px; letter-spacing:.11em; text-transform:uppercase; color:var(--muted);
+  margin:0 0 10px; font-weight:600;
+}
+footer p{margin:0 0 10px; max-width:84ch}
+footer .path{background:none; padding:0; color:var(--muted)}
+
+@media (max-width:760px){
+  body{font-size:16px; padding-inline:16px}
+  .lanes{grid-template-columns:1fr}
+  .defs{grid-template-columns:1fr}
+  .ledger{grid-template-columns:1fr 1fr}
+  .qhead{flex-direction:column; gap:6px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none !important; animation:none !important}}
+</style>
+
+<div class="wrap">
+
+<header class="masthead">
+  <p class="eyebrow">VCS 3908 &middot; ACM0022 &middot; Inegol Integrated Solid Waste Storage and Disposal Facility</p>
+  <h1>Two lanes, one project design document</h1>
+  <p class="standfirst">The same Turkish landfill project, put through this repository&rsquo;s pipeline and through the portable Codex workspace. Five questions, answered with figures that were actually measured &mdash; and <strong>marked plainly where nothing was measured at all</strong>. Each question ends with one thing you can run to see it happen for yourself.</p>
+  <dl class="ledger">
+    <div><dt>Sections drafted</dt><dd>36 of 36 &mdash; both repo runs</dd></div>
+    <div><dt>Pages packaged</dt><dd>560 &mdash; workspace run</dd></div>
+    <div><dt>Writing stage executed</dt><dd class="zero">Repo yes &middot; Workspace no</dd></div>
+    <div><dt>Written by a real model</dt><dd class="zero">Neither lane</dd></div>
+  </dl>
+</header>
+
+<section class="correction">
+  <p class="eyebrow">Start here &mdash; this is what went wrong last time</p>
+  <p>The previous walkthrough scored these two tracks head-to-head across 13 steps and four axes, as though they were two ways of doing one job. <strong>They are not.</strong> One writes a project design document from a form. The other rebuilds a package around a project design document that already exists. Scoring them against each other step by step produces a number that means nothing, which is why it read as confusing rather than clarifying.</p>
+  <p>Everything below compares them on what they demand from you and what they hand back &mdash; not on who wins.</p>
+  <div class="defs">
+    <div class="a"><b>LANE A &mdash; REPO PIPELINE</b><p>An author. You fill in a structured form; it retrieves precedent from a corpus of registered PDDs, computes the emissions numbers itself, and writes 36 sections of new prose.</p></div>
+    <div class="b"><b>LANE B &mdash; PORTABLE WORKSPACE</b><p>A preserver. You hand it the project&rsquo;s real files, including a finished 139-page PDD; it re-lays them into the current Verra template and packages every source page and calculation as hashed evidence.</p></div>
+  </div>
+</section>
+
+<div class="legend">
+  <span>Evidence grade</span>
+  <em><span class="stamp m">Measured</span> ran on this machine, figure captured</em>
+  <em><span class="stamp d">Documented</span> described in the workspace&rsquo;s own process file, never executed here</em>
+  <em><span class="stamp n">Not run</span> no evidence exists yet</em>
+</div>
+
+<main>
+
+<article class="q">
+  <div class="qhead"><span class="qnum">Q1</span><h2>What do I have to hand over before anything starts?</h2></div>
+  <div class="lanes">
+    <div class="lane lane-a-col">
+      <p class="lane-id">Lane A &mdash; Repo pipeline</p>
+      <p class="answer">One structured form, filled in by someone who already knows the project cold. It will not read your PDFs.</p>
+      <div class="figs">
+        <div class="row"><span class="k">Values a person types in</span><span class="v">180</span></div>
+        <div class="row"><span class="k">Groups they sit in</span><span class="v">10</span><p class="note">Heaviest by far: <b>monitoring, 68 values</b>. Then location 29, technology 25, project 15, applicability 15, quantification 9.</p></div>
+        <div class="row"><span class="k">The form itself</span><span class="v">219 lines</span><p class="note"><span class="path">configs/demo/inegol_project_input.yaml</span></p></div>
+        <div class="row"><span class="k">Existing documents accepted</span><span class="v crit">None</span><span class="stamp m">Measured</span></div>
+      </div>
+    </div>
+    <div class="lane lane-b-col">
+      <p class="lane-id">Lane B &mdash; Portable workspace</p>
+      <p class="answer">The project&rsquo;s files exactly as they already are &mdash; including a finished, registered PDD. No form to fill.</p>
+      <div class="figs">
+        <div class="row"><span class="k">Files taken in and hashed</span><span class="v">14</span></div>
+        <div class="row"><span class="k">Formats accepted</span><span class="v">PDF, XLSX, DOCX&hellip;</span><p class="note">Approval letters, deeds, the ER calculation workbook, the IRR model, the CPA &mdash; untouched originals.</p></div>
+        <div class="row"><span class="k">Source PDD it starts from</span><span class="v">139 pages</span><span class="stamp m">Measured</span></div>
+        <div class="row"><span class="k">Works without an existing PDD</span><span class="v crit">No</span><p class="note">That source document is the spine of the entire run.</p></div>
+      </div>
+    </div>
+  </div>
+  <p class="sowhat"><b>So what</b>Lane A asks for structured knowledge that may not be written down anywhere. Lane B asks for a document you may not have yet. That single difference decides which lane a given project can even use, before any question of quality arises.</p>
+  <div class="run">
+    <div class="run-head"><span>Run it for real</span><label class="donebox" for="done-1"><input type="checkbox" id="done-1"> marked as run</label></div>
+    <div class="run-body">
+      <p>Paste this into your Claude Code terminal in <span class="path">pdd-auto</span>. It opens the actual form and sorts the 180 values by how hard each one is to find.</p>
+      <pre class="cmd" id="cmd-1">Show me the Inegol input form. List all 180 values grouped by section, and split them into three piles: values I already know, values someone has to dig out of a document, and values that are really an engineering assumption.</pre>
+      <div class="run-actions"><button type="button" class="copy" data-cmd="cmd-1">Copy instruction</button></div>
+      <p class="result" id="res-1">Result: not yet run.</p>
+    </div>
+  </div>
+</article>
+
+<article class="q">
+  <div class="qhead"><span class="qnum">Q2</span><h2>How much of my own time does each one actually cost?</h2></div>
+  <div class="lanes">
+    <div class="lane lane-a-col">
+      <p class="lane-id">Lane A &mdash; Repo pipeline</p>
+      <p class="answer">The machine is done in seconds. The human is not: every section came back asking for a person.</p>
+      <div class="figs">
+        <div class="row"><span class="k">Draft, placeholder mode</span><span class="v">4.4 s</span><span class="stamp m">Measured</span></div>
+        <div class="row"><span class="k">Draft, sample-prose mode</span><span class="v">3.4 s</span><span class="stamp m">Measured</span></div>
+        <div class="row"><span class="k">Sections still needing a person</span><span class="v crit">36 of 36</span><p class="note">Placeholder run: all 36 marked <span class="path">needs-domain-review</span>. Sample run: all 36 marked <span class="path">ready-for-human-edit</span>. Neither run produced a section anyone approved.</p></div>
+        <div class="row"><span class="k">Real drafting time</span><span class="v warn">Unknown</span><span class="stamp n">Not run</span></div>
+      </div>
+    </div>
+    <div class="lane lane-b-col">
+      <p class="lane-id">Lane B &mdash; Portable workspace</p>
+      <p class="answer">Under four minutes of machine time &mdash; but that four minutes only re-packages. The writing stage was never switched on.</p>
+      <div class="figs">
+        <div class="row"><span class="k">Packaging run</span><span class="v">224.2 s</span><span class="stamp m">Measured</span></div>
+        <div class="row"><span class="k">Exit code</span><span class="v good">0</span><p class="note">Clean run, 3 min 44 s, on this machine.</p></div>
+        <div class="row"><span class="k">Codex writing stage</span><span class="v warn">Never executed</span><span class="stamp d">Documented</span><p class="note">The 36-slot prose, citations and attestations are described in the workspace&rsquo;s process file. No run of it exists.</p></div>
+        <div class="row"><span class="k">Real authoring time</span><span class="v warn">Unknown</span><span class="stamp n">Not run</span></div>
+      </div>
+    </div>
+  </div>
+  <p class="sowhat"><b>So what</b>Every timing figure on this page measures the cheap part. Both lanes take minutes to do the mechanical work, and both leave the expensive part &mdash; a person, or a real model, actually writing and checking &mdash; entirely unmeasured. Read <i>4 seconds</i> and <i>224 seconds</i> as setup costs, not as the cost of a PDD.</p>
+  <div class="run">
+    <div class="run-head"><span>Run it for real</span><label class="donebox" for="done-2"><input type="checkbox" id="done-2"> marked as run</label></div>
+    <div class="run-body">
+      <p>This re-runs Lane A live and reports the clock, so you are not taking a captured number on trust.</p>
+      <pre class="cmd" id="cmd-2">Re-run the repo lane on Inegol right now, both the placeholder and the sample-prose modes. Give me wall-clock time for each, and how many of the 36 sections came back still needing a person.</pre>
+      <div class="run-actions"><button type="button" class="copy" data-cmd="cmd-2">Copy instruction</button></div>
+      <p class="result" id="res-2">Result: not yet run.</p>
+    </div>
+  </div>
+</article>
+
+<article class="q">
+  <div class="qhead"><span class="qnum">Q3</span><h2>What actually lands on my desk at the end?</h2></div>
+  <div class="lanes">
+    <div class="lane lane-a-col">
+      <p class="lane-id">Lane A &mdash; Repo pipeline</p>
+      <p class="answer">A thin new Word document of 36 sections, plus emissions numbers computed from your inputs.</p>
+      <div class="figs">
+        <div class="row"><span class="k">Prose written, sample mode</span><span class="v">9,791 chars</span><p class="note">Across all 36 sections &mdash; roughly one short paragraph each.</p></div>
+        <div class="row"><span class="k">Prose written, placeholder mode</span><span class="v">20,128 chars</span><p class="note">Longer, but it is scaffolding text, not content.</p></div>
+        <div class="row"><span class="k">Net reductions computed</span><span class="v">50,690 tCO&#8322;e/yr</span><span class="stamp m">Measured</span><p class="note">Baseline 59,336 &minus; project 8,645 &minus; leakage 0. Seven-year total <b>893,441 tCO&#8322;e</b>, from the ACM0022 engine.</p></div>
+        <div class="row"><span class="k">Everything else in the folder</span><span class="v">3 files</span><p class="note">The DOCX, a run manifest, and an assumption-burden report.</p></div>
+      </div>
+    </div>
+    <div class="lane lane-b-col">
+      <p class="lane-id">Lane B &mdash; Portable workspace</p>
+      <p class="answer">A thick preserved package: the document, every source page as an image, every calculation as a hashed PDF.</p>
+      <div class="figs">
+        <div class="row"><span class="k">Final PDF</span><span class="v">560 pages</span><span class="stamp m">Measured</span></div>
+        <div class="row"><span class="k">Final DOCX</span><span class="v">37.4 MB</span><p class="note">Against 0.23 MB for the Lane A document.</p></div>
+        <div class="row"><span class="k">Calculation evidence carried</span><span class="v">420 pages</span><p class="note">ER calculation 52, IRR model 56, CPA 312 &mdash; each converted to PDF and hashed.</p></div>
+        <div class="row"><span class="k">New numbers computed</span><span class="v crit">None</span><span class="stamp d">Documented</span><p class="note">Values are transferred from the existing workbook with cell lineage. Nothing is recalculated.</p></div>
+      </div>
+    </div>
+  </div>
+  <p class="sowhat"><b>So what</b>This is the contrast that makes the two lanes legible: <i>9,791 characters of new writing</i> against <i>560 pages of preserved evidence</i>. Lane A hands you something new and thin that it can defend arithmetically. Lane B hands you something thick and traceable that it did not write and cannot re-derive.</p>
+  <div class="run">
+    <div class="run-head"><span>Run it for real</span><label class="donebox" for="done-3"><input type="checkbox" id="done-3"> marked as run</label></div>
+    <div class="run-body">
+      <p>Numbers about documents are a poor substitute for the documents. This opens both.</p>
+      <pre class="cmd" id="cmd-3">Open both output documents for Inegol - the repo lane DOCX and the workspace 560-page PDF - and show me the first two pages of each, side by side, as images.</pre>
+      <div class="run-actions"><button type="button" class="copy" data-cmd="cmd-3">Copy instruction</button></div>
+      <p class="result" id="res-3">Result: not yet run.</p>
+    </div>
+  </div>
+</article>
+
+<article class="q">
+  <div class="qhead"><span class="qnum">Q4</span><h2>What is wrong with what comes out?</h2></div>
+  <div class="lanes">
+    <div class="lane lane-a-col">
+      <p class="lane-id">Lane A &mdash; Repo pipeline</p>
+      <p class="answer">It caught its own errors and refused to export. That is the system working &mdash; but the errors are real.</p>
+      <div class="figs">
+        <div class="row"><span class="k">Placeholder run, export</span><span class="v crit">Blocked</span><span class="stamp m">Measured</span></div>
+        <div class="row"><span class="k">Hard blocks</span><span class="v crit">2</span><p class="note">Section 1.10 and Section 4.4 report different net tCO&#8322;e; and baseline minus project does not equal the net figure stated in 4.4.</p></div>
+        <div class="row"><span class="k">Advisories</span><span class="v warn">5</span><p class="note">Section 3.3 is missing included sources, excluded sources, temporal boundary and project type. Section 1.10 waste throughput reads 1 tonne against 262,970 in the input.</p></div>
+        <div class="row"><span class="k">Corpus paragraphs reachable</span><span class="v warn">891 of 2,545</span><p class="note">13 documents indexed, 4 of them unreachable. Retrieval is drawing on roughly a third of what was ingested.</p></div>
+        <div class="row"><span class="k">Quality judge</span><span class="v warn">Did not run</span><span class="stamp n">Not run</span></div>
+      </div>
+    </div>
+    <div class="lane lane-b-col">
+      <p class="lane-id">Lane B &mdash; Portable workspace</p>
+      <p class="answer">Nothing failed, because the part that could fail was never turned on.</p>
+      <div class="figs">
+        <div class="row"><span class="k">Prose, citations, attestations</span><span class="v crit">Not generated</span><span class="stamp d">Documented</span></div>
+        <div class="row"><span class="k">Template version mismatch</span><span class="v warn">v4.2 &rarr; v4.4</span><p class="note">The source PDD declares VCS v4.2; the template applied is v4.4. Migrating between them needs a validator&rsquo;s judgement, not a script&rsquo;s.</p></div>
+        <div class="row"><span class="k">Automatic checks on the output</span><span class="v crit">None</span><p class="note">There is no equivalent of Lane A&rsquo;s export gate. A wrong number would package cleanly.</p></div>
+        <div class="row"><span class="k">Packaging integrity</span><span class="v good">Hash-verified</span><span class="stamp m">Measured</span><p class="note">Every input file carries a SHA-256 in the run manifest.</p></div>
+      </div>
+    </div>
+  </div>
+  <p class="sowhat"><b>So what</b>The two lanes fail in opposite directions. Lane A is noisy and self-blocking &mdash; it stopped its own export over an arithmetic contradiction. Lane B is quiet &mdash; it will package a wrong figure without complaint, because it never inspects the content it carries. Noisy failure is far easier to defend to a validation body than silent success.</p>
+  <div class="run">
+    <div class="run-head"><span>Run it for real</span><label class="donebox" for="done-4"><input type="checkbox" id="done-4"> marked as run</label></div>
+    <div class="run-body">
+      <p>The blockers above are quoted in system language. This turns them into sentences.</p>
+      <pre class="cmd" id="cmd-4">Run the review and export gate on both Inegol repo runs, then explain every blocker and advisory to me in plain English - what is wrong, and what a person would have to do to clear it. No jargon.</pre>
+      <div class="run-actions"><button type="button" class="copy" data-cmd="cmd-4">Copy instruction</button></div>
+      <p class="result" id="res-4">Result: not yet run.</p>
+    </div>
+  </div>
+</article>
+
+<article class="q">
+  <div class="qhead"><span class="qnum">Q5</span><h2>Which one do I reach for, and when?</h2></div>
+  <div class="lanes">
+    <div class="lane lane-a-col">
+      <p class="lane-id">Lane A &mdash; Repo pipeline</p>
+      <p class="answer">Reach for it when the document does not exist yet and the numbers have to be defended.</p>
+      <ul class="usewhen">
+        <li><b>A new project</b> with no registered PDD to start from.</li>
+        <li><b>Numbers you must show your working for</b> &mdash; it computes them, then cross-checks them across sections and blocks the export when they disagree.</li>
+        <li><b>Repeat projects in one family</b>, where filling the form once pays off across many runs.</li>
+        <li>Not for: <b>a project whose PDD already exists</b> and only needs re-issuing.</li>
+      </ul>
+    </div>
+    <div class="lane lane-b-col">
+      <p class="lane-id">Lane B &mdash; Portable workspace</p>
+      <p class="answer">Reach for it when the document exists and the job is to re-issue it without losing the evidence.</p>
+      <ul class="usewhen">
+        <li><b>A registered project</b> moving to a newer Verra template.</li>
+        <li><b>Evidence-heavy submissions</b> where every source page and workbook must travel with the document.</li>
+        <li><b>Mixed piles of input files</b> nobody has time to transcribe into a form.</li>
+        <li>Not for: <b>a project with no PDD</b>, or one whose emissions numbers need re-deriving.</li>
+      </ul>
+    </div>
+  </div>
+  <p class="sowhat"><b>So what</b>For Inegol specifically &mdash; a registered project with a 139-page PDD already on file &mdash; Lane B matches the job. Lane A&rsquo;s value on Inegol is as a checker: it independently computed 893,441 tCO&#8322;e over seven years, which is a number worth putting beside the registered one. The useful question was never which lane wins. It is whether Lane A&rsquo;s arithmetic agrees with the document Lane B is preserving.</p>
+  <div class="run">
+    <div class="run-head"><span>The run that would settle it</span><label class="donebox" for="done-5"><input type="checkbox" id="done-5"> marked as run</label></div>
+    <div class="run-body">
+      <p>Everything above compares two lanes, neither of which has written a real sentence. One run changes that.</p>
+      <pre class="cmd" id="cmd-5">Draft Inegol section 4.1 with a real model under a $5 cap, then show me that section next to the sample-prose version and next to what the registered PDD says.</pre>
+      <div class="run-actions"><button type="button" class="copy" data-cmd="cmd-5">Copy instruction</button></div>
+      <p class="needs">Needs first: an OPENAI_API_KEY or ANTHROPIC_API_KEY plus PDD_MAX_COST_USD in a .env file at the repo root. Neither is present today &mdash; which is exactly why every prose figure on this page is placeholder or sample text.</p>
+      <p class="result" id="res-5">Result: not yet run.</p>
+    </div>
+  </div>
+</article>
+
+</main>
+
+<footer>
+  <h3>Where these figures come from</h3>
+  <p>Lane A figures and the workspace packaging figures are read from <span class="path">reports/walkthrough/inegol-evidence.json</span>, captured 2026-09-08 at commit <span class="path">6731685</span> on Python 3.13.12 / Windows 11. Input-form counts are read directly from <span class="path">configs/demo/inegol_project_input.yaml</span>. Output file sizes are read from the packages under <span class="path">reports/demo-packages/</span> and <span class="path">reports/review-packages/</span>.</p>
+  <p>Anything stamped Documented comes from the workspace&rsquo;s own PDD_CREATION_PROCESS.md and was never executed here. Anything stamped Not run has no evidence at all. No figure on this page is estimated.</p>
+</footer>
+
+</div>
+
+<script>
+(function(){
+  var LS = "inegol-bench-v1";
+  function load(){ try { return JSON.parse(localStorage.getItem(LS) || "{}"); } catch(e){ return {}; } }
+  function save(s){ try { localStorage.setItem(LS, JSON.stringify(s)); } catch(e){} }
+  var state = load();
+
+  Array.prototype.forEach.call(document.querySelectorAll(".donebox input"), function(box){
+    if (state[box.id]) { box.checked = true; }
+    box.addEventListener("change", function(){
+      state[box.id] = box.checked;
+      save(state);
+    });
+  });
+
+  Array.prototype.forEach.call(document.querySelectorAll("button.copy"), function(btn){
+    var label = btn.textContent;
+    btn.addEventListener("click", function(){
+      var pre = document.getElementById(btn.getAttribute("data-cmd"));
+      if (!pre) { return; }
+      function done(msg, ms){
+        btn.textContent = msg;
+        setTimeout(function(){ btn.textContent = label; }, ms);
+      }
+      function fallback(){
+        try {
+          var r = document.createRange();
+          r.selectNodeContents(pre);
+          var s = window.getSelection();
+          s.removeAllRanges();
+          s.addRange(r);
+          done("Selected — press Ctrl+C", 2600);
+        } catch(e){ done("Select the text above", 2600); }
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(pre.textContent).then(function(){ done("Copied", 1600); }, fallback);
+      } else {
+        fallback();
+      }
+    });
+  });
+})();
+</script>

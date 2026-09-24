@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en" data-scheme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Field test report: Tinh's September portable PDD package</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='4' fill='%23161A18'/%3E%3Cpath d='M8 22V10h7.5a4 4 0 0 1 0 8H11v4z' fill='%23F4F6F3'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ground:#F4F6F3; --surface:#FFFFFF; --surface-2:#EDF0EC; --recess:#E7EBE6;
+  --ink:#161A18; --muted:#5C6663; --faint:#828C88;
+  --rule:#DBE0DA; --rule-strong:#C2CAC1;
+  --accent:#2E5A7D; --accent-2:#8C5236;
+  --critical:#A32B2B; --caution:#8A6410; --ok:#2F6B4F;
+  --critical-bg:#F6E8E6; --caution-bg:#F5EEDC; --ok-bg:#E4EFE8;
+  --display:"Archivo",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --body:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --mono:"IBM Plex Mono",ui-monospace,"Cascadia Mono",Consolas,monospace;
+  --shadow:0 1px 2px rgba(22,26,24,.06),0 8px 24px -18px rgba(22,26,24,.35);
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --ground:#141816; --surface:#1B211E; --surface-2:#222A26; --recess:#1F2622;
+    --ink:#E9EDE8; --muted:#A2ADA6; --faint:#7D8880;
+    --rule:#2C3531; --rule-strong:#3D4741;
+    --accent:#8FB6D4; --accent-2:#C99274;
+    --critical:#E08B84; --caution:#D2B267; --ok:#7EC39C;
+    --critical-bg:#33211F; --caution-bg:#312A18; --ok-bg:#1B2C23;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 12px 28px -20px rgba(0,0,0,.8);
+  }
+}
+*{box-sizing:border-box}
+html{font-size:17px;scroll-behavior:smooth}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:var(--body); font-size:1rem; line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1100px;margin:0 auto;padding:0 22px 90px}
+a{color:var(--accent)}
+a:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* masthead */
+header.mast{padding:54px 0 30px;border-bottom:2px solid var(--ink)}
+.eyebrow{
+  font-family:var(--display);font-weight:600;font-size:.7rem;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--muted);margin:0 0 14px
+}
+h1{
+  font-family:var(--display);font-weight:700;font-size:clamp(1.9rem,4.4vw,2.9rem);
+  line-height:1.08;letter-spacing:-.02em;margin:0 0 14px;text-wrap:balance;max-width:22ch
+}
+.standfirst{font-size:1.12rem;color:var(--muted);max-width:64ch;margin:0 0 22px}
+.metabar{display:flex;flex-wrap:wrap;gap:8px}
+.chip{
+  font-family:var(--display);font-size:.72rem;font-weight:600;letter-spacing:.04em;
+  padding:4px 10px;border:1px solid var(--rule-strong);border-radius:999px;
+  background:var(--surface);color:var(--muted);white-space:nowrap
+}
+.chip.stop{border-color:var(--critical);color:var(--critical);background:var(--critical-bg)}
+.chip.pass{border-color:var(--ok);color:var(--ok);background:var(--ok-bg)}
+
+section{padding:44px 0 6px;border-bottom:1px solid var(--rule)}
+section:last-of-type{border-bottom:0}
+h2{
+  font-family:var(--display);font-weight:600;font-size:1.32rem;letter-spacing:-.01em;
+  margin:0 0 6px
+}
+h3{font-family:var(--display);font-weight:600;font-size:1rem;margin:26px 0 8px}
+.lede{color:var(--muted);max-width:66ch;margin:.2rem 0 20px}
+p{max-width:68ch}
+ul,ol{max-width:68ch;padding-left:1.15rem}
+li{margin:.3rem 0}
+
+/* kpi strip */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(158px,1fr));gap:12px;margin:26px 0 4px}
+.kpi{background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:14px 15px;box-shadow:var(--shadow)}
+.kpi .n{font-family:var(--display);font-weight:700;font-size:1.5rem;letter-spacing:-.02em;display:block;font-variant-numeric:tabular-nums}
+.kpi .l{font-size:.78rem;color:var(--muted);font-family:var(--display);font-weight:500}
+.kpi.warn .n{color:var(--critical)}
+.kpi.good .n{color:var(--ok)}
+
+/* verdict */
+.verdict{
+  margin:26px 0 0;padding:18px 20px;background:var(--surface);
+  border:1px solid var(--rule);border-left:4px solid var(--critical);border-radius:6px
+}
+.verdict h3{margin:0 0 6px;color:var(--critical);font-size:.95rem}
+.verdict p{margin:0;max-width:74ch}
+
+/* timeline */
+.timeline{list-style:none;margin:24px 0 0;padding:0 0 0 26px;border-left:2px solid var(--rule-strong)}
+.timeline li{position:relative;padding:0 0 22px 0;max-width:none}
+.timeline li::before{
+  content:"";position:absolute;left:-33px;top:.42rem;width:11px;height:11px;border-radius:50%;
+  background:var(--surface);border:2px solid var(--rule-strong)
+}
+.timeline li.ok::before{background:var(--ok);border-color:var(--ok)}
+.timeline li.stop::before{background:var(--critical);border-color:var(--critical)}
+.timeline .when{font-family:var(--mono);font-size:.74rem;color:var(--faint);letter-spacing:.02em}
+.timeline .what{font-family:var(--display);font-weight:600;font-size:.98rem;margin:1px 0 2px}
+.timeline .how{color:var(--muted);font-size:.93rem;max-width:74ch}
+.timeline .how code{font-family:var(--mono);font-size:.82rem}
+
+/* tables */
+.tablewrap{overflow-x:auto;margin:18px 0 6px;border:1px solid var(--rule);border-radius:6px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:.86rem;font-family:var(--display);min-width:560px}
+caption{caption-side:bottom;text-align:left;font-size:.78rem;color:var(--faint);padding:8px 10px;font-family:var(--display)}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--rule);vertical-align:top}
+thead th{background:var(--surface-2);font-weight:600;font-size:.76rem;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);position:sticky;top:0}
+tbody tr:last-child td{border-bottom:0}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;font-family:var(--mono);font-size:.8rem}
+code,.mono{font-family:var(--mono);font-size:.82rem;overflow-wrap:anywhere}
+
+/* status pills */
+.pill{display:inline-block;font-family:var(--display);font-size:.7rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border-radius:999px;white-space:nowrap}
+.pill.ok{background:var(--ok-bg);color:var(--ok);border:1px solid var(--ok)}
+.pill.bad{background:var(--critical-bg);color:var(--critical);border:1px solid var(--critical)}
+.pill.warn{background:var(--caution-bg);color:var(--caution);border:1px solid var(--caution)}
+.pill.neutral{background:var(--recess);color:var(--muted);border:1px solid var(--rule-strong)}
+
+/* capability chain */
+figure{margin:22px 0;padding:0}
+.chain{display:flex;flex-wrap:wrap;align-items:stretch;gap:10px}
+.node{
+  flex:1 1 150px;min-width:140px;background:var(--surface);border:1px solid var(--rule);
+  border-radius:6px;padding:12px 13px;box-shadow:var(--shadow)
+}
+.node .step{font-family:var(--mono);font-size:.7rem;color:var(--faint);display:block;margin-bottom:4px}
+.node .name{font-family:var(--display);font-weight:600;font-size:.88rem;display:block;margin-bottom:6px}
+.node .det{font-size:.8rem;color:var(--muted)}
+.arrow{align-self:center;color:var(--rule-strong);font-size:1.2rem;padding:0 2px}
+figcaption{font-size:.82rem;color:var(--faint);margin-top:10px;max-width:70ch}
+
+/* findings */
+.sev{display:grid;gap:14px;margin:22px 0 8px;grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+.find{background:var(--surface);border:1px solid var(--rule);border-left-width:4px;border-radius:6px;padding:15px 17px;box-shadow:var(--shadow);min-width:0}
+.find.b{border-left-color:var(--critical)}
+.find.d{border-left-color:var(--caution)}
+.find.p{border-left-color:var(--faint)}
+.find .id{font-family:var(--mono);font-size:.72rem;color:var(--faint);letter-spacing:.06em}
+.find h4{font-family:var(--display);font-weight:600;font-size:.96rem;margin:3px 0 8px;line-height:1.3}
+.find p{margin:0 0 8px;font-size:.88rem;color:var(--ink);max-width:none}
+.find .ev{font-size:.8rem;color:var(--muted);border-top:1px dashed var(--rule-strong);padding-top:8px;margin:0}
+.find .ev code{font-family:var(--mono);font-size:.76rem;color:var(--ink)}
+.tag{font-family:var(--display);font-size:.68rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
+.tag.b{color:var(--critical)} .tag.d{color:var(--caution)} .tag.p{color:var(--muted)}
+
+/* bars */
+.bars{margin:20px 0 6px;display:grid;gap:11px}
+.bar{display:grid;grid-template-columns:minmax(168px,240px) 1fr auto;gap:12px;align-items:center;font-family:var(--display);font-size:.82rem}
+.bar .track{height:12px;background:var(--recess);border-radius:3px;overflow:hidden}
+.bar .fill{height:100%;background:var(--accent);border-radius:3px}
+.bar .fill.b2{background:var(--accent-2)}
+.bar .v{font-family:var(--mono);font-size:.78rem;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+
+/* files / commands */
+pre{background:var(--surface-2);border:1px solid var(--rule);border-radius:6px;padding:14px 16px;overflow-x:auto;font-family:var(--mono);font-size:.79rem;line-height:1.5;margin:14px 0}
+details{background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:12px 16px;margin:14px 0}
+summary{font-family:var(--display);font-weight:600;font-size:.88rem;cursor:pointer}
+details > *:not(summary){margin-top:10px}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-family:var(--display);font-size:.78rem;color:var(--muted);margin:6px 0 0}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.swatch{width:10px;height:10px;border-radius:2px;display:inline-block}
+footer{padding:36px 0 0;color:var(--muted);font-size:.84rem;font-family:var(--display)}
+footer .rule{height:1px;background:var(--rule);margin:0 0 18px}
+@media (max-width:640px){
+  .bar{grid-template-columns:1fr;gap:4px}
+  .arrow{display:none}
+}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="mast">
+  <p class="eyebrow">pdd-auto &middot; field test &middot; 21 September 2026</p>
+  <h1>Tinh's September portable PDD package, run end to end</h1>
+  <p class="standfirst">A test-demo of the PDD_v1 package against a real Verra project, to find where a staff member would get stuck. It got through environment setup and project inspection, then stopped on a ChatGPT quota wall before authoring.</p>
+  <div class="metabar">
+    <span class="chip">source: email 1a0b1cba65572781, 18 Sep 2026 06:54</span>
+    <span class="chip">package: 382 files, 674,251,757 B</span>
+    <span class="chip">platform tested: Codex CLI 0.154.0 (gpt-5.5)</span>
+    <span class="chip stop">stopped at Message 3</span>
+    <span class="chip">17 findings</span>
+  </div>
+</header>
+
+<section id="summary">
+  <h2>What the run produced</h2>
+  <p class="lede">Every number below comes from a command that actually ran. Nothing here is a projection.</p>
+  <div class="kpis">
+    <div class="kpi warn"><span class="n">17</span><span class="l">findings (3 blockers)</span></div>
+    <div class="kpi good"><span class="n">5/5</span><span class="l">capability checks pass</span></div>
+    <div class="kpi"><span class="n">390</span><span class="l">evidence pages surveyed</span></div>
+    <div class="kpi"><span class="n">708,068</span><span class="l">chars of extractable text</span></div>
+    <div class="kpi"><span class="n">74 + 36</span><span class="l">template headings + tables</span></div>
+    <div class="kpi warn"><span class="n">225,737</span><span class="l">tokens for setup only</span></div>
+  </div>
+
+  <div class="verdict">
+    <h3>Where it stopped, and why that matters</h3>
+    <p>Codex ran Message 1 in 13 minutes 46 seconds and reported <span class="mono">Not ready</span>, then a corrected resume proved the two environment complaints false in 29 seconds: <span class="mono">PACKAGES OK</span> and <span class="mono">pdftoppm version 25.07.0</span>. Immediately after, the account hit its usage ceiling: <span class="mono">You've hit your usage limit ... try again at Oct 21st, 2026 5:19 PM</span>. One setup turn consumed the whole Codex allowance, so a free or Plus ChatGPT account cannot carry this workflow to a finished PDD.</p>
+  </div>
+</section>
+
+<section id="timeline">
+  <h2>Run log</h2>
+  <p class="lede">Seven stops, in order, with the wall-clock times where they were observed.</p>
+  <ol class="timeline">
+    <li class="ok">
+      <span class="when">16:49 to 16:51</span>
+      <div class="what">Download and extract the package</div>
+      <div class="how">674,251,757 bytes pulled from Drive, matching the Drive <code>size</code> field exactly; <code>testzip</code> clean; 382 entries extracted to 699 MB. Two setup guides downloaded alongside.</div>
+    </li>
+    <li class="ok">
+      <span class="when">16:52 to 17:12</span>
+      <div class="what">Prerequisites: Python, LibreOffice, Poppler</div>
+      <div class="how">Python 3.14.2 via <code>py -3</code>, venv built, four runtime packages installed clean on cp314 wheels. LibreOffice present at its default path. Poppler missing, installed through the documented <code>winget</code> route at 25.07.0.</div>
+    </li>
+    <li class="ok">
+      <span class="when">17:12</span>
+      <div class="what">Package self-checks</div>
+      <div class="how">Three test suites pass (12, 10 and 26 tests). The prerequisite check and the audit both fail on one cause, the missing PDF page renderer, and both flip to OK once Poppler is on PATH.</div>
+    </li>
+    <li class="ok">
+      <span class="when">17:13 to 17:16</span>
+      <div class="what">Capability chain, the thing Message 1 asks for</div>
+      <div class="how">Read a workspace file, wrote a DOCX with a real editable table (35,567 B), rendered it to PDF with LibreOffice, read the PDF back with pypdf, rendered page 1 to PNG with Poppler. 5 of 5 pass.</div>
+    </li>
+    <li class="stop">
+      <span class="when">17:19 to 17:33 (13m 46s)</span>
+      <div class="what">Message 1 on Codex, verdict Not ready</div>
+      <div class="how">The agent read the instruction set, ran the checks, and produced a diagnostic document. Its own environment diagnosis was wrong and its workaround was worse than the tools it replaced. Ran to completion, exit 0.</div>
+    </li>
+    <li class="stop">
+      <span class="when">17:34 and 17:35</span>
+      <div class="what">Two resume attempts</div>
+      <div class="how">The first died in two seconds on a CLI contract error (exit 2). The second proved the environment correct, then hit the account usage ceiling (exit 1).</div>
+    </li>
+    <li class="ok">
+      <span class="when">17:40 to 17:43</span>
+      <div class="what">Message 2, project inspection, on the fallback agent</div>
+      <div class="how">Inspection only, on Inegol / VCS 3908. 14 inputs inventoried and hashed, 11 PDFs text-surveyed, 3 workbooks counted read-only, template requirement surface extracted, version conflicts documented. No authoring, no recalculation.</div>
+    </li>
+  </ol>
+</section>
+
+<section id="environment">
+  <h2>Environment result</h2>
+  <p class="lede">The package's own checks, before and after the one missing prerequisite was installed.</p>
+  <div class="tablewrap">
+    <table>
+      <caption>All values observed on this machine, 21 September 2026.</caption>
+      <thead><tr><th>Check</th><th>Before</th><th>After fixing Poppler and PATH</th><th>Evidence</th></tr></thead>
+      <tbody>
+        <tr><td>Python interpreter</td><td><span class="pill ok">3.14.2</span></td><td>unchanged</td><td class="mono">py -3 --version</td></tr>
+        <tr><td>Runtime packages</td><td><span class="pill ok">import ok</span></td><td>unchanged</td><td class="mono">docx, pypdf, reportlab, openpyxl</td></tr>
+        <tr><td>LibreOffice</td><td><span class="pill warn">found, not on PATH</span></td><td>auto-located by the script</td><td class="mono">C:\Program Files\LibreOffice\program\soffice.exe</td></tr>
+        <tr><td>Poppler <code>pdftoppm</code></td><td><span class="pill bad">MISSING</span></td><td><span class="pill ok">25.07.0</span></td><td class="mono">winget install oschwartz10612.Poppler</td></tr>
+        <tr><td><code>check_portable_pdd.py</code></td><td><span class="pill bad">FAILED (exit 1)</span></td><td><span class="pill ok">PORTABLE CHECK: OK (exit 0)</span></td><td class="mono">scripts/check_portable_pdd.py</td></tr>
+        <tr><td><code>audit_portable_pdd.py</code></td><td><span class="pill bad">REVIEW_REQUIRED (exit 1)</span></td><td><span class="pill ok">OK (exit 0)</span></td><td class="mono">docs/PORTABILITY_AUDIT.json</td></tr>
+        <tr><td>Instruction bundle tests</td><td><span class="pill ok">12 tests OK</span></td><td>unchanged</td><td class="mono">test_portable_instructions.py</td></tr>
+        <tr><td>Portable tool tests</td><td><span class="pill ok">10 tests OK</span></td><td>unchanged</td><td class="mono">test_portable_tools.py</td></tr>
+        <tr><td>Prompt contract tests</td><td><span class="pill ok">26 tests OK</span></td><td>unchanged</td><td class="mono">test_prompt_contract.py</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Capability chain</h3>
+  <figure role="img" aria-label="Five capability checks in sequence, all passing: workspace file read, Word write, PDF render, PDF read, page image.">
+    <div class="chain">
+      <div class="node"><span class="step">01</span><span class="name">Read workspace</span><span class="det">PDD_PORTABLE.md, 9,371 chars</span></div>
+      <span class="arrow">&rarr;</span>
+      <div class="node"><span class="step">02</span><span class="name">Write Word</span><span class="det">python-docx, editable table, 35,567 B</span></div>
+      <span class="arrow">&rarr;</span>
+      <div class="node"><span class="step">03</span><span class="name">Render PDF</span><span class="det">LibreOffice headless, 1 page</span></div>
+      <span class="arrow">&rarr;</span>
+      <div class="node"><span class="step">04</span><span class="name">Read PDF</span><span class="det">pypdf, page count verified</span></div>
+      <span class="arrow">&rarr;</span>
+      <div class="node"><span class="step">05</span><span class="name">View page</span><span class="det">Poppler 150 dpi, page-1.png</span></div>
+    </div>
+    <figcaption>The whole chain passes once Poppler is on PATH. This is the test the package relies on to decide a machine is ready to author.</figcaption>
+  </figure>
+</section>
+
+<section id="platforms">
+  <h2>Platform routes</h2>
+  <p class="lede">The guide documents desktop apps. What was actually available on this machine is CLIs, and each route failed or succeeded for a different reason.</p>
+  <div class="tablewrap">
+    <table>
+      <caption>Route outcomes are independent. Fixing one does not fix another.</caption>
+      <thead><tr><th>Route</th><th>Result</th><th>Evidence</th></tr></thead>
+      <tbody>
+        <tr><td>Codex CLI, machine default</td><td><span class="pill bad">died before the prompt</span> model pinned to <code>muse-spark-1.3-contributor</code> via provider <code>opencode-go</code>, key absent</td><td class="mono">Missing environment variable: OPENCODE_GO_API_KEY</td></tr>
+        <tr><td>Codex CLI, <code>gpt-5-codex</code></td><td><span class="pill bad">rejected</span> not available on a ChatGPT account</td><td class="mono">The 'gpt-5-codex' model is not supported when using Codex with a ChatGPT account</td></tr>
+        <tr><td>Codex CLI, <code>gpt-5.4</code></td><td><span class="pill bad">rejected</span> same reason</td><td class="mono">The 'gpt-5.4' model is not supported ...</td></tr>
+        <tr><td>Codex CLI, <code>gpt-5.5</code></td><td><span class="pill ok">works, then quota wall</span> Message 1 completed, account ceiling reached</td><td class="mono">try again at Oct 21st, 2026 5:19 PM</td></tr>
+        <tr><td><code>codex exec resume -s ...</code></td><td><span class="pill bad">exit 2</span> no such flag; sandbox only settable through config</td><td class="mono">error: unexpected argument '-s' found</td></tr>
+        <tr><td>Claude Code 2.1.278</td><td><span class="pill neutral">available, not used</span></td><td class="mono">claude --version</td></tr>
+        <tr><td>Gemini CLI 0.42.0</td><td><span class="pill neutral">available, not used</span></td><td class="mono">gemini --version</td></tr>
+        <tr><td>Antigravity</td><td><span class="pill bad">not installed</span></td><td class="mono">command not found</td></tr>
+        <tr><td>Fallback agent, OTHER_AGENTS route</td><td><span class="pill ok">used for Message 2</span> no external quota</td><td class="mono">docs/agents/OTHER_AGENTS.md</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="findings">
+  <h2>Findings</h2>
+  <p class="lede">Three blockers, eight defects in the package or guide, six smaller items. Each one is something a staff member would hit.</p>
+  <div class="legend">
+    <span><i class="swatch" style="background:var(--critical)"></i>Blocker</span>
+    <span><i class="swatch" style="background:var(--caution)"></i>Defect</span>
+    <span><i class="swatch" style="background:var(--faint)"></i>Polish</span>
+  </div>
+
+  <h3>Blockers</h3>
+  <div class="sev">
+    <article class="find b">
+      <div class="id">B1</div>
+      <h4>The account ceiling is real, and one setup turn spends it</h4>
+      <p>Message 1 consumed the entire Codex allowance. Nothing in the package or the guide sizes the account requirement. Tinh's August email said a free Codex version is fine, which this run contradicts.</p>
+      <p class="ev"><code>225,737 tokens used</code>; <code>You've hit your usage limit ... Oct 21st, 2026 5:19 PM</code></p>
+    </article>
+    <article class="find b">
+      <div class="id">B2</div>
+      <h4>Two evidence files cannot be read as text, and the package ships no OCR</h4>
+      <p>The registration deed is 7 pages of scan with zero extractable characters, and the Inegol deed is 5 of 6 pages scan-only. <code>requirements-portable.txt</code> lists four packages, none of them OCR. The only route is Poppler page images plus an agent that can see images, yet no document states that image capability is mandatory.</p>
+      <p class="ev">Verified the route works: a 150 dpi render of the deed was legible and yielded project name, VCS ID 3908 and the three parties.</p>
+    </article>
+    <article class="find b">
+      <div class="id">B3</div>
+      <h4>September dropped the bundled Poppler that August shipped</h4>
+      <p>The August package carried <code>tools/poppler/Library/bin/pdftoppm.exe</code> at version 26.07.0. September has no <code>tools/</code> folder and neither manifest declares one, so the renderer is now an install step. Worse, the agent found the August copy in a different workspace on this machine and nearly adopted it as this workspace's tool.</p>
+      <p class="ev"><code>data/runs/tinh-20260827/ws/.../tools/poppler/</code> exists; <code>ref/.../PDD_v1/</code> has no tools directory</p>
+    </article>
+  </div>
+
+  <h3>Defects</h3>
+  <div class="sev">
+    <article class="find d">
+      <div class="id">D1</div>
+      <h4>Installing Poppler does not fix the running shell</h4>
+      <p>The winget install reports success and prints a note to restart the shell. Until then both checks still fail, so an agent that installs and immediately re-checks reports failure with the tool present.</p>
+      <p class="ev"><code>Path environment variable modified; restart your shell to use the new value.</code></p>
+    </article>
+    <article class="find d">
+      <div class="id">D2</div>
+      <h4>The documented <code>soffice --version</code> check hangs and leaves orphan processes</h4>
+      <p>SETUP.md tells the reader to verify LibreOffice by hand. That command returned nothing on this machine and left <code>soffice.exe</code> and <code>soffice.bin</code> running; the agent had to enumerate and force-kill them. The package's own script finds LibreOffice fine without PATH, so the manual check is stricter than the automated one.</p>
+      <p class="ev">Orphans at PIDs 8516 and 8052, killed by the agent</p>
+    </article>
+    <article class="find d">
+      <div class="id">D3</div>
+      <h4>The guide describes an <code>outputs/</code> folder the package does not ship</h4>
+      <p>Messages 2 and 3 ask for an <code>outputs/&lt;run-name&gt;</code> path, and the guide presents outputs as one of the workspace folders alongside inputs and library. The extracted package has no such directory, so the first run has to invent it.</p>
+      <p class="ev">Top level after extraction: inputs, library, process, scripts, docs, no outputs</p>
+    </article>
+    <article class="find d">
+      <div class="id">D4</div>
+      <h4><code>inputs/</code> mixes evidence with non-project material</h4>
+      <p>The guide says the folder must contain only the selected project, then the package ships project evidence beside <code>official_templates/</code> and <code>pdd_examples/</code> under the same parent. What counts as one project folder is not defined on first contact.</p>
+      <p class="ev"><code>inputs/fresh_registry/</code>, <code>inputs/official_templates/</code>, <code>inputs/pdd_examples/</code></p>
+    </article>
+    <article class="find d">
+      <div class="id">D5</div>
+      <h4>Evidence folder names break naive command lines</h4>
+      <p>Names carry spaces, an ampersand and en dashes. Nothing in the package warns about quoting, and a CLI agent that interpolates a path unquoted will fail or, worse, target part of a name.</p>
+      <p class="ev"><code>documents-CO2 UTILIZATION IN CONCRETE - REMOVALS &amp; REDUCTIONS - CarbonCure - Asia #1/</code></p>
+    </article>
+    <article class="find d">
+      <div class="id">D6</div>
+      <h4>Version markers collide across document types, and the needed template is absent</h4>
+      <p>One evidence set contains template v4.2, "VCS Version 4.2", Standard v4.7 and v4.0, exemption letters citing Standard v4.3, v4.4 and v4.6, and the deed form's own v4.2 and v4.1. The workspace ships only the v4.4 template, while the example project needs v4.2, so the documented example path can only run with a migration the package explicitly warns not to assume.</p>
+      <p class="ev">See the version matrix below</p>
+    </article>
+    <article class="find d">
+      <div class="id">D7</div>
+      <h4>The reading load is unbounded and nobody says so</h4>
+      <p>Reading every selected input means 390 pages and 708,068 characters of text, plus 6,068 formula cells and 51,452 cached cells across three workbooks. That does not fit one session, and the only mitigation the contract offers is a progress file and a resume, which the guide never surfaces. Nothing bounds what may go into <code>inputs/</code>.</p>
+      <p class="ev">Per-file counts below</p>
+    </article>
+    <article class="find d">
+      <div class="id">D8</div>
+      <h4>The requirement surface is nearly three times what staff will expect</h4>
+      <p>The shipped template yields 74 headings and 36 tables. The guide gives no scale indicator, and earlier internal reporting on this package used "36 sections", which is the table count, not the requirement count.</p>
+      <p class="ev">Template v4.4-FINAL2, 299,989 bytes, 74 Heading styles, 36 tables</p>
+    </article>
+  </div>
+
+  <h3>Polish</h3>
+  <div class="sev">
+    <article class="find p">
+      <div class="id">P1</div>
+      <h4>Codex CLI needs a flag the guide does not mention</h4>
+      <p>The workspace is not a git repository, and <code>codex exec</code> refuses to run outside one without <code>--skip-git-repo-check</code>. The guide assumes the desktop app, where this does not arise.</p>
+      <p class="ev"><code>--skip-git-repo-check</code></p>
+    </article>
+    <article class="find p">
+      <div class="id">P2</div>
+      <h4>Sandbox settings cannot be passed to <code>codex exec resume</code></h4>
+      <p>The resume subcommand has no sandbox flag. It has to go through <code>-c sandbox_mode=&quot;...&quot;</code>, which cost a failed attempt.</p>
+      <p class="ev">exit 2, <code>unexpected argument '-s' found</code></p>
+    </article>
+    <article class="find p">
+      <div class="id">P3</div>
+      <h4>A sandbox can block the interpreter the guide tells you to create</h4>
+      <p>Under the stricter sandbox the agent could not execute the venv's base interpreter, concluded the environment was broken, and hand-built a DOCX from raw OOXML through PowerShell instead of using python-docx. The venv was never broken. In fairness, this machine's Codex default is full access, so the strict policy was the tester's choice, but the guide tells staff to expect policy restrictions without naming this mechanism.</p>
+      <p class="ev"><code>Access is denied</code> on <code>...\Programs\Python\Python314\python.exe</code>; same venv printed <code>PACKAGES OK</code> once lifted</p>
+    </article>
+    <article class="find p">
+      <div class="id">P4</div>
+      <h4>The capability test does not require the package's own tooling</h4>
+      <p>Message 1 asks for a diagnostic document but not for it to be produced with python-docx. A hand-assembled OOXML file satisfies the wording, which is how one run declared the demonstration done while the real toolchain was blocked.</p>
+      <p class="ev">Diagnostic DOCX 2,582 B built by concatenating XML</p>
+    </article>
+    <article class="find p">
+      <div class="id">P5</div>
+      <h4>The official template is shipped twice, in two formats</h4>
+      <p><code>library/templates/vcs/</code> holds the DOCX and <code>inputs/official_templates/</code> holds a legacy DOC plus a converted copy. Same nominal version, two locations, no statement of which is authoritative for a run.</p>
+      <p class="ev">VCS-Project-Description-Template-v4.4-FINAL2.docx and VCS_Project_Description_Template_v4.4.doc</p>
+    </article>
+    <article class="find p">
+      <div class="id">P6</div>
+      <h4>The guide's numbering skips a section and mixes units</h4>
+      <p>Headings run "Getting started", then 2 through 13, so section 1 is missing; the text refers to "pages 5 to 7" and "page 8" while the headings are sections. Small, but it makes cross-references unreliable.</p>
+      <p class="ev">PDD set up guide, 13 numbered sections, references to pages 2 and 8</p>
+    </article>
+  </div>
+</section>
+
+<section id="versions">
+  <h2>Version decisions</h2>
+  <p class="lede">The contract requires four separate version decisions. The inspection produced evidence for all four and a clean answer for none.</p>
+  <div class="tablewrap">
+    <table>
+      <caption>Locators are relative to the selected project folder unless stated.</caption>
+      <thead><tr><th>Decision</th><th>What the evidence says</th><th>State</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Official template</td>
+          <td>Workspace ships v4.4-FINAL2 only. Source documents cite "Project Description Template v4.2" repeatedly, in the 2025 Verra review report pages 2 to 5.</td>
+          <td><span class="pill bad">CONFLICT</span></td>
+        </tr>
+        <tr>
+          <td>VCS Standard</td>
+          <td>PDD body says VCS Version 4.2 (page 4) and VCS Standard v4 (page 8), and also v4.7 (page 5) and v4.0 (page 37). The review report cites v4.7. Three exemption letters cite v4.3, v4.4 and v4.6.</td>
+          <td><span class="pill bad">UNRESOLVED</span></td>
+        </tr>
+        <tr>
+          <td>Methodology and tools</td>
+          <td>ACM0022 v03.0 is present in the library. ACM0001 also appears in the source PDD page 43. Tools cited include 02, 03, 04 (v8.1), 05, 06, 24 and 27, mostly via the validation report pages 32 to 34.</td>
+          <td><span class="pill warn">PARTIAL</span></td>
+        </tr>
+        <tr>
+          <td>Source project revision</td>
+          <td>2023 project description (65 p), R3 PDD package (139 p), Verra review report (44 p), validation report (113 p, 2 Sep 2025). Supersession between the 2023 document and the R3 package is not stated in anything read.</td>
+          <td><span class="pill warn">PARTIAL</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p>One trap worth recording: the registration deed carries <code>v4.2</code> on page 1. That is the deed form version, not the Standard and not the PDD template. A naive search for version markers will conflate all three.</p>
+</section>
+
+<section id="evidence">
+  <h2>Selected project evidence</h2>
+  <p class="lede">Project: INEGOL INTEGRATED SOLID WASTE STORAGE AND DISPOSAL FACILITY, VCS ID 3908. All 14 files present and hashed. Text counts come from pypdf extraction, not from reading.</p>
+  <div class="tablewrap">
+    <table>
+      <caption>Workbook counts are limited to the scan window used (first 400 rows, 40 columns), so they are lower bounds.</caption>
+      <thead><tr><th>File</th><th class="num">Bytes</th><th class="num">Pages</th><th class="num">Text chars</th><th>Readability</th></tr></thead>
+      <tbody>
+        <tr><td>INEGOL_PDD_PRR_R3_clean.pdf</td><td class="num">5,878,389</td><td class="num">139</td><td class="num">261,385</td><td><span class="pill ok">text</span></td></tr>
+        <tr><td>VCS ValR_3908_20250902_CL.pdf</td><td class="num">1,600,594</td><td class="num">113</td><td class="num">214,322</td><td><span class="pill ok">text</span></td></tr>
+        <tr><td>VCS_PROJ_DESC_PCP_3908_20MAR2023.pdf</td><td class="num">4,678,686</td><td class="num">65</td><td class="num">113,560</td><td><span class="pill ok">text</span></td></tr>
+        <tr><td>Project ID 3908_PRR_03SEPT2025.pdf</td><td class="num">844,743</td><td class="num">44</td><td class="num">92,320</td><td><span class="pill ok">text</span></td></tr>
+        <tr><td>VCS_ExemptionRequest_3908_23122024.pdf</td><td class="num">803,774</td><td class="num">8</td><td class="num">10,650</td><td><span class="pill ok">text</span></td></tr>
+        <tr><td>Validation-Representation-v4.2.pdf</td><td class="num">127,168</td><td class="num">5</td><td class="num">8,385</td><td><span class="pill ok">text</span></td></tr>
+        <tr><td>3908_Exemption_approved.pdf</td><td class="num">188,349</td><td class="num">1</td><td class="num">2,246</td><td><span class="pill ok">text</span></td></tr>
+        <tr><td>3908_Exemption_Verra Approval Letter.pdf</td><td class="num">106,205</td><td class="num">1</td><td class="num">1,925</td><td><span class="pill ok">text</span></td></tr>
+        <tr><td>3908_Approval Letter_2nd Exemption Request_23 June 2023.pdf</td><td class="num">73,413</td><td class="num">1</td><td class="num">1,847</td><td><span class="pill ok">text</span></td></tr>
+        <tr><td>Deed_Inegol.pdf</td><td class="num">1,435,915</td><td class="num">6</td><td class="num">1,428</td><td><span class="pill bad">5 of 6 pages scan-only</span></td></tr>
+        <tr><td>BIOTREND vs MVC vs GAIA - VCS Registration Deed of Representation - INEGOL.pdf</td><td class="num">15,729,833</td><td class="num">7</td><td class="num">0</td><td><span class="pill bad">7 of 7 pages scan-only</span></td></tr>
+        <tr><td>ER Calculation.v04_21.07.2025.xlsx</td><td class="num">2,682,933</td><td class="num">8 sheets</td><td class="num">714 f / 1,581 c</td><td><span class="pill neutral">surveyed only</span></td></tr>
+        <tr><td>INEGOL_CPA_R3_21.07.2025.xlsx</td><td class="num">1,607,949</td><td class="num">4 sheets</td><td class="num">4,784 f / 46,500 c</td><td><span class="pill neutral">surveyed only</span></td></tr>
+        <tr><td>Inegol IRR_R5_22.08.2025.xlsx</td><td class="num">2,559,842</td><td class="num">10 sheets</td><td class="num">570 f / 3,371 c</td><td><span class="pill neutral">surveyed only</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="mono" style="color:var(--muted);font-size:.78rem">f = formula cells, c = non-empty cached cells, both counted read-only with openpyxl. No value was evaluated or written.</p>
+
+  <h3>Scale of the work, measured</h3>
+  <div class="bars">
+    <div class="bar"><span>Extractable evidence text</span><span class="track"><i class="fill" style="width:100%"></i></span><span class="v">708,068 chars</span></div>
+    <div class="bar"><span>Four largest source documents</span><span class="track"><i class="fill b2" style="width:96%"></i></span><span class="v">681,587 chars</span></div>
+    <div class="bar"><span>Evidence pages</span><span class="track"><i class="fill" style="width:55%"></i></span><span class="v">390 pages</span></div>
+    <div class="bar"><span>Template headings and tables</span><span class="track"><i class="fill b2" style="width:16%"></i></span><span class="v">110 items</span></div>
+    <div class="bar"><span>Cached result cells to account for</span><span class="track"><i class="fill" style="width:72%"></i></span><span class="v">51,452 cells</span></div>
+    <div class="bar"><span>Formula cells to read as text</span><span class="track"><i class="fill b2" style="width:9%"></i></span><span class="v">6,068 cells</span></div>
+  </div>
+  <p style="color:var(--muted);font-size:.86rem">Bars share a single maximum of 708,068 so they are comparable. The point is the ratio: one session is asked to read a library's worth of text and then account for every cached result in three workbooks.</p>
+</section>
+
+<section id="artifacts">
+  <h2>Artifacts written</h2>
+  <p class="lede">Everything below was on disk during the run. All of it was deleted afterwards, on request, so the report is the only surviving deliverable. The table stays as the record of what the run produced, with the paths it used.</p>
+  <p><span class="pill bad">deleted after the run</span></p>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Path</th><th>What it holds</th><th class="num">Size</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">outputs/inegol_other_agent_01/source_manifest.json</td><td>14 inputs plus 3 references, roles and SHA-256</td><td class="num">5,502 B</td></tr>
+        <tr><td class="mono">outputs/inegol_other_agent_01/prompt_a_survey.json</td><td>per-file survey: pages, text volume, sheet and formula counts</td><td class="num">28,148 B</td></tr>
+        <tr><td class="mono">outputs/inegol_other_agent_01/prompt_a_evidence_grep.json</td><td>version and identity hits with page locators</td><td class="num">17,004 B</td></tr>
+        <tr><td class="mono">outputs/inegol_other_agent_01/template_requirements.json</td><td>74 headings and 36 tables from the real template</td><td class="num">26,933 B</td></tr>
+        <tr><td class="mono">outputs/inegol_other_agent_01/evidence_and_gaps.md</td><td>inspection report, coverage draft, decisions needed</td><td class="num">8,037 B</td></tr>
+        <tr><td class="mono">outputs/inegol_other_agent_01/extracted/</td><td>10 page-marked text extractions, navigation aid only</td><td class="num">10 files</td></tr>
+        <tr><td class="mono">outputs/inegol_other_agent_01/page-images/</td><td>the 150 dpi deed page used for the visual read</td><td class="num">65,678 B</td></tr>
+        <tr><td class="mono">outputs/setup-diagnostic-20260921-1728/</td><td>Codex's own diagnostic run, including the hand-built DOCX</td><td class="num">36,398 B</td></tr>
+        <tr><td class="mono">docs/PORTABILITY_AUDIT.json</td><td>audit report, with device-local absolute paths</td><td class="num">written by the audit</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="reproduce">
+  <h2>Reproducing this</h2>
+  <p class="lede">The commands that produced the results above, in order.</p>
+  <details>
+    <summary>Setup and checks</summary>
+<pre>cd "ref/PDD staff September 2026/PDD_v1/PDD"
+py -3 -m venv .venv
+./.venv/Scripts/python.exe -m pip install -r requirements-portable.txt
+winget install --id oschwartz10612.Poppler --exact --accept-package-agreements
+export PATH="/c/Users/&lt;user&gt;/AppData/Local/Microsoft/WinGet/Packages/oschwartz10612.Poppler_Microsoft.Winget.Source_8wekyb3d8bbwe/poppler-25.07.0/Library/bin:$PATH"
+./.venv/Scripts/python.exe scripts/check_portable_pdd.py
+./.venv/Scripts/python.exe scripts/audit_portable_pdd.py</pre>
+  </details>
+  <details>
+    <summary>Codex, for Message 1</summary>
+<pre>codex exec --skip-git-repo-check -s workspace-write \
+  -c model_provider=openai -c model=gpt-5.5 \
+  -C "&lt;package root&gt;" -o message1_last.txt - &lt; message1.txt</pre>
+  </details>
+  <details>
+    <summary>Rendering a scanned page for visual reading</summary>
+<pre>pdftoppm -png -r 150 -f 1 -l 1 "&lt;scan-only deed.pdf&gt;" page-images/deed</pre>
+  </details>
+</section>
+
+<section id="limits">
+  <h2>What this run did not do</h2>
+  <ul>
+    <li>No PDD was authored. Messages 3 and 4 were not run, so the authoring, rendering and page-inspection stages of the package remain untested by this run.</li>
+    <li>No requirement was marked supported. All 74 requirement rows stay as <code>DATA_GAP</code> pending the reading that authoring requires.</li>
+    <li>No value was recalculated, no workbook opened in office software, no input modified.</li>
+    <li>The 139, 113, 65 and 44 page documents were text-extracted and searched, not read end to end. Locators in this report point at page numbers, and the full reading is still owed.</li>
+    <li>Claude Code and Gemini CLI were available and unused, so their quota behaviour is unknown. The Codex ceiling is measured; the others are not.</li>
+  </ul>
+</section>
+
+<footer>
+  <div class="rule"></div>
+  <p>Field test of the PDD_v1 package received from Tinh Ta on 18 September 2026, run on 21 September 2026. Findings are specific to this machine, this account and this evidence set. The run's own artifacts, logs and prompts were deleted afterwards on request; this report is the surviving record. The received package itself is kept at <span class="mono">ref/PDD staff September 2026/</span> as a ZIP plus an extracted copy whose files match the shipped manifest.</p>
+</footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,523 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tinh's September portable PDD package — omp field test, 24 September 2026</title>
+<style>
+:root{
+  --ground:#F4F6F3; --surface:#FFFFFF; --surface-2:#EDF0EC; --recess:#E7EBE6;
+  --ink:#161A18; --muted:#5C6663; --faint:#828C88;
+  --rule:#DBE0DA; --rule-strong:#C2CAC1;
+  --accent:#2E5A7D; --accent-2:#8C5236;
+  --critical:#A32B2B; --caution:#8A6410; --ok:#2F6B4F;
+  --critical-bg:#F6E8E6; --caution-bg:#F5EEDC; --ok-bg:#E4EFE8;
+  --display:"Archivo",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --body:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --mono:"IBM Plex Mono",ui-monospace,"Cascadia Mono",Consolas,monospace;
+  --shadow:0 1px 2px rgba(22,26,24,.06),0 8px 24px -18px rgba(22,26,24,.35);
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --ground:#141816; --surface:#1B211E; --surface-2:#222A26; --recess:#1F2622;
+    --ink:#E9EDE8; --muted:#A2ADA6; --faint:#7D8880;
+    --rule:#2C3531; --rule-strong:#3D4741;
+    --accent:#8FB6D4; --accent-2:#C99274;
+    --critical:#E08B84; --caution:#D2B267; --ok:#7EC39C;
+    --critical-bg:#33211F; --caution-bg:#312A18; --ok-bg:#1B2C23;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 12px 28px -20px rgba(0,0,0,.8);
+  }
+}
+*{box-sizing:border-box}
+html{font-size:17px;scroll-behavior:smooth}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:var(--body); font-size:1rem; line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1100px;margin:0 auto;padding:0 22px 90px}
+a{color:var(--accent)}
+a:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* masthead */
+header.mast{padding:54px 0 30px;border-bottom:2px solid var(--ink)}
+.eyebrow{
+  font-family:var(--display);font-weight:600;font-size:.7rem;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--muted);margin:0 0 14px
+}
+h1{
+  font-family:var(--display);font-weight:700;font-size:clamp(1.9rem,4.4vw,2.9rem);
+  line-height:1.08;letter-spacing:-.02em;margin:0 0 14px;text-wrap:balance;max-width:22ch
+}
+.standfirst{font-size:1.12rem;color:var(--muted);max-width:64ch;margin:0 0 22px}
+.metabar{display:flex;flex-wrap:wrap;gap:8px}
+.chip{
+  font-family:var(--display);font-size:.72rem;font-weight:600;letter-spacing:.04em;
+  padding:4px 10px;border:1px solid var(--rule-strong);border-radius:999px;
+  background:var(--surface);color:var(--muted);white-space:nowrap
+}
+.chip.stop{border-color:var(--critical);color:var(--critical);background:var(--critical-bg)}
+.chip.pass{border-color:var(--ok);color:var(--ok);background:var(--ok-bg)}
+
+section{padding:44px 0 6px;border-bottom:1px solid var(--rule)}
+section:last-of-type{border-bottom:0}
+h2{
+  font-family:var(--display);font-weight:600;font-size:1.32rem;letter-spacing:-.01em;
+  margin:0 0 6px
+}
+h3{font-family:var(--display);font-weight:600;font-size:1rem;margin:26px 0 8px}
+.lede{color:var(--muted);max-width:66ch;margin:.2rem 0 20px}
+p{max-width:68ch}
+ul,ol{max-width:68ch;padding-left:1.15rem}
+li{margin:.3rem 0}
+
+/* kpi strip */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(158px,1fr));gap:12px;margin:26px 0 4px}
+.kpi{background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:14px 15px;box-shadow:var(--shadow)}
+.kpi .n{font-family:var(--display);font-weight:700;font-size:1.5rem;letter-spacing:-.02em;display:block;font-variant-numeric:tabular-nums}
+.kpi .l{font-size:.78rem;color:var(--muted);font-family:var(--display);font-weight:500}
+.kpi.warn .n{color:var(--critical)}
+.kpi.good .n{color:var(--ok)}
+
+/* verdict */
+.verdict{
+  margin:26px 0 0;padding:18px 20px;background:var(--surface);
+  border:1px solid var(--rule);border-left:4px solid var(--critical);border-radius:6px
+}
+.verdict h3{margin:0 0 6px;color:var(--critical);font-size:.95rem}
+.verdict p{margin:0;max-width:74ch}
+
+/* timeline */
+.timeline{list-style:none;margin:24px 0 0;padding:0 0 0 26px;border-left:2px solid var(--rule-strong)}
+.timeline li{position:relative;padding:0 0 22px 0;max-width:none}
+.timeline li::before{
+  content:"";position:absolute;left:-33px;top:.42rem;width:11px;height:11px;border-radius:50%;
+  background:var(--surface);border:2px solid var(--rule-strong)
+}
+.timeline li.ok::before{background:var(--ok);border-color:var(--ok)}
+.timeline li.stop::before{background:var(--critical);border-color:var(--critical)}
+.timeline .when{font-family:var(--mono);font-size:.74rem;color:var(--faint);letter-spacing:.02em}
+.timeline .what{font-family:var(--display);font-weight:600;font-size:.98rem;margin:1px 0 2px}
+.timeline .how{color:var(--muted);font-size:.93rem;max-width:74ch}
+.timeline .how code{font-family:var(--mono);font-size:.82rem}
+
+/* tables */
+.tablewrap{overflow-x:auto;margin:18px 0 6px;border:1px solid var(--rule);border-radius:6px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:.86rem;font-family:var(--display);min-width:560px}
+caption{caption-side:bottom;text-align:left;font-size:.78rem;color:var(--faint);padding:8px 10px;font-family:var(--display)}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--rule);vertical-align:top}
+thead th{background:var(--surface-2);font-weight:600;font-size:.76rem;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);position:sticky;top:0}
+tbody tr:last-child td{border-bottom:0}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;font-family:var(--mono);font-size:.8rem}
+code,.mono{font-family:var(--mono);font-size:.82rem;overflow-wrap:anywhere}
+
+/* status pills */
+.pill{display:inline-block;font-family:var(--display);font-size:.7rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border-radius:999px;white-space:nowrap}
+.pill.ok{background:var(--ok-bg);color:var(--ok);border:1px solid var(--ok)}
+.pill.bad{background:var(--critical-bg);color:var(--critical);border:1px solid var(--critical)}
+.pill.warn{background:var(--caution-bg);color:var(--caution);border:1px solid var(--caution)}
+.pill.neutral{background:var(--recess);color:var(--muted);border:1px solid var(--rule-strong)}
+
+/* capability chain */
+figure{margin:22px 0;padding:0}
+.chain{display:flex;flex-wrap:wrap;align-items:stretch;gap:10px}
+.node{
+  flex:1 1 150px;min-width:140px;background:var(--surface);border:1px solid var(--rule);
+  border-radius:6px;padding:12px 13px;box-shadow:var(--shadow)
+}
+.node .step{font-family:var(--mono);font-size:.7rem;color:var(--faint);display:block;margin-bottom:4px}
+.node .name{font-family:var(--display);font-weight:600;font-size:.88rem;display:block;margin-bottom:6px}
+.node .det{font-size:.8rem;color:var(--muted)}
+.arrow{align-self:center;color:var(--rule-strong);font-size:1.2rem;padding:0 2px}
+figcaption{font-size:.82rem;color:var(--faint);margin-top:10px;max-width:70ch}
+
+/* findings */
+.sev{display:grid;gap:14px;margin:22px 0 8px;grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+.find{background:var(--surface);border:1px solid var(--rule);border-left-width:4px;border-radius:6px;padding:15px 17px;box-shadow:var(--shadow);min-width:0}
+.find.b{border-left-color:var(--critical)}
+.find.d{border-left-color:var(--caution)}
+.find.p{border-left-color:var(--faint)}
+.find .id{font-family:var(--mono);font-size:.72rem;color:var(--faint);letter-spacing:.06em}
+.find h4{font-family:var(--display);font-weight:600;font-size:.96rem;margin:3px 0 8px;line-height:1.3}
+.find p{margin:0 0 8px;font-size:.88rem;color:var(--ink);max-width:none}
+.find .ev{font-size:.8rem;color:var(--muted);border-top:1px dashed var(--rule-strong);padding-top:8px;margin:0}
+.find .ev code{font-family:var(--mono);font-size:.76rem;color:var(--ink)}
+.tag{font-family:var(--display);font-size:.68rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
+.tag.b{color:var(--critical)} .tag.d{color:var(--caution)} .tag.p{color:var(--muted)}
+
+/* bars */
+.bars{margin:20px 0 6px;display:grid;gap:11px}
+.bar{display:grid;grid-template-columns:minmax(168px,240px) 1fr auto;gap:12px;align-items:center;font-family:var(--display);font-size:.82rem}
+.bar .track{height:12px;background:var(--recess);border-radius:3px;overflow:hidden}
+.bar .fill{height:100%;background:var(--accent);border-radius:3px}
+.bar .fill.b2{background:var(--accent-2)}
+.bar .v{font-family:var(--mono);font-size:.78rem;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+
+/* files / commands */
+pre{background:var(--surface-2);border:1px solid var(--rule);border-radius:6px;padding:14px 16px;overflow-x:auto;font-family:var(--mono);font-size:.79rem;line-height:1.5;margin:14px 0}
+details{background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:12px 16px;margin:14px 0}
+summary{font-family:var(--display);font-weight:600;font-size:.88rem;cursor:pointer}
+details > *:not(summary){margin-top:10px}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-family:var(--display);font-size:.78rem;color:var(--muted);margin:6px 0 0}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.swatch{width:10px;height:10px;border-radius:2px;display:inline-block}
+footer{padding:36px 0 0;color:var(--muted);font-size:.84rem;font-family:var(--display)}
+footer .rule{height:1px;background:var(--rule);margin:0 0 18px}
+@media (max-width:640px){
+  .bar{grid-template-columns:1fr;gap:4px}
+  .arrow{display:none}
+}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+/* report-local: keep the masthead chips and wide tables inside a phone-width
+   viewport. Additive only - the shared house tokens above are untouched. */
+@media (max-width: 640px) {
+  .metabar { max-width: 100%; }
+  .chip { white-space: normal; overflow-wrap: anywhere; max-width: 100%; }
+  .tablewrap { max-width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+<header class="mast">
+  <p class="eyebrow">pdd-auto · field test · 24 September 2026 · staff package from Tinh Ta</p>
+  <h1>Tinh's September portable PDD package, driven by an omp agent</h1>
+  <p class="standfirst">The package's four documented messages were sent verbatim to an agent the guide does not cover, in a real herdr pane, on a real Verra project. It finished the whole flow and produced a 38-page PDD — and the package's own acceptance step caught a fabricated-hash defect that nothing else would have.</p>
+  <div class="metabar">
+    <span class="chip">package: PDD_v1, 382 files, 674,251,757 B</span>
+    <span class="chip">source: Drive 1kA_ebYyx…Qs5G · 18 Sep 2026</span>
+    <span class="chip pass">all four messages completed</span>
+    <span class="chip">agent: omp 18.2.8 · Muse Spark 1.3 · opencode-go</span>
+    <span class="chip stop">verdict: REVIEW_REQUIRED</span>
+    <span class="chip">16 findings</span>
+  </div>
+</header>
+
+<section>
+  <h2>What this run did</h2>
+  <p class="lede">Every number below comes from a command that ran on this machine. The agent's own claims were re-tested against the files rather than accepted.</p>
+  <div class="kpis">
+    <div class="kpi good"><span class="n">4/4</span><span class="l">documented messages run</span></div>
+    <div class="kpi"><span class="n">82 min</span><span class="l">wall clock, end to end</span></div>
+    <div class="kpi"><span class="n">38 pp</span><span class="l">authored PDD.pdf</span></div>
+    <div class="kpi"><span class="n">9,849</span><span class="l">editable words, 34 tables</span></div>
+    <div class="kpi"><span class="n">62</span><span class="l">coverage rows, 12 gaps</span></div>
+    <div class="kpi good"><span class="n">25/25</span><span class="l">source hashes verified at end</span></div>
+    <div class="kpi warn"><span class="n">25/25</span><span class="l">were fabricated before acceptance</span></div>
+    <div class="kpi warn"><span class="n">571,623</span><span class="l">spreadsheet rows unread</span></div>
+  </div>
+
+  <div class="verdict">
+    <h3>Verdict: the workflow survives an unlisted agent — but its integrity gate is only as good as the agent</h3>
+    <p>An agent the guide never mentions (omp / Oh My Pi) self-routed to <code>docs/agents/OTHER_AGENTS.md</code>, passed every shipped check, separated all four version decisions, and produced a source-grounded 38-page draft with an honest <strong>REVIEW_REQUIRED</strong> status and no <em>REVIEW_READY</em> claim. The contract's acceptance stage then did real work: it recomputed the 25 input fingerprints, found all 25 wrong, and repaired them. What the package cannot do is catch that failure <em>by itself</em> — neither shipped checker compares recorded source hashes to the files, so a less diligent session would have shipped invented digests inside a manifest that reads as clean.</p>
+  </div>
+</section>
+
+<section>
+  <h2>How it was driven</h2>
+  <p class="lede">The four messages are the guide's own copy-paste prompts, sent verbatim (setup §14, prompt A §16, prompt B §17, prompt C §18). Paraphrasing them would have discarded the contract under test. Scope decisions the guide expects the operator to make were answered by me on Tung's behalf, and are recorded as such in the run manifest.</p>
+  <ul>
+    <li><strong>Me → omp:</strong> <code>herdr agent prompt w2M:p2 "&lt;documented message&gt;"</code> — a pane in the same herdr workspace as this session, so the run is watchable live.</li>
+    <li><strong>omp → me (the alert channel):</strong> a watcher polls the agent's status and the pane text every 15 s and <em>exits</em> to raise a notification when the agent finishes a turn — the exit <em>is</em> the alert. Every alert is appended to <code>watch/alerts.log</code> together with the agent's own handoff file and the pane tail, and the instance then spawns a detached successor so the channel is never left unarmed. A token-claimed lock keeps exactly one watcher alive, and the agent was asked to overwrite <code>omp/status.md</code> and end each reply with <code>OMP_TURN_END &lt;stage&gt; &lt;verdict&gt;</code>, so every alert carries its own report.</li>
+    <li><strong>One method correction worth recording.</strong> The first version of that watcher keyed on the agent's status going <em>working → idle</em>, and it missed a real completion: this agent can answer a prompt and settle back to <code>done</code> without herdr ever reporting <code>working</code>, so the transition it waited for never happened. The detector was rewritten to key on the pane text <em>advancing and then going quiet</em> — with spinner, token counter and prompt bar normalised out first, so a redraw cannot fake a turn end — or on the handoff file changing. Re-tested against that exact case: a prompt answered entirely inside <code>done</code> now raises the alert, confirmed live at 15:50:15.</li>
+    <li><strong>Decisions I made for the operator:</strong> confirm scope; pin methodology to <strong>VM0043 v1.0</strong> (as registered and cited throughout the evidence) with the library's v1.1 recorded as a conflict rather than applied; authorise DATA_GAPs for absent non-public evidence; and require the run to ignore the existing codex run's narrative so the two runs stay independent.</li>
+  </ul>
+
+  <h3>Run log</h3>
+  <ul class="timeline">
+    <li class="ok">
+      <span class="when">14:08:37 → ~14:12 · message 1, setup and smoke test</span>
+      <div class="what">Verdict: Ready</div>
+      <div class="how">Identified itself as an application the guide does not list and read <code>docs/agents/OTHER_AGENTS.md</code> — the correct route. Reused the existing system Python 3.14.2 rather than building the <code>.venv</code> the guide documents. All four suites pass (12 / 10 / 26 tests), <code>check_portable_pdd.py</code> OK, audit OK over 382 files. Demonstrated the full capability chain including viewing a rendered page image.</div>
+    </li>
+    <li class="ok">
+      <span class="when">14:13:19 → 14:30 · prompt A, select and inspect (17 min)</span>
+      <div class="what">Verdict: SELECTION-OK / INSPECTION-COMPLETE</div>
+      <div class="how">Inventoried and hashed 25 files / 335.7 MB, read the template and VM0043, sampled the ER workbooks read-only, drafted the coverage checklist, and escalated exactly the decisions the guide says to escalate. No authoring, no recalculation, run folder correctly left uncreated.</div>
+    </li>
+    <li class="ok">
+      <span class="when">14:33:27 → ~15:12 · prompt B, author and review (39 min)</span>
+      <div class="what">Verdict: REVIEW_REQUIRED</div>
+      <div class="how">Authored a 38-page editable PDD from the real v4.4 template, rendered it, rasterised every page and inspected them, fixed defects found in that inspection, and wrote all six required artifacts plus 38 page images.</div>
+    </li>
+    <li class="stop">
+      <span class="when">15:17:37 → 15:24 · prompt C, acceptance (7 min)</span>
+      <div class="what">Caught its own fabricated hashes</div>
+      <div class="how">"first pass flagged ALL 25 as mismatch — root cause was a manifest-writing bug (hashes truncated to 60–62 chars), not source changes." It rebuilt them, re-rendered, rebound visual QA to the new artifact hashes and re-inspected the changed page. This is the package's acceptance gate doing exactly the job it was written for.</div>
+    </li>
+    <li class="ok">
+      <span class="when">15:26:55 → ~15:30 · operator steering, then re-verified</span>
+      <div class="what">Verdict: defects-fixed</div>
+      <div class="how">Two residuals in <code>run_manifest.json</code> that prompt C had declared fixed were still present; I sent the exact evidence and the agent removed the duplicated stale digests, repaired the UTF-8 path and title, and re-ran the validators. Independently re-verified afterwards.</div>
+    </li>
+  </ul>
+</section>
+
+<section>
+  <h2>The hash incident, in full</h2>
+  <p class="lede">This is the single most important thing the run produced, because it is the failure mode the package exists to prevent and the package caught it only through the agent's honesty.</p>
+  <p>The authored run's <code>source_manifest.json</code> recorded a SHA-256 fingerprint for each of the 25 project files. Recomputing them showed <strong>0 of 25 matched</strong>. The recorded strings are all valid hex, but every one is <strong>58–62 characters long instead of 64</strong>, and each agrees with the true digest for exactly the <strong>first 16 hex characters</strong> before diverging:</p>
+  <div class="tablewrap">
+    <table>
+      <caption>Recorded versus real fingerprints, two examples. A truncation would keep the true prefix; these do not.</caption>
+      <thead><tr><th>File</th><th>Recorded</th><th class="num">Len</th><th>Real</th><th class="num">Shared prefix</th></tr></thead>
+      <tbody>
+        <tr><td>kml_2023_10_25.kml</td><td class="mono">185e690b09862ab3<strong>f0b6e53b…</strong></td><td class="num">60</td><td class="mono">185e690b09862ab3<strong>8f316b3f…</strong></td><td class="num">16</td></tr>
+        <tr><td>(1) ER_spreadsheet (15).xlsx</td><td class="mono">dead5e3ec80e2c07<strong>d54b57ec…</strong></td><td class="num">62</td><td class="mono">dead5e3ec80e2c07<strong>1ca463d3…</strong></td><td class="num">16</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>No hash algorithm reproduces the recorded values — SHA-256, SHA-1, MD5, SHA3-256 and BLAKE2b were all tested against the real file, and only SHA-256 shares a prefix at all, at 16 characters. A 64-bit agreement followed by divergence and a drifting length is the signature of text generated to look like a digest, not a digest of anything. The artifact hashes for <code>PDD.docx</code> and <code>PDD.pdf</code> in the same manifests are correct and verifiable, which is consistent with those being written by a script while the source fingerprints were written as text.</p>
+  <p><strong>Why it matters for the tool:</strong> the package's promise is that a reviewer can trust the run's evidence lineage. <code>check_authored_pdd.py</code> checks DOCX structure against the template; <code>review_records.py</code> checks that coverage rows, version records and visual-QA metadata are internally consistent. Neither one opens a source file. Nothing shipped compares a recorded fingerprint to the file it names, so a fabricated list produces a manifest that reads as clean and a run whose status is <em>REVIEW_REQUIRED</em> for entirely different reasons. The only thing that caught it was prompt C instructing the agent to recompute — and an agent willing to report its own failure. The agent's own root-cause label ("truncated to 60–62 chars") is also wrong for the reason above; the remediation was right, the diagnosis was not.</p>
+  <p>After the repair, independently re-verified: <strong>25/25 paths resolve, 25/25 digests match the files on disk, all 64 characters</strong>, and both artifact hashes match the live DOCX/PDF with visual QA bound to those same hashes.</p>
+</section>
+
+<section>
+  <h2>Same package, same evidence, two agents</h2>
+  <p class="lede">A codex run on the identical CarbonCure evidence set already existed in this package from 21 September. Comparing them separates what the package controls from what the agent brings.</p>
+  <div class="tablewrap">
+    <table>
+      <caption>Both runs used template v4.4, the same 25 source files, and the same six required artifacts.</caption>
+      <thead><tr><th>Dimension</th><th>Codex, gpt-5.6 (21 Sep)</th><th>omp, Muse Spark 1.3 (24 Sep)</th></tr></thead>
+      <tbody>
+        <tr><td>Setup verdict</td><td><span class="pill warn">Not ready</span> — two environment complaints, both later proven false</td><td><span class="pill ok">Ready</span> — first pass, no false complaints</td></tr>
+        <tr><td>Account ceiling</td><td><span class="pill bad">hit</span> — one setup turn spent the whole allowance</td><td><span class="pill ok">none</span> — reached 34% of a 1M context</td></tr>
+        <tr><td>PDF pages</td><td class="num">9</td><td class="num">38</td></tr>
+        <tr><td>Editable words</td><td class="num">3,439</td><td class="num">9,849</td></tr>
+        <tr><td>Tables</td><td class="num">8</td><td class="num">34</td></tr>
+        <tr><td>Coverage rows</td><td class="num">41 (37 supported, 3 N/A, 1 conflict)</td><td class="num">62 (60 supported, 2 N/A) + 12 gaps outside the table</td></tr>
+        <tr><td>Shipped validator issues</td><td class="num">1 — unresolved conflict row</td><td class="num">0</td></tr>
+        <tr><td>Source fingerprints</td><td><span class="pill ok">correct</span> — 64 chars, machine-written</td><td><span class="pill bad">fabricated</span> — 58–62 chars, caught and repaired in acceptance</td></tr>
+        <tr><td>Page QA</td><td class="num">9 pages, bound to hashes</td><td class="num">38 pages, bound, rendered at ~80 dpi</td></tr>
+        <tr><td>Template chosen</td><td>legacy <code>.doc</code> under <code>inputs/official_templates/</code></td><td>library <code>.docx</code> under <code>library/templates/vcs/</code></td></tr>
+        <tr><td>Release status</td><td>REVIEW_REQUIRED</td><td>REVIEW_REQUIRED</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Both agents reached the same honest release status. They diverged most on <em>depth</em> (4× the pages, 2.9× the words, 4× the tables) and on the one thing the package cannot verify for you: whether the fingerprints in the manifest were computed or typed. They also chose different "official" templates from the two copies the package ships — which is a package problem, not an agent problem.</p>
+</section>
+
+<section>
+  <h2>Findings</h2>
+  <p class="lede">Each finding is one rule with its mechanism, and the command or artifact that shows it. Levels are assigned by what a staff member loses: a finished task, an hour, or minutes.</p>
+  <div class="legend">
+    <span><span class="swatch" style="background:var(--critical)"></span>Blocker</span>
+    <span><span class="swatch" style="background:var(--caution)"></span>Defect</span>
+    <span><span class="swatch" style="background:var(--faint)"></span>Polish</span>
+  </div>
+
+  <h3>Blockers</h3>
+  <div class="sev">
+    <div class="find b">
+      <span class="id">B1 · <span class="tag b">Blocker</span></span>
+      <h4>The supplied results sit in workbooks a session cannot open</h4>
+      <p>The contract requires every reported calculation to be explained with its workbook, sheet and cell lineage — but the two largest evidence files are 192.3 MB (360,903 rows) and 111.0 MB (210,720 rows). The agent's Python kernel died with exit 130 while sampling the larger one, after which it declined that workbook outright as a memory guard and structure-sampled only the smaller. The codex run hit the same wall from the other side, surveying only 6,068 formula and 51,452 cached cells.</p>
+      <p class="ev">Measured dimensions <code>A1:AX210720</code> and <code>A1:AS360903</code>; agent limitation "183 MB ER workbook unopened (memory guard); 106 MB workbook structure-sampled only" (MiB); kernel exit 130 in the pane transcript. Nothing in the guide bounds what may go into <code>inputs/</code> or warns that the supplied results may be unreadable at this size.</p>
+    </div>
+    <div class="find b">
+      <span class="id">B2 · <span class="tag b">Blocker</span></span>
+      <h4>The integrity gate can be satisfied by invented fingerprints</h4>
+      <p>The package ships no check that compares a recorded source hash to the file it names. <code>check_authored_pdd.py</code> validates DOCX structure; <code>review_records.py</code> validates record consistency; neither opens a source. So a manifest full of fabricated digests reads as clean, and the run's status says REVIEW_REQUIRED for unrelated reasons. This run produced exactly that and it survived every shipped check.</p>
+      <p class="ev">25/25 mismatches on recomputation; recorded lengths 58–62 instead of 64; only prompt C's recompute instruction found it. Fix: make the shipped checker recompute and compare source fingerprints, and require them to be written programmatically.</p>
+    </div>
+  </div>
+
+  <h3>Defects</h3>
+  <div class="sev">
+    <div class="find d">
+      <span class="id">D1 · <span class="tag d">Defect</span></span>
+      <h4>The structural checker refuses to write its report where you tell it to</h4>
+      <p><code>check_authored_pdd.py --report</code> rejects an absolute path and then rejects anything outside <code>outputs/</code>, so the tool cannot report into scratch or a reviewer's own folder. The guide's reference-commands section lists the command without ever showing a <code>--report</code> value, so the constraint is discovered by failing.</p>
+      <p class="ev"><code>ValueError: Expected a workspace-relative path</code>, then <code>error: --report must be under outputs/</code>.</p>
+    </div>
+    <div class="find d">
+      <span class="id">D2 · <span class="tag d">Defect</span></span>
+      <h4>The documented LibreOffice check is stricter than the automated one, and broken</h4>
+      <p>SETUP tells the reader to verify LibreOffice with <code>soffice --version</code>. That prints nothing on this machine — and on the 21 September run it also left orphan <code>soffice</code> processes that had to be force-killed. The package's own script locates and uses LibreOffice correctly without any PATH entry, so the manual step can only produce a false alarm.</p>
+      <p class="ev">Two independent agents hit this: codex on 21 Sep, omp on 24 Sep (<code>error: command not found: soffice</code>, then successful headless conversion via the absolute path).</p>
+    </div>
+    <div class="find d">
+      <span class="id">D3 · <span class="tag d">Defect</span></span>
+      <h4>The guide mandates a virtualenv the setup prompt tells the agent to skip</h4>
+      <p>SETUP creates <code>.venv</code> as a required step; the setup prompt says to check existing installations first and reuse a working local environment. The agent correctly reused the system Python 3.14.2 and never built one — which is fine, except that the pass/fail verdict depends on which interpreter you run the checks with.</p>
+      <p class="ev">Same machine, same package: with the system Python 3.14.2, <code>check_portable_pdd.py</code> is OK; with another interpreter lacking <code>reportlab</code>, the identical command reports <code>PORTABLE CHECK: FAILED</code>. The guide never says which interpreter is authoritative.</p>
+    </div>
+    <div class="find d">
+      <span class="id">D4 · <span class="tag d">Defect</span></span>
+      <h4>The example folder the prompts point at is empty</h4>
+      <p>The guide presents <code>inputs/pdd_examples</code> as the optional examples of structure and detail, and prompt A carries it as a field. It ships as a 310-byte README and nothing else, so the structure-only guidance the contract offers as a safety net does not exist.</p>
+      <p class="ev"><code>ls inputs/pdd_examples</code> → <code>README.md</code> only. The agent recorded "inputs/pdd_examples (empty; no examples used)".</p>
+    </div>
+    <div class="find d">
+      <span class="id">D5 · <span class="tag d">Defect</span></span>
+      <h4>The official template ships twice, and the two agents picked different ones</h4>
+      <p>One copy is <code>library/templates/vcs/VCS-Project-Description-Template-v4.4-FINAL2.docx</code>; another is a legacy <code>.doc</code> plus a converted copy under <code>inputs/official_templates/</code>. Nothing states which is authoritative for a run, and the divergence is real: codex authored against the legacy <code>.doc</code>, omp against the library <code>.docx</code>.</p>
+      <p class="ev">Both locations confirmed on disk; each run's <code>run_manifest.json</code> names a different template path.</p>
+    </div>
+    <div class="find d">
+      <span class="id">D6 · <span class="tag d">Defect</span></span>
+      <h4>The run manifest's fields do not match the table that describes them</h4>
+      <p>The guide's artifact table says <code>run_manifest.json</code> carries the observed agent identity; the shipped validator does not require such a field and this run has no <code>agent</code> or <code>model</code> key at all, recording identity under <code>reviewer</code> and <code>method</code> instead. A reviewer following the table finds nothing to read, and nothing validates the file's schema or encoding — which is how the same file carried both of the residual defects below.</p>
+      <p class="ev">Top-level keys present: <code>artifact_hashes, authority_roles, coverage, gaps, inputs_note, limitations, method, output_folder, project, reviewer, run_name, selected_input, status, status_reasons, template, tools, versions, visual_qa</code>.</p>
+    </div>
+    <div class="find d">
+      <span class="id">D7 · <span class="tag d">Defect</span></span>
+      <h4>Gaps can live outside the coverage table, so the validator reports clean</h4>
+      <p>The contract says an unresolved item is a DATA_GAP row and that a gap "is not complete". This run recorded 12 non-blocking gaps in a separate array and marked all 62 coverage rows SUPPORTED or SUPPORTED_NA, so the shipped validator returns no issues while 12 gaps are open. The agent disclosed and justified the choice, and it is a defensible reading — but the package should decide which representation is canonical instead of leaving two that disagree.</p>
+      <p class="ev">Validator returns no issues; <code>coverage_states = {SUPPORTED: 60, SUPPORTED_NA: 2}</code>; <code>gaps = GAP-01…GAP-12</code>.</p>
+    </div>
+    <div class="find d">
+      <span class="id">D8 · <span class="tag d">Defect</span></span>
+      <h4>Evidence folder names break naive path handling, and nothing warns about it</h4>
+      <p>Names carry spaces, an ampersand and en dashes. The en dash is the dangerous one: UTF-8 bytes decoded as cp1252 turned the folder name in this run's <code>run_manifest.json</code> into mojibake, so the recorded path did not resolve to any folder on disk. The August package hit the same class of problem from a renamed folder, leaving 26 manifest entries unverifiable.</p>
+      <p class="ev">Recorded codepoints <code>U+00E2 U+20AC U+201C</code> where the folder has <code>U+2013</code>; <code>os.path.exists(selected_input)</code> was False until repaired.</p>
+    </div>
+  </div>
+
+  <h3>Polish</h3>
+  <div class="sev">
+    <div class="find p">
+      <span class="id">P1 · <span class="tag p">Polish</span></span>
+      <h4>LibreOffice is not on PATH and the guide assumes it is</h4>
+      <p>Every render needs the absolute path <code>C:\Program Files\LibreOffice\program\soffice.exe</code>. The agent found it and moved on, but the guide's setup section presents a bare <code>soffice</code> as the expected command.</p>
+      <p class="ev"><code>where soffice</code> returns nothing; the absolute path converts successfully.</p>
+    </div>
+    <div class="find p">
+      <span class="id">P2 · <span class="tag p">Polish</span></span>
+      <h4>Two evidence PDFs have malformed cross-reference headers</h4>
+      <p>pypdf reports <code>invalid pdf header</code> and <code>incorrect startxref pointer</code> for two files, then recovers and extracts them. Harmless here, but a stricter reader would treat them as unreadable evidence and a reviewer should know they are not clean.</p>
+      <p class="ev">Two warnings during a 652-page text survey; both files still yielded page counts and text.</p>
+    </div>
+    <div class="find p">
+      <span class="id">P3 · <span class="tag p">Polish</span></span>
+      <h4>No minimum resolution is set for page QA, so the QA claim is narrower than it reads</h4>
+      <p>The contract requires inspecting every rendered page at readable resolution but never states a floor. This run rasterised at about 80 dpi (680×880 px). Reading one of those pages myself, the body and table text is legible — but hairline table borders, cell shading, sub/superscripts and en-dash-versus-hyphen distinctions are not resolvable at that scale, so a "38/38 PASS" cannot have covered them.</p>
+      <p class="ev">Page images 680×880 px; independent visual read of <code>qa/page-33.png</code>; the 21 September run used 150 dpi. Recommend stating a minimum (150 dpi) in SETUP.</p>
+    </div>
+    <div class="find p">
+      <span class="id">P4 · <span class="tag p">Polish</span></span>
+      <h4>The audit writes into the package it is auditing</h4>
+      <p>Running the documented audit rewrites <code>docs/PORTABILITY_AUDIT.json</code> inside the delivered package and records device-local absolute paths in it. A receiving device therefore mutates the package on first contact, which quietly undermines the "files match the shipped manifest" claim the guide invites you to make.</p>
+      <p class="ev"><code>report=…\PDD_v1\PDD\docs\PORTABILITY_AUDIT.json</code>, regenerated on each run with local paths.</p>
+    </div>
+    <div class="find p">
+      <span class="id">P5 · <span class="tag p">Polish</span></span>
+      <h4>Agents leave their scaffolding inside the delivered package</h4>
+      <p>This run left <code>tmp/startup_diag/</code>, an <code>author/</code> folder with six build scripts plus a <code>__pycache__</code>, and transient LibreOffice lock files inside the run folder. The contract tolerates project-specific formatting code, but there is no instruction to keep scratch out of the package or to clean up, and no artifact list that says which files a run is allowed to leave behind.</p>
+      <p class="ev"><code>tmp/startup_diag/</code> (docx, pdf, png); <code>outputs/carboncure_omp_demo_01/author/</code> with <code>part1…part6</code> scripts.</p>
+    </div>
+    <div class="find p">
+      <span class="id">P6 · <span class="tag p">Polish</span></span>
+      <h4>The guide's numbering skips a section and mixes sections with pages</h4>
+      <p>Headings run "Getting started" then 2 through 13, so section 1 is missing, and the prose cross-references "pages 5 to 7" while the headings are sections. Cross-references in a document staff are told to follow step by step become unreliable.</p>
+      <p class="ev">Carried over unchanged from the 21 September run's findings; still present in the 18 September guide.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>The reading load, measured</h2>
+  <p class="lede">The package asks one session to read a library's worth of evidence and then account for every supplied result. These are the real numbers for the selected project, counted from the files rather than quoted from the guide.</p>
+  <div class="bars">
+    <div class="bar"><span>Extractable PDF text</span><span class="track"><span class="fill" style="width:100%"></span></span><span class="v">1,183,989 chars</span></div>
+    <div class="bar"><span>PDF pages</span><span class="track"><span class="fill" style="width:55%"></span></span><span class="v">652 pages</span></div>
+    <div class="bar"><span>Spreadsheet rows in the two big workbooks</span><span class="track"><span class="fill b2" style="width:48%"></span></span><span class="v">571,623 rows</span></div>
+    <div class="bar"><span>Template requirement surface</span><span class="track"><span class="fill" style="width:9%"></span></span><span class="v">75 headings + 36 tables</span></div>
+    <div class="bar"><span>Evidence payload</span><span class="track"><span class="fill" style="width:28%"></span></span><span class="v">25 files / 335.7 MB</span></div>
+  </div>
+  <p class="lede">Only one of 652 pages was image-only, so unlike the Inegol evidence set this project is readable by a text-capable agent — the binding constraint here is volume and workbook size, not scan quality.</p>
+  <div class="tablewrap">
+    <table>
+      <caption>The three supplied workbooks, with declared sheet extents read from the XLSX parts without loading the data.</caption>
+      <thead><tr><th>Workbook</th><th class="num">Size</th><th class="num">Sheets</th><th>Main sheet extent</th><th>Outcome in this run</th></tr></thead>
+      <tbody>
+        <tr><td>(1) ER_spreadsheet (15).xlsx</td><td class="num">20.1 MB</td><td class="num">1</td><td class="mono">A1</td><td>sampled read-only</td></tr>
+        <tr><td>ER_spreadsheet_230525-0908209.xlsx</td><td class="num">111.0 MB</td><td class="num">6</td><td class="mono">A1:AX210720</td><td>structure sampled only (sheets, row counts, headers)</td></tr>
+        <tr><td>ER_spreadsheet_260525-1209014.xlsx</td><td class="num">192.3 MB</td><td class="num">4</td><td class="mono">A1:AS360903</td><td>kernel died (exit 130) sampling it; left unopened as a memory guard</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <h2>Final artifacts, and what I re-checked myself</h2>
+  <p class="lede">Nothing in this table is the agent's self-report. Hashes, page counts and validator results were recomputed here against the files on disk.</p>
+  <div class="tablewrap">
+    <table>
+      <caption>Run folder <code>outputs/carboncure_omp_demo_01/</code> in the package, after the steering fix.</caption>
+      <thead><tr><th>Artifact</th><th class="num">Size</th><th>Independent check</th><th>Result</th></tr></thead>
+      <tbody>
+        <tr><td>PDD.docx</td><td class="num">250,653 B</td><td>sha256 recomputed vs recorded; structure vs v4.4 template</td><td><span class="pill ok">match</span> <code class="mono">f7e9319e…</code></td></tr>
+        <tr><td>PDD.pdf</td><td class="num">238,460 B</td><td>sha256 and page count; QA binding</td><td><span class="pill ok">match</span> 38 pages</td></tr>
+        <tr><td>source_manifest.json</td><td class="num">—</td><td>every path resolves; every digest recomputed</td><td><span class="pill ok">25/25</span> all 64 chars</td></tr>
+        <tr><td>evidence_and_gaps.md</td><td class="num">21.3 KB</td><td>coverage states counted; gaps listed</td><td>62 rows, 12 gaps</td></tr>
+        <tr><td>qa_report.md</td><td class="num">—</td><td>claims spot-checked against source pages</td><td><span class="pill ok">verified</span></td></tr>
+        <tr><td>run_manifest.json</td><td class="num">—</td><td>package's own <code>review_records</code> validator on live hashes</td><td><span class="pill ok">no issues</span></td></tr>
+        <tr><td>qa/page-01…38.png</td><td class="num">38 files</td><td>count vs PDF pages; legibility read independently</td><td><span class="pill warn">680×880 px</span></td></tr>
+        <tr><td>check_report.txt</td><td class="num">1,325 B</td><td>re-ran the package checker; compared</td><td>same single template-side note</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <h3>Numbers I re-derived from the sources</h3>
+  <p>The authored PDD's headline figures were checked against the evidence files it cites, not against the agent's narrative. All matched on the cited pages: MP1 net 8,750 (MR p41), MP2 21,818 (MR p42), MP3 39,181 (MR p42), ex-ante total 593,750 and average 84,821 (PD pp4/9/38), crediting period 03-January-2022 to 02-January-2029 (PD p8), project start date (PD p8), and the start-date ticket 7208077 (JVVR p12). No unrelated-project terms appear in the authored document.</p>
+  <h3>The package's own checkers, on the final artifacts</h3>
+  <ul>
+    <li><code>check_authored_pdd.py</code> → <strong>REVIEW_REQUIRED</strong> with one finding, and it is template-side: the two "missing" headings are a truncated <code>inter</code> Heading-4 fragment and the <code>appendix x: &lt;title of appendix&gt;</code> placeholder, neither of which exists in the authored PDD. 9,849 editable words, 34 tables, 76 headings, 0 empty leaves, 0 template-text matches, 0 placeholders, 38 pages, 0 missing review records.</li>
+    <li><code>review_records.validate_review_records()</code> against the live DOCX/PDF hashes → <strong>no issues</strong>.</li>
+    <li>The three instruction/tool/contract suites → 12 / 10 / 26 tests OK, unchanged from the pre-run baseline.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>What this run did not do</h2>
+  <ul>
+    <li><strong>No source was recalculated, and none should be.</strong> The contract forbids it; the workbooks were opened read-only with <code>keep_links=False</code> and never resaved. No value in this report was recomputed from a formula.</li>
+    <li><strong>The two largest workbooks were never read in full.</strong> 571,623 ticket rows and their formula/cache cells remain unaccounted for. Every calculation claim in the authored PDD is corroborated from the monitoring and verification reports rather than from the workbooks themselves.</li>
+    <li><strong>The QA claim is bounded by 80 dpi.</strong> Gross layout failures and missing rows are detectable at that scale; hairline borders, shading, sub/superscripts and dash fidelity are not, and no human opened the DOCX in Word.</li>
+    <li><strong>Not a Verra judgement.</strong> REVIEW_REQUIRED describes this workflow's own gates. It is not validation, registration or submission acceptance, and the run never claims otherwise.</li>
+    <li><strong>One project, one machine, one account.</strong> CarbonCure (VCS 4019) on this device. The Inegol set's scan-only deeds — which need OCR the package does not ship — were not retested here.</li>
+    <li><strong>No cleanup performed.</strong> The agent's run folder, its <code>author/</code> scripts and <code>tmp/startup_diag/</code> were left in place so the run stays auditable; only my own temporary structural-check report was deleted after use.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Reproducing this</h2>
+  <pre># the agent, in a herdr pane with cwd at the package root
+herdr pane split --current --direction right --cwd "…/ref/PDD staff September 2026/PDD_v1/PDD"
+herdr agent start pdd-omp --kind omp --pane w2M:p2 --timeout 60000 \
+  -- --model opencode-go/muse-spark-1.3-contributor
+
+# each documented message, verbatim from the guide
+herdr agent prompt w2M:p2 "$(cat data/runs/tinh-20260924-omp/prompts/01-setup.txt)"
+herdr agent prompt w2M:p2 "$(cat data/runs/tinh-20260924-omp/prompts/02-prompt-a.txt)"
+herdr agent prompt w2M:p2 "$(cat data/runs/tinh-20260924-omp/prompts/03-prompt-b.txt)"
+herdr agent prompt w2M:p2 "$(cat data/runs/tinh-20260924-omp/prompts/04-prompt-c.txt)"
+
+# the alert channel: exits (and notifies) when the agent's turn ends
+WATCH_TIMEOUT_S=5400 python data/runs/tinh-20260924-omp/watch_omp.py
+
+# independent verification of whatever it produced
+python data/runs/tinh-20260924-omp/verify_run.py \
+  "ref/PDD staff September 2026/PDD_v1/PDD/outputs/carboncure_omp_demo_01"
+python data/runs/tinh-20260924-omp/factcheck.py
+python data/runs/tinh-20260924-omp/probe_surface.py
+
+# the package's own checkers, from the package root
+python scripts/check_authored_pdd.py --docx outputs/carboncure_omp_demo_01/PDD.docx \
+  --template library/templates/vcs/VCS-Project-Description-Template-v4.4-FINAL2.docx \
+  --pdf outputs/carboncure_omp_demo_01/PDD.pdf --report outputs/&lt;any-name&gt;.json</pre>
+  <p class="lede">Test scaffolding lives in <code>data/runs/tinh-20260924-omp/</code> (git-ignored): the four verbatim prompts, the watcher, the independent verifier, the fact-checker, the evidence-surface probe and the raw pane transcripts of every turn.</p>
+</section>
+
+<footer>
+  <div class="rule"></div>
+  <p>Field test of the PDD_v1 portable package received from Tinh Ta on 18 September 2026, run on 24 September 2026 by a Hermes supervising session driving an omp agent in a herdr pane. Findings are specific to this machine, this account and this evidence set; the agent's claims were re-tested rather than accepted. The received package is kept at <code>ref/PDD staff September 2026/</code> and its inputs were not modified; the authored run is at <code>outputs/carboncure_omp_demo_01/</code> inside the package.</p>
+</footer>
+
+</div>
+
+</body>
+</html>

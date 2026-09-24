@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tinh's Aug-27 Portable Workspace — Download, Test &amp; Comparison (2026-09-04)</title>
+<style>
+body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;margin:0;padding:0;background:#f8fafc;color:#0f172a;line-height:1.65}
+header{background:#0f172a;color:#fff;padding:28px 36px}
+header h1{margin:0;font-size:22px}
+header .subtitle{opacity:.8;margin-top:6px;font-size:13px}
+.container{max-width:1080px;margin:0 auto;padding:24px 36px}
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:16px 18px;margin:12px 0}
+.badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12px;font-weight:600}
+.badge-green{background:#dcfce7;color:#166534}
+.badge-amber{background:#fef9c3;color:#854d0e}
+.badge-red{background:#fee2e2;color:#991b1b}
+.badge-blue{background:#dbeafe;color:#1e40af}
+table{border-collapse:collapse;width:100%;font-size:13px;margin:12px 0}
+th,td{border:1px solid #e2e8f0;padding:8px 10px;text-align:left;vertical-align:top}
+th{background:#f1f5f9;font-weight:600}
+code{font-size:12px;background:#f1f5f9;padding:1px 4px;border-radius:4px;word-break:break-word}
+pre{background:#0f172a;color:#e2e8f0;padding:14px;border-radius:8px;overflow:auto;font-size:12px}
+pre code{background:none;color:inherit;padding:0}
+blockquote{border-left:3px solid #0ea5e9;background:#f0f9ff;padding:10px 14px;margin:14px 0;border-radius:0 8px 8px 0;font-size:13px;color:#334155}
+h1{font-size:22px;margin:0}
+h2{margin:28px 0 12px;font-size:18px;color:#0f172a;border-bottom:2px solid #e2e8f0;padding-bottom:6px}
+h3{margin:18px 0 8px;font-size:15px;color:#334155}
+ul,ol{font-size:13px}
+a{color:#0284c7;text-decoration:none}
+a:hover{text-decoration:underline}
+.meta{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.meta span{background:#e2e8f0;color:#334155;padding:3px 8px;border-radius:999px;font-size:11px}
+.footer{margin:24px 0;color:#64748b;font-size:12px;text-align:center}
+</style>
+</head>
+<body>
+<header>
+<h1>Tinh's Aug-27 Portable Workspace — Download, Test &amp; Comparison</h1>
+<div class="subtitle">Staff track hands-on verification &bull; 2026-09-04 &bull; Repo @ <code>255c6b7</code> &bull; Generated for Tung Ho (Aiden)</div>
+<div class="meta">
+<span>Zip: PDD_Portable_Workspace_20260827_UPLOAD.zip (672,626,242 B)</span>
+<span>Staged: data/runs/tinh-20260827/ (git-ignored)</span>
+<span>Prior: docs/2026-08-28-tinh-track-vs-repo-comparison.md</span>
+</div>
+</header>
+<div class="container">
+
+<div class="card" style="border-left:4px solid #16a34a">
+<strong>Verdict.</strong> The zip is genuine Tinh work product, downloaded byte-exact from Drive and hash-verified.
+It is <strong>not</strong> the zipped <code>PDD/</code> tree the Aug-28 report assumed — it is a <strong>new, showcasing-ready "portable" workspace</strong>
+built around a single Codex task as sole PDD author, with the old YAML→PREOUTPUT pipeline explicitly retired to <code>_archive/</code>.
+Its scripts compile and its packaging pipeline produces a real 560-page 3908 (Inegol) evidence package on this machine.
+Two real defects found (stale manifest paths, path-length sensitivity); all other failures were missing tools on this machine, failing closed with clear errors.
+</div>
+
+<h2>1. Provenance &amp; download</h2>
+<table>
+<tr><th>Item</th><th>Value</th></tr>
+<tr><td>Request</td><td>Tinh Ta <code>&lt;thdt@allotropevc.com&gt;</code>, <strong>Aug 27 17:16 ICT</strong>, <code>Re: Project Proposal Development [PDD] introduction</code>: "I have compiled a working version in this folder before today meeting" — ahead of the 9pm Carbon progress demo (which Tung missed).</td></tr>
+<tr><td>Drive file</td><td><code>PDD_Portable_Workspace_20260827_UPLOAD.zip</code>, id <code>1hd3_9kOgcFqlgbHzGKewWCiKiGRK7u9B</code>, <code>application/x-zip-compressed</code>, owner Tinh Ta, modified <code>2026-08-27T10:02:19Z</code> (14 min before the email).</td></tr>
+<tr><td>Download</td><td><span class="badge badge-green">PASS</span> <code>gws drive files get alt=media</code> → <code>data/runs/tinh-20260827/</code>: <strong>672,626,242 bytes, exactly matching Drive metadata</strong>.</td></tr>
+<tr><td>Follow-up</td><td>Aug 28 11:36 ICT: Codex/Python install videos + report slides (<code>docs.google.com/presentation/d/1Xi7nGiOLfwza4MB7qoUf1wndR4E1Kgfn</code>).</td></tr>
+</table>
+
+<h2>2. What's inside (corrects the Aug-28 assumption)</h2>
+<p>The Aug-28 report guessed "almost certainly a full zipped copy of <code>PDD/</code>". Wrong — the zip holds a <strong>different, purpose-built tree</strong> rooted at <code>PDD_Portable_Workspace_20260827/</code>: <strong>402 entries (40 dirs + 362 files), 731,087,627 bytes uncompressed</strong>. No <code>pdd_automation/</code> package, no Seraphine draft, no <code>_archive/</code>, no <code>outputs/</code> (both excluded per <code>UPLOAD_MANIFEST.json</code>).</p>
+<table>
+<tr><th>Area</th><th>Contents</th></tr>
+<tr><td>Operating contract (new)</td><td><code>AGENTS.md</code> + <code>CODEX_PDD_PORTABLE.md</code> + <code>process/PDD_CREATION_PROCESS.md</code> — one Codex task reads mixed evidence in place, applies the official template, renders with LibreOffice, inspects every page. Explicit prohibitions: no nested <code>codex exec</code>, no facts-YAML/PREOUTPUT handoff, <strong>no recalculation ("use the supplied calculations exactly as reported", preserve sheet/cell/range lineage)</strong>, no invented values — gaps become <code>DATA GAP - reviewer action required</code>.</td></tr>
+<tr><td>Pipeline retired (new)</td><td><code>process/PDD_CREATION_PROCESS.md:105</code> ("Legacy process"): the historical <code>INPUT -&gt; YAML -&gt; PREOUTPUT -&gt; CODEX_FINISHED</code> pipeline and scripts are "retained under <code>_archive/cleanup_20260827/</code> for recovery only… must not be used". I.e. on demo day Tinh <strong>deprecated the <code>pdd_automation</code> YAML-pipeline approach</strong> the Aug-28 report inventoried.</td></tr>
+<tr><td><code>scripts/</code> (3 files)</td><td><code>audit_portable_pdd.py</code> (7KB), <code>check_portable_pdd.py</code> (3KB), <code>run_pdd_in_place.py</code> (16KB: cover-PDF via reportlab, workbook→PDF via soffice, page raster via pdftoppm, source+evidence merge, hashed run manifest). Deps: <code>pypdf, python-docx, reportlab, openpyxl</code> + LibreOffice + Poppler.</td></tr>
+<tr><td><code>inputs/fresh_registry/</code> (~700MB)</td><td>Fresh <strong>2026-08-24</strong> Verra pulls: projects <strong>4818, 4921, 4940, 5040</strong> (source_bundle zips + extracted), <strong>3908 (INEGOL — 14 files: source PDDs, ER/CPA/IRR workbooks, exemption &amp; validation letters)</strong>, and a <strong>new project VCS 4019, CarbonCure CO₂-utilization-in-concrete (26 files, ~350MB incl. 192MB + 111MB ER spreadsheets)</strong> — a non-WTE methodology area neither track had touched. Legacy <code>documents-&lt;project&gt;/</code> folders duplicate the extracted content (bloat).</td></tr>
+<tr><td><code>library/</code></td><td><strong>206 methodology PDFs</strong> (CDM ACM/AMS + VCS), full VCS v4.4 template set (PD, monitoring, validation, verification, SDG, requantification).</td></tr>
+<tr><td><code>docs/onboarding/</code></td><td>15-slide deck <code>PDD_Onboarding_Guide_Expanded_v3.pptx</code> with <code>qa-summary.txt</code> (15/15 inspected, 0 out-of-bounds; honestly notes a <code>slides_test.py</code> Windows defect + workaround).</td></tr>
+</table>
+
+<h2>3. Test results (run on this machine)</h2>
+<table>
+<tr><th>Test</th><th>Result</th><th>Notes</th></tr>
+<tr><td><code>py_compile</code> all 3 scripts</td><td><span class="badge badge-green">PASS</span></td><td>Clean on Python 3.14.</td></tr>
+<tr><td><code>audit_portable_pdd.py</code></td><td><span class="badge badge-amber">REVIEW_REQUIRED</span></td><td>Runs correctly; 362 files / 731,087,627 B inventoried, no missing files/dirs. Three causes, none blocking: (1) <code>reportlab</code> absent on this machine (installed later — his <code>requirements-portable.txt</code> lists it); (2) <code>pdftoppm</code> not on PATH; (3) the audit's own legacy-keyword scan fires on <code>PDD_CREATION_PROCESS.md:105</code> — the doc's "Legacy process" section trips its own scanner (self-inflicted true positive). <code>soffice</code> discovered OK.</td></tr>
+<tr><td><code>check_portable_pdd.py</code> (3908 inputs)</td><td><span class="badge badge-amber">FAIL = Poppler only</span></td><td>Zero missing input files; all Python modules present after reportlab install. Sole failure line: <code>pdftoppm=MISSING</code>.</td></tr>
+<tr><td>Partial pipeline (cover + merge, minus pdftoppm stages)</td><td><span class="badge badge-green">PASS at short path</span> / <span class="badge badge-red">FAIL at deep path</span></td><td>At <code>C:/t3908/job</code>: 3 workbooks → PDFs (ER 52pp, IRR 56pp, CPA 312pp), source PDD 139pp, merged <strong><code>3908_PDD_in_place_Codex.pdf</code></strong>: 560 pages, 9.07MB + 2pp cover. Under the deep staging path the identical LibreOffice call fails silently (exit 1, no output) — isolated to the <strong>custom <code>-env:UserInstallation</code> profile path length</strong>: same file + same flags succeed with a short profile dir. Workaround: stage the workspace at a short root (his runbook assumes a copied folder, e.g. <code>D:\Allotrope\PDD</code>). Stale <code>soffice</code> instances also poison the lock — kill before runs.</td></tr>
+<tr><td><code>UPLOAD_MANIFEST.json</code> integrity (361 entries)</td><td><span class="badge badge-amber">335/335 + 26 stale</span></td><td>All 335 present files <strong>hash-match, 0 mismatches</strong>. 26 entries <strong>unverifiable — defect</strong>: manifest records the CarbonCure folder with en-dashes (<code>REDUCTIONS – CarbonCure – Asia #1</code>) but the zip stores hyphens (<code>REDUCTIONS - CarbonCure - Asia #1</code>) — folder renamed after manifest generation. Fix: regenerate manifest at pack time.</td></tr>
+<tr><td>Repo baselines (same session)</td><td><span class="badge badge-green">PASS</span></td><td><code>test_calc_dispatch.py + test_incineration.py</code>: 39/39. Full suite per <code>activeContext.md</code>: 909 passed, 4 xfailed.</td></tr>
+</table>
+
+<h2>4. Updated comparison vs. repo</h2>
+<table>
+<tr><th>Capability</th><th>Tinh (portable workspace, Aug 27)</th><th>Repo (<code>255c6b7</code>)</th></tr>
+<tr><td>Registry acquisition</td><td>Fresh 2026-08-24 pulls bundled (4818/4921/4940/5040/3908/4019) + downloader CLI in the retired package</td><td><strong>Changed since Aug-28 report:</strong> <code>ingest/registry_download.py</code> is now a real implementation (search + PDF download + manifest, throttle/retries, mocked tests in <code>test_registry_download.py</code>) — the "repo stub" row is closed.</td></tr>
+<tr><td>Quantification philosophy</td><td><strong>No recalculation by design</strong> — transfer reported workbook values with cell lineage; reconcile (5-project package, Jul) but don't rebuild</td><td>Compute independently (<code>ACM0022Calculator.compute_for()</code> + VM0051/VM0044/AMS-II.G), validate vs Soc Son oracle (+5.3%, tol 20%)</td></tr>
+<tr><td>Missing-data handling</td><td><code>DATA GAP - reviewer action required</code> notes in prose</td><td>"Appendix — Required Inputs" table, export no longer hard-blocked — convergent honesty, different mechanism</td></tr>
+<tr><td>Authoring model</td><td>Single Codex task, in-place, template-anchored; deterministic scripts only package/verify</td><td>Pipeline: intake YAML → retrieval → per-section generation → review gates → DOCX render</td></tr>
+<tr><td>Methodology breadth</td><td>WTE/ACM0022 + first concrete-utilization evidence (4019); 206-doc library</td><td>ACM0022, AMS-II.G, VM0051, VM0044 wired into <code>compute_for()</code></td></tr>
+<tr><td>Verification culture</td><td>Audit/check scripts, hashed manifests, page-by-page QA gate, candid defect notes</td><td>909 tests, dated xfails, oracle tolerances — deeper automation</td></tr>
+<tr><td>Portability</td><td>Designed portable; <strong>verified with 2 caveats</strong> (§3: manifest staleness, LO profile path length)</td><td>pip-installable, CI-tested</td></tr>
+</table>
+
+<h2>5. Recommendations</h2>
+<ol>
+<li><strong>Decide the calc question explicitly.</strong> The two tracks now embody opposite answers: Tinh trusts the client's workbook (lineage), the repo recomputes (oracle tolerance). For Inegol/3908 — where both tracks hold the same ER/CPA/IRR workbooks — run the repo's calculator against Tinh's bundled inputs and diff. That cross-check is the highest-value joint experiment available.</li>
+<li><strong>Adopt Tinh's evidence-packaging discipline.</strong> Hashed input manifests + source-preserving merges + version-fidelity notes (his v4.2→v4.4 migration flag) are cheap to copy into repo exports.</li>
+<li><strong>Tell Tinh (2 small fixes):</strong> regenerate <code>UPLOAD_MANIFEST.json</code> after renames (26 CarbonCure paths stale); exempt or reword the "Legacy process" heading so his own audit passes clean; note the LibreOffice custom-profile path-length limit for Windows receivers (recommend short staging root).</li>
+<li><strong>Install Poppler on team machines</strong> (<code>winget install --id oschwartz10612.Poppler</code>) — it is the single tool gating his full pipeline here.</li>
+<li><strong>Look at VCS 4019 (CarbonCure).</strong> If concrete utilization is an active pursuit, it needs a methodology owner — neither track implements it.</li>
+<li>Superseded Aug-28 items: rec. #2 (take his registry-download module) is now moot — repo built its own; rec. #4 (open the zip) is done by this report. Recs #1 (cross-validate calcs), #3 (Seraphine loop), #5 (live ViOT_DOXACO/Amya sheets) stand.</li>
+</ol>
+
+<h2>6. Limitations</h2>
+<ul>
+<li>Full <code>run_pdd_in_place.py</code> never ran end-to-end here (no Poppler); page-image DOCX stage untested. The substantive stages (workbook→PDF, cover, merge) were tested and pass.</li>
+<li>No Codex session was launched — the authoring stage (the workspace's core) is reviewed from its contract/docs, not executed.</li>
+<li>Registry workbooks' numeric contents were converted to PDF but not cell-audited; the 5-project reconciliation package from July was not re-opened.</li>
+<li>Repo side cites <code>activeContext.md</code> (909 tests) plus a 39-test calc re-run, not a fresh full suite.</li>
+</ul>
+
+<h2>Appendix — commands &amp; sources</h2>
+<pre><code>gws gmail users messages list --params '{"userId":"me","q":"tinh after:2026/08/25 before:2026/08/30"}'
+gws drive files get --params '{"fileId":"1hd3_9kOgcFqlgbHzGKewWCiKiGRK7u9B","alt":"media"}' --output data/runs/tinh-20260827/...
+python scripts/audit_portable_pdd.py
+python scripts/check_portable_pdd.py --input-dir inputs/fresh_registry/verra_public_download_3908_20260824/project_3908/extracted
+python -m py_compile scripts/*.py
+python -m pytest tests/test_calc_dispatch.py tests/test_incineration.py -q   # 39 passed</code></pre>
+<p style="font-size:12px;color:#64748b">Staging: <code>data/runs/tinh-20260827/PDD_Portable_Workspace_20260827_UPLOAD.zip</code> + <code>ws/</code> (both git-ignored; workspace restored pristine — audit JSON re-sealed from zip, <code>__pycache__</code>/scratch removed). Prior reports: <code>docs/2026-06-15-</code> and <code>docs/2026-08-28-tinh-track-vs-repo-comparison.md</code> (+ HTML twin).</p>
+
+</div>
+<div class="footer">pdd-auto staff-track verification &bull; 2026-09-04 &bull; zip downloaded, unzipped, tested, compared</div>
+</body>
+</html>

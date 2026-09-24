@@ -1,0 +1,11 @@
+{
+  "run_id": "walkthrough-inegol-demo",
+  "project_name": "INEGOL INTEGRATED SOLID WASTE STORAGE AND DISPOSAL FACILITY",
+  "project_slug": "inegol-integrated-solid-waste-storage-and-disposal-facility",
+  "published_docx": "reports\\demo-packages\\inegol-integrated-solid-waste-storage-and-disposal-facility\\walkthrough-inegol-demo\\walkthrough-inegol-demo.docx",
+  "source_docx": "data\\runs\\walkthrough-inegol-demo.docx",
+  "assumptions_yaml": "reports\\walkthrough\\raw\\_absent",
+  "project_yaml": "reports\\demo-packages\\inegol-integrated-solid-waste-storage-and-disposal-facility\\walkthrough-inegol-demo\\inegol_project_input.yaml",
+  "demo_scorecard": "reports\\walkthrough\\raw\\_absent",
+  "section_diff": "reports\\walkthrough\\raw\\_absent"
+}

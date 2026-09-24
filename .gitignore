@@ -15,6 +15,7 @@ htmlcov/
 # Large data — do not commit
 data/corpus/raw/
 data/corpus/normalized/
+data/corpus/normalized.bak/
 data/corpus/manifest.jsonl
 data/index/*
 !data/index/.gitkeep
