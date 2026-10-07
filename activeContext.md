@@ -123,3 +123,36 @@ check at all and would package a wrong number silently.
 
 **Not done / next:** the five "Run it" instructions are paste-ready but none has
 been executed yet; result slots on the page read "not yet run" until they are.
+
+---
+
+# Tinh package replication — codex + DeepSeek v4.1 Flash (started 2026-10-07)
+
+**Goal:** Re-run Tinh's September PDD_v1 portable package as a skeptical first-time PDD creator, driving a fresh codex agent (`opencode-go/deepseek-v4.1-flash`) in a new herdr tab with the guide's four documented messages. Third data point after codex/gpt-5.6 (21 Sep) and omp/Muse Spark (24 Sep) on the same CarbonCure evidence set.
+
+**Decisions (user, 2026-10-07):** project = CarbonCure (VCS 4019, same as prior runs) · scope decisions made in character and logged · fresh unzip of `PDD_v1.zip` (no prior outputs visible).
+
+**Run workspace:** `data/runs/tinh-20261007-codex-dsflash/PDD/` (git-ignored). Prompts + log + handoffs in `data/runs/tinh-20261007-codex-dsflash/`.
+
+## Checklist
+- [x] Fresh extract of PDD_v1.zip (382 files, no `outputs/`)
+- [x] Save verbatim Messages 1-4 (placeholders filled) under `prompts/`
+- [x] New herdr tab + `codex --remote unix:// -m opencode-go/deepseek-v4.1-flash -C <PDD>`
+- [x] Message 1 — setup (§8) → read report, verify Ready claim independently
+- [x] Message 2 — inputs check / prompt A (§9) → decide in character, log decisions
+- [x] Message 3 — author PDD / prompt B (§10)
+- [x] Message 4 — acceptance / prompt C (§11)
+- [x] Independently verify artifacts (hashes, page count, headline figures, package checkers)
+- [x] Skeptic's verdict + findings vs. the 16 prior (new / reproduced / absent) → `reports/` HTML
+
+## Method
+- Prompts sent verbatim via `herdr agent prompt --wait` run as a tracked background job (no polling); result read from the pane, handoff file only as fallback.
+- Operator-side steering recorded in `run-log.md` with reasoning.
+
+## Review / results
+Completed 2026-10-07. 4/4 messages, ~88 min agent time, REVIEW_REQUIRED, 48-page PDD (14,192 words, 46 tables). Report: `reports/2026-10-07-tinh-portable-package-codex-dsflash-field-test.html`; log: `data/runs/tinh-20261007-codex-dsflash/run-log.md`.
+- Held up: 31/31 source hashes, honest status, four version decisions separated, real source contradictions found, big workbooks opened.
+- New vs omp run: N1 stale `<dimension>` made a 74,736-ticket workbook look empty (caught by me, not the package); N2 p33 header black-on-navy missed by 48/48 PASS and prompt C; N3 run_manifest counts self-inconsistent.
+- Reproduced: soffice --version hang (D2), venv/interpreter (D3), empty examples (D4), gaps outside coverage table (D7), audit/verify collision (P4, worse), scratch in package (P5). Not reproduced: B1, B2, D8.
+- Harness: `herdr agent prompt --wait` stalled at 5 s on a long prompt; agent-pushed `herdr agent prompt pdd-auto-claude "DSFLASH_DONE ..."` was the reliable report-back.
+- Open: no human opened the DOCX in Word; no numeric recomputation (by design).
